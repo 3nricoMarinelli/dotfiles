@@ -1,0 +1,57 @@
+{
+  "chat.fontSize": 10,
+  "workbench.activityBar.iconClickBehavior": "focus",
+  "workbench.activityBar.location": "top",
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "explicit",
+  "files.associations": {
+    "*.launch": "python",
+    "*.ipp": "cpp",
+  },
+  "gitlens.graph.minimap.enabled": false,
+  "redhat.telemetry.enabled": false,
+  "remote.autoForwardPortsSource": "hybrid",
+  "remote.autoForwardPorts": false,
+  "remote.restoreForwardedPorts": false,
+  "remote.portsAttributes": {
+    "1-65000": {
+      "label": "Application",
+      "onAutoForward": "ignore"
+    }
+  },
+  "git.autofetch": true,
+  "workbench.sideBar.location": "right",
+  "editor.minimap.showSlider": "always",
+  "editor.minimap.renderCharacters": false,
+  "explorer.confirmDelete": false,
+  "containers.containerClient": "com.microsoft.visualstudio.containers.docker",
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  "docker.extension.enableComposeLanguageServer": false,
+  "explorer.confirmDragAndDrop": false,
+  "github.copilot.nextEditSuggestions.enabled": false,
+  "workbench.panel.showLabels": false,
+  "files.trimTrailingWhitespace": true,
+  "ruff.lint.preview": true,
+  "ruff.lint.enable": false,
+  "notebook.lineNumbers": "on",
+  "clangd.detectExtensionConflicts": false,
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [
+      80
+    ],
+    "editor.selectionHighlight": false,
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+  "cursor.composer.shouldChimeAfterChatFinishes": true,
+  "claudeCode.useTerminal": true,
+  "editor.fontSize": 12,
+  "editor.formatOnSave": true,
+  "notebook.cellToolbarVisibility": "hover",
+  "notebook.showFoldingControls": "always",
+  "EIDE.Repository.UseProxy": false,
+  "workbench.colorTheme": "Tokyo Midnight",
+  "editor.minimap.enabled": false
+}
