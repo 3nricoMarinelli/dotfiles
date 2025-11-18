@@ -259,32 +259,43 @@ install_neovim() {
     fi
   fi
 
-  # Detect architecture
+  # Detect architecture and install appropriate version
   ARCH=$(uname -m)
+  print_step "Installing Neovim tarball (no sudo required)..."
+  mkdir -p "$HOME/.local/bin"
+  cd /tmp
 
-  # Try tarball installation (works for x86_64)
+  # Determine the correct tarball URL based on architecture
   if [ "$ARCH" = "x86_64" ]; then
-    print_step "Installing Neovim tarball (no sudo required)..."
-    mkdir -p "$HOME/.local/bin"
-    cd /tmp
-    if wget -q https://github.com/neovim/neovim/releases/download/v0.10.3/nvim-linux64.tar.gz; then
-      tar xzf nvim-linux64.tar.gz
-      rm -rf "$HOME/.local/nvim-linux64"
-      mv nvim-linux64 "$HOME/.local/"
-      ln -sf "$HOME/.local/nvim-linux64/bin/nvim" "$HOME/.local/bin/nvim"
-      rm -f nvim-linux64.tar.gz
+    NVIM_URL="https://github.com/neovim/neovim/releases/download/v0.11.5/nvim-linux64.tar.gz"
+    NVIM_DIR="nvim-linux64"
+  elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+    NVIM_URL="https://github.com/neovim/neovim/releases/download/v0.11.5/nvim-linux-arm64.tar.gz"
+    NVIM_DIR="nvim-linux-arm64"
+  else
+    print_warning "Unsupported architecture: $ARCH"
+    print_warning "To install Neovim, run: sudo apt-get install neovim"
+    return
+  fi
 
-      if command -v nvim &>/dev/null; then
-        print_success "Neovim installed successfully"
-        return
-      fi
+  # Download and install
+  if wget -q "$NVIM_URL"; then
+    tar xzf "$(basename $NVIM_URL)"
+    rm -rf "$HOME/.local/$NVIM_DIR"
+    mv "$NVIM_DIR" "$HOME/.local/"
+    rm -f "$HOME/.local/bin/nvim"
+    ln -sf "$HOME/.local/$NVIM_DIR/bin/nvim" "$HOME/.local/bin/nvim"
+    rm -f "$(basename $NVIM_URL)"
+
+    if command -v nvim &>/dev/null; then
+      print_success "Neovim v0.11.5 installed successfully"
+      return
     fi
   fi
 
-  # For ARM64 or if tarball failed, neovim needs sudo
-  print_warning "Neovim not available without sudo on ARM64/aarch64"
+  # If installation failed
+  print_warning "Neovim tarball installation failed"
   print_warning "To install Neovim, run: sudo apt-get install neovim"
-  print_warning "Or: sudo snap install nvim --classic"
   print_warning "Continuing without Neovim..."
 }
 
