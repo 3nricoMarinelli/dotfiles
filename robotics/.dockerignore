@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+README*
+LICENSE
+
+# Environment files (built at runtime)
+.env
+
+# Workspace build artifacts (should be in container only)
+ros-workspace/build/
+ros-workspace/install/
+ros-workspace/log/
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
