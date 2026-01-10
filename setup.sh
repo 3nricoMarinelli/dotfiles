@@ -405,25 +405,39 @@ change_shell() {
   zsh
 }
 
+install_stow() {
+  print_step "Checking stow..."
+  if command -v stow &>/dev/null; then
+    print_success "stow already installed"
+  else
+    $INSTALL_CMD stow
+    print_success "stow installed"
+  fi
+}
+
 dotfiles_manager() {
+  print_step "Setting up dotfiles with stow..."
   local script_dir
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
-  # Copy dotfiles (excluding .git)
-  for file in "$script_dir"/.[!.]*; do
-    [[ "$(basename "$file")" == ".git" ]] && continue
-    rm -rf "${HOME:?}/$(basename "$file")"
-    cp -r "$file" "$HOME/"
+  # Stow the specified packages
+  cd "$script_dir"
+  # Explicitly list packages that are dotfiles
+  for pkg in zsh tmux vim nvim; do
+    if [ -d "$pkg" ]; then
+      print_step "Stowing $pkg..."
+      stow -R "$pkg"
+    fi
   done
 
-  # cleanup dotfiles directory
-  rm -rf "$script_dir"
+  print_success "Dotfiles stowed successfully"
 }
+
 main() {
   echo ""
   echo "╔═══════════════════════════════════════════════════════════╗"
-  echo "║           Fresh Terminal Setup Script                     ║"
-  echo "║   zsh + oh-my-zsh + p10k + tmux + neovim + lazyvim        ║"
+  echo "║               Terminal Setup Script                       ║"
+  echo "║    zsh + oh-my-zsh + p10k + tmux + neovim + lazyvim       ║"
   echo "╚═══════════════════════════════════════════════════════════╝"
   echo ""
 
@@ -440,6 +454,7 @@ main() {
   install_curl_wget
   install_cmake
   install_ripgrep
+  install_stow
 
   install_zsh
   install_oh_my_zsh
@@ -454,10 +469,10 @@ main() {
   install_tpm
 
   install_neovim
+  
+  dotfiles_manager
 
   change_shell
-
-  dotfiles_manager
 
   echo ""
   echo "╔═══════════════════════════════════════════════════════════╗"
