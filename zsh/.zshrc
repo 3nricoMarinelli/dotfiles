@@ -209,6 +209,7 @@ alias -g J='| jq'              # Pipe to jq
 
 # macOS-specific global alias
 if [[ "$OS_FLAG" == "macos" ]]; then
+    export ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
     alias -g C='| pbcopy' # Copy output to clipboard
 fi
 
@@ -286,16 +287,10 @@ if [[ "$OS_FLAG" == "macos" ]]; then
     # Check current brew architecture
     alias brew-which='echo "Current: $(which brew)" && arch'
 
-    # SSH into Ubuntu VM
+    # SSH into local Ubuntu server
     ubuntu() {
-        local vm_name="Ubuntu"
-        while [[ "$(utmctl status "$vm_name" 2>/dev/null)" != "started" ]]; do
-            local vm_uuid=$(utmctl list | grep "$vm_name" | awk '{print $1}')
-            utmctl start "$vm_uuid"
-            sleep 3
-        done
-        ssh ubuntu@192.168.64.27
-    }
+        ssh "$USER-ubuntu@$UBUNTU_IP"
+        }
 
     # Android SDK alias
     if [[ -f "$HOME/Library/Android/sdk/platform-tools/adb" ]]; then

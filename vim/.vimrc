@@ -96,5 +96,7 @@ set statusline +=%1*%4v\ %*             "virtual column number
 set statusline +=%2*0x%04B\ %*          "character under cursor
 
 " Custom Configuration "
-set relativenumber 
-
+map Q lxh
+set relativenumber
+:highlight ExtraWhitespace ctermbg=red guibg=red
+:match ExtraWhitespace /\s\+$/

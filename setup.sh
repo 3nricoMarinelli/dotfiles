@@ -426,9 +426,11 @@ dotfiles_manager() {
   for pkg in zsh tmux vim nvim; do
     if [ -d "$pkg" ]; then
       print_step "Stowing $pkg..."
-      stow -R "$pkg"
+      stow --adopt -R "$pkg"
     fi
   done
+  git restore .
+  cd "$HOME"
 
   print_success "Dotfiles stowed successfully"
 }
@@ -469,7 +471,6 @@ main() {
   install_tpm
 
   install_neovim
-  
   dotfiles_manager
 
   change_shell
