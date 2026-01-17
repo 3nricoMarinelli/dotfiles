@@ -26,6 +26,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+SCRIPT_DIR="$(pwd)"
 
 print_step() {
   echo -e "${BLUE}==>${NC} $1"
@@ -416,23 +417,26 @@ install_stow() {
 }
 
 dotfiles_manager() {
-  print_step "Setting up dotfiles with stow..."
-  local script_dir
-  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+    print_step "Setting up dotfiles with stow..."
+    cd "${SCRIPT_DIR}"
+    # List of packages to stow (excluding brew, .git, etc.)
+    local packages=(nvim tmux vim vscode zsh)
+    for pkg in "${packages[@]}"; do
+        if [ -d "$pkg" ]; then
+            print_step "Stowing $pkg..."
+            stow -v --adopt --restow "$pkg"
+        fi
+    done
+    print_success "Dotfiles stowed successfully"
+    cd "$HOME"
+}
 
-  # Stow the specified packages
-  cd "$script_dir"
-  # Explicitly list packages that are dotfiles
-  for pkg in zsh tmux vim nvim; do
-    if [ -d "$pkg" ]; then
-      print_step "Stowing $pkg..."
-      stow --adopt -R "$pkg"
-    fi
-  done
-  git restore .
-  cd "$HOME"
-
-  print_success "Dotfiles stowed successfully"
+install_other_packages(){
+	if command -v brew &>/dev/null; then
+            cd "${SCRIPT_DIR}/brew"
+            brew bundle install
+	    cd "$HOME"
+	fi
 }
 
 main() {
@@ -472,6 +476,7 @@ main() {
 
   install_neovim
   dotfiles_manager
+  install_other_packages
 
   change_shell
 
@@ -485,4 +490,4 @@ main() {
 }
 
 main "$@"
-reset
+#reset
