@@ -1,0 +1,13 @@
+build-essential
+cmake
+git
+curl
+wget
+tmux
+neovim
+python3
+tree
+stow
+fzf
+shellcheck
+ripgrep

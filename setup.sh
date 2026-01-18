@@ -419,7 +419,6 @@ install_stow() {
 dotfiles_manager() {
     print_step "Setting up dotfiles with stow..."
     cd "${SCRIPT_DIR}"
-    # List of packages to stow (excluding brew, .git, etc.)
     local packages=(nvim tmux vim vscode zsh)
     for pkg in "${packages[@]}"; do
         if [ -d "$pkg" ]; then
@@ -435,8 +434,11 @@ install_other_packages(){
 	if command -v brew &>/dev/null; then
             cd "${SCRIPT_DIR}/brew"
             brew bundle install
-	    cd "$HOME"
-	fi
+        elif command -v apt  &>/dev/null; then
+            cd "${SCRIPT_DIR}/apt"
+            xargs -a "packages.txt" sudo apt-get install -y
+        fi
+        cd "$HOME"
 }
 
 main() {
