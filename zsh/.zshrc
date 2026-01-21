@@ -119,15 +119,13 @@ export MAMBA_ROOT_PREFIX="$HOME/micromamba"
 # macOS
 # --------------------------------------------
 if [[ "$OS_FLAG" == "macos" ]]; then
-    # PATH additions
-    export PATH="/opt/homebrew/share/google-cloud-sdk/bin:$PATH"
-    export PATH="$HOME/Library/Python/3.14/bin:$PATH"
-
     # Homebrew
     export HOMEBREW_NO_AUTO_UPDATE=0
+    # default ARM
     if [[ -f /opt/homebrew/bin/brew ]]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
+    # Rosetta emulation
     if [[ "$(arch)" == "i386" ]] && [[ -f /usr/local/bin/brew ]]; then
         eval "$(/usr/local/bin/brew shellenv)"
     fi
@@ -143,12 +141,7 @@ fi
 # --------------------------------------------
 if [[ "$OS_FLAG" == "linux" ]]; then
     # Display configuration for GUI apps in SSH
-    export DISPLAY="${DISPLAY:-:0}"
-    export LIBGL_ALWAYS_SOFTWARE=1
     alias bat="batcat"
-    if [[ "$SSH_SESSION" == "true" ]] && command -v xhost &>/dev/null; then
-        xhost +local: &>/dev/null
-    fi
 fi
 
 # ============================================
