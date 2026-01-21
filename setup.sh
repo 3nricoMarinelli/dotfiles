@@ -286,84 +286,6 @@ install_tpm() {
   print_success "TPM installed"
 }
 
-install_neovim() {
-  print_step "Checking Neovim..."
-
-  NVIM_MIN_VERSION="0.9.0"
-  NVIM_INSTALL_VERSION="0.11.5"
-
-  # Check if nvim exists and version is sufficient
-  if command -v nvim &>/dev/null; then
-    CURRENT_VERSION=$(nvim --version | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-    if [ "$(printf '%s\n' "$NVIM_MIN_VERSION" "$CURRENT_VERSION" | sort -V | head -n1)" = "$NVIM_MIN_VERSION" ]; then
-      print_success "Neovim already installed (v$CURRENT_VERSION)"
-      return
-    else
-      print_warning "Neovim v$CURRENT_VERSION is too old (need >= $NVIM_MIN_VERSION)"
-    fi
-  fi
-
-  # Install from tarball (ensures we get a recent version for LazyVim)
-  ARCH=$(uname -m)
-  print_step "Installing Neovim v$NVIM_INSTALL_VERSION from tarball..."
-  mkdir -p "$HOME/.local/bin"
-
-  if [ "$ARCH" = "x86_64" ]; then
-    NVIM_URL="https://github.com/neovim/neovim/releases/download/v${NVIM_INSTALL_VERSION}/nvim-linux64.tar.gz"
-    NVIM_DIR="nvim-linux64"
-  elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
-    NVIM_URL="https://github.com/neovim/neovim/releases/download/v${NVIM_INSTALL_VERSION}/nvim-linux-arm64.tar.gz"
-    NVIM_DIR="nvim-linux-arm64"
-  elif [ "$(uname)" = "Darwin" ]; then
-    if [ "$ARCH" = "arm64" ]; then
-      NVIM_URL="https://github.com/neovim/neovim/releases/download/v${NVIM_INSTALL_VERSION}/nvim-macos-arm64.tar.gz"
-      NVIM_DIR="nvim-macos-arm64"
-    else
-      NVIM_URL="https://github.com/neovim/neovim/releases/download/v${NVIM_INSTALL_VERSION}/nvim-macos-x86_64.tar.gz"
-      NVIM_DIR="nvim-macos-x86_64"
-    fi
-  else
-    print_warning "Unsupported architecture: $ARCH"
-    print_warning "Please install Neovim manually"
-    return
-  fi
-
-  cd /tmp
-  if wget -q --show-progress "$NVIM_URL" -O nvim.tar.gz; then
-    tar xzf nvim.tar.gz
-    rm -rf "$HOME/.local/$NVIM_DIR"
-    mv "$NVIM_DIR" "$HOME/.local/"
-    rm -f "$HOME/.local/bin/nvim"
-    ln -sf "$HOME/.local/$NVIM_DIR/bin/nvim" "$HOME/.local/bin/nvim"
-    rm -f nvim.tar.gz
-
-    # Add to PATH for current session
-    export PATH="$HOME/.local/bin:$PATH"
-    hash -r 2>/dev/null || true
-
-    if "$HOME/.local/bin/nvim" --version &>/dev/null; then
-      print_success "Neovim v$NVIM_INSTALL_VERSION installed"
-      return
-    fi
-  fi
-
-  print_warning "Neovim tarball installation failed - trying package manager"
-
-  # Fallback to package manager
-  if [ "$PKG_MANAGER" = "apt" ]; then
-    $INSTALL_CMD neovim
-  elif [ "$PKG_MANAGER" = "brew" ]; then
-    $INSTALL_CMD neovim
-  fi
-
-  hash -r 2>/dev/null || true
-  if command -v nvim &>/dev/null; then
-    print_success "Neovim installed via package manager"
-  else
-    print_warning "Neovim installation failed - please install manually"
-  fi
-}
-
 change_shell() {
   print_step "Setting zsh as default shell..."
 
@@ -445,7 +367,7 @@ main() {
   echo ""
   echo "╔═══════════════════════════════════════════════════════════╗"
   echo "║               Terminal Setup Script                       ║"
-  echo "║    zsh + oh-my-zsh + p10k + tmux + neovim + lazyvim       ║"
+  echo "║    	     zsh + oh-my-zsh + p10k + tmux	    	    ║"
   echo "╚═══════════════════════════════════════════════════════════╝"
   echo ""
 
@@ -476,7 +398,6 @@ main() {
   install_tmux
   install_tpm
 
-  install_neovim
   dotfiles_manager
   install_other_packages
 

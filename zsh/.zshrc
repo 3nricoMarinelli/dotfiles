@@ -166,7 +166,6 @@ fi
 # General Aliases
 # --------------------------------------------
 alias storage='ncdu'
-alias v='nvim'
 
 # TMUX
 alias tn='tmux new-session -s'
@@ -315,7 +314,6 @@ chpwd() {
 # --------------------------------------------
 # Zsh Hacks
 # --------------------------------------------
-# Open the current command in your $EDITOR (e.g., neovim)
 # Press Ctrl+X followed by Ctrl+E to trigger
 autoload -Uz edit-command-line
 zle -N edit-command-line
