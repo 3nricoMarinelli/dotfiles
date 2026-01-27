@@ -1,3 +1,45 @@
+" 3nricoMarinelli's .vimrc
+" Copyright(C) 2026 Enrico Marinelli
+
+map Q lxh
+set relativenumber
+
+" highlight spaces
+:highlight ExtraWhitespace ctermbg=red guibg=red
+:match ExtraWhitespace /\s\+$/
+
+" enter the current millenium
+set nocompatible
+
+" enable syntax and plugins (for netrw)
+syntax enable
+filetype plugin on
+
+" Search down into subfolders
+" Provides tab-completion for all file-related tasks
+set path+=**
+
+" Display all matching files when we tab complete
+set wildmenu
+set wildmode=longest:full,full
+set completeopt+=longest
+set completeopt-=menu
+
+" - Hit tab to :find by partial match
+" - Use * to make it fuzzy
+" - :b lets you autocomplete any open buffer
+
+" Tweaks for browsing
+let g:netrw_banner=0        " disable annoying banner
+let g:netrw_browse_split=4  " open in prior window
+let g:netrw_altv=1          " open splits to the right
+let g:netrw_liststyle=3     " tree view
+
+" - :edit a folder to open a file browser
+" - <CR>/v/t to open in an h-split/v-split/tab
+" - check |netrw-browse-maps| for more mappings
+
+
 " antirez's .vimrc
 " Copyright(C) 2001 Salvatore Sanfilippo
 
@@ -94,9 +136,3 @@ set statusline +=%1*%=%5l%*             "current line
 set statusline +=%2*/%L%*               "total lines
 set statusline +=%1*%4v\ %*             "virtual column number
 set statusline +=%2*0x%04B\ %*          "character under cursor
-
-" Custom Configuration "
-map Q lxh
-set relativenumber
-:highlight ExtraWhitespace ctermbg=red guibg=red
-:match ExtraWhitespace /\s\+$/
