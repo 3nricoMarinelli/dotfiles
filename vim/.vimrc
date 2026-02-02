@@ -1,19 +1,17 @@
 " 3nricoMarinelli's .vimrc
 " Copyright(C) 2026 Enrico Marinelli
 
-map Q lxh
-set relativenumber
-
-" highlight spaces
-:highlight ExtraWhitespace ctermbg=red guibg=red
-:match ExtraWhitespace /\s\+$/
-
-" enter the current millenium
+" ViIMproved & General settings
 set nocompatible
-
-" enable syntax and plugins (for netrw)
+filetype off
+set hidden
+set nobackup
+set noswapfile
+set t_Co=256
+set incsearch
+set relativenumber
+let g:rehash256 = 1
 syntax enable
-filetype plugin on
 
 " Search down into subfolders
 " Provides tab-completion for all file-related tasks
@@ -23,7 +21,6 @@ set path+=**
 set wildmenu
 set wildmode=longest:full,full
 set completeopt+=longest
-set completeopt-=menu
 
 " - Hit tab to :find by partial match
 " - Use * to make it fuzzy
@@ -39,6 +36,50 @@ let g:netrw_liststyle=3     " tree view
 " - <CR>/v/t to open in an h-split/v-split/tab
 " - check |netrw-browse-maps| for more mappings
 
+" Split and tabs "
+set splitbelow splitright
+
+" Remap splits navigation to just CTRL + hjkl
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Make adjusing split sizes a bit more friendly
+noremap <silent> <C-Left> :vertical resize +3<CR>
+noremap <silent> <C-Right> :vertical resize -3<CR>
+noremap <silent> <C-Up> :resize +3<CR>
+noremap <silent> <C-Down> :resize -3<CR>
+
+" Change 2 split windows from vert to horiz or horiz to vert
+map <Leader>th <C-w>t<C-w>H
+map <Leader>tk <C-w>t<C-w>K
+
+" Removes pipes | that act as seperators on splits
+set fillchars+=vert:\
+
+
+" Color and theming "
+highlight LineNr           ctermfg=8    ctermbg=none    cterm=none
+highlight CursorLineNr     ctermfg=7    ctermbg=8       cterm=none
+highlight VertSplit        ctermfg=0    ctermbg=8       cterm=none
+highlight Statement        ctermfg=2    ctermbg=none    cterm=none
+highlight Directory        ctermfg=4    ctermbg=none    cterm=none
+highlight StatusLine       ctermfg=7    ctermbg=8       cterm=none
+highlight StatusLineNC     ctermfg=7    ctermbg=8       cterm=none
+highlight Comment          ctermfg=4    ctermbg=none    cterm=italic
+highlight Constant         ctermfg=12   ctermbg=none    cterm=none
+highlight Special          ctermfg=4    ctermbg=none    cterm=none
+highlight Identifier       ctermfg=6    ctermbg=none    cterm=none
+highlight PreProc          ctermfg=5    ctermbg=none    cterm=none
+highlight String           ctermfg=12   ctermbg=none    cterm=none
+highlight Number           ctermfg=1    ctermbg=none    cterm=none
+highlight Function         ctermfg=1    ctermbg=none    cterm=none
+highlight WildMenu         ctermfg=1    ctermbg=8       cterm=none
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+
+map Q lxh
 
 " antirez's .vimrc
 " Copyright(C) 2001 Salvatore Sanfilippo
@@ -107,11 +148,11 @@ endif
 " :hi Comment term=bold ctermfg=Cyan ctermfg=#80a0ff
 
 " Macro
-:nmap ;; :w! /tmp/tcltmp100.tcl<CR>:!tclsh /tmp/tcltmp100.tcl<CR>
+nmap ;; :w! /tmp/tcltmp100.tcl<CR>:!tclsh /tmp/tcltmp100.tcl<CR>
 
 " Vim 7.0 stuff
 let loaded_matchparen = 1   " Avoid the loading of match paren plugin
-:filetype plugin on 
+filetype plugin on
 " :source /usr/share/vim/vim72/macros/matchit.vim
 
 " highlight OverLength ctermbg=red ctermfg=white ctermbg=#592929
