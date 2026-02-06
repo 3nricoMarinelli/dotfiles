@@ -177,9 +177,9 @@ alias ta='tmux attach-session'
 # --------------------------------------------
 alias -s json=jless
 alias -s html=open
-alias -s txt=bat
 alias -s log=bat
 alias -s md=bat
+alias -s txt='$EDITOR'
 alias -s c='$EDITOR'
 alias -s h='$EDITOR'
 alias -s cpp='$EDITOR'
