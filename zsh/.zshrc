@@ -95,7 +95,28 @@ source "$ZSH/oh-my-zsh.sh"
 # ============================================
 
 # Editor
-export EDITOR=vim
+export EDITOR=nvim
+
+# Less configuration for color support and better defaults
+export LESS='-R -F -X -i -M -W'
+# -R: Allow raw control characters (for colors)
+# -F: Quit if entire file fits on one screen
+# -X: Don't clear screen on exit
+# -i: Ignore case in searches
+# -M: Long prompt with line numbers
+# -W: Highlight first unread line after scrolling
+
+# Man pages with color highlighting
+export LESS_TERMCAP_mb=$'\e[1;32m'     # Begin blinking (green)
+export LESS_TERMCAP_md=$'\e[1;34m'     # Begin bold (blue)
+export LESS_TERMCAP_me=$'\e[0m'        # End all mode
+export LESS_TERMCAP_se=$'\e[0m'        # End standout mode
+export LESS_TERMCAP_so=$'\e[1;43;30m'  # Begin standout mode (yellow background)
+export LESS_TERMCAP_ue=$'\e[0m'        # End underline
+export LESS_TERMCAP_us=$'\e[1;4;31m'   # Begin underline (red)
+
+# Pager for man pages
+export MANPAGER='less -R'
 
 # PATH
 export PATH="$HOME/.local/bin:$PATH"
@@ -166,6 +187,7 @@ fi
 # General Aliases
 # --------------------------------------------
 alias storage='ncdu'
+alias v='nvim'
 
 # TMUX
 alias tn='tmux new-session -s'
@@ -198,6 +220,8 @@ alias -g NE='2>/dev/null'      # Redirect stderr to /dev/null
 alias -g NO='>/dev/null'       # Redirect stdout to /dev/null
 alias -g NUL='>/dev/null 2>&1' # Redirect both to /dev/null
 alias -g J='| jq'              # Pipe to jq
+alias -g L='| less -R'         # Pipe to less with color support
+alias -g G='| grep --color=always'  # Pipe to grep with color preserved
 
 # macOS-specific global alias
 if [[ "$OS_FLAG" == "macos" ]]; then
