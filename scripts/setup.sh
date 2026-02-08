@@ -26,7 +26,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
-SCRIPT_DIR="$(pwd)"
+SCRIPT_DIR="$(find $HOME -type d -name dotfiles)"
 
 print_step() {
   echo -e "${BLUE}==>${NC} $1"

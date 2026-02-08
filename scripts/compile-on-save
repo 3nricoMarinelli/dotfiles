@@ -1,0 +1,26 @@
+#!/bin/sh
+# Compile-on-save: Auto recompile and run when file changes
+# Usage: compile-on-save <file> <compile-command>
+# Example: compile-on-save main.c "gcc -Wall -Wextra"
+
+command -v fswatch > /dev/null || { echo 'Could not find fswatch (brew install fswatch)'; exit 1; }
+
+path="$1"
+shift
+compile_command="$@"
+
+exec_file_name="$(basename "$0")"
+
+compile_and_run() {
+    clear
+    echo "$exec_file_name $path $compile_command"
+    echo '---------------------------------------'
+    $compile_command "$path" && ./a.out
+}
+
+compile_and_run
+
+# Use fswatch (macOS compatible) instead of inotifywait
+fswatch -o "$path" | while read -r event; do
+    compile_and_run
+done
