@@ -40,6 +40,21 @@ Plug('MeanderingProgrammer/render-markdown.nvim') --render md inline
 Plug('emmanueltouzery/decisive.nvim') --view csv files
 Plug('folke/twilight.nvim') --surrounding dim
 
+-- Language support plugins
+Plug('neovim/nvim-lspconfig') --LSP configuration
+Plug('hrsh7th/nvim-cmp') --autocompletion
+Plug('hrsh7th/cmp-nvim-lsp') --LSP source for nvim-cmp
+Plug('hrsh7th/cmp-buffer') --buffer completions
+Plug('hrsh7th/cmp-path') --path completions
+Plug('L3MON4D3/LuaSnip') --snippet engine
+Plug('saadparwaiz1/cmp_luasnip') --snippet completions
+Plug('rust-lang/rust.vim') --Rust file detection & formatting
+Plug('simrat39/rust-tools.nvim') --Rust extra tools (inlay hints, etc)
+Plug('Saecki/crates.nvim') --Rust crates.toml helper
+Plug('p00f/clangd_extensions.nvim') --C/C++ clangd enhancements
+Plug('Civitasv/cmake-tools.nvim') --CMake integration
+Plug('nvim-lua/plenary.nvim') --required for some plugins
+
 vim.call('plug#end')
 
 -- move config and plugin config to alternate files
@@ -47,6 +62,7 @@ require("config.theme")
 require("config.mappings")
 require("config.options")
 require("config.autocmd")
+require("config.build-system").setup() --build & run system
 
 require("plugins.alpha")
 -- require("plugins.autopairs")
@@ -58,6 +74,7 @@ require("plugins.comment")
 -- require("plugins.fzf-lua")
 require("plugins.gitsigns")
 require("plugins.lualine")
+require("plugins.lsp") --LSP for C, C++, Python, Rust
 require("plugins.nvim-lint")
 -- require("plugins.nvim-tree")
 require("plugins.render-markdown")

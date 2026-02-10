@@ -87,6 +87,14 @@ map("n", "<leader>ma", function() --quick make in dir of buffer
 	vim.cmd("!sudo make uninstall && sudo make clean install %")
 end)
 
+-- Build system mappings (C, C++, Python, Rust)
+map("n", "<leader>bb", function() require('config.build-system').build() end) --build
+map("n", "<leader>br", function() require('config.build-system').run() end) --run
+map("n", "<leader>bR", function() require('config.build-system').build_and_run() end) --build & run
+map("n", "<leader>bc", function() require('config.build-system').clean() end) --clean
+map("n", "<leader>bx", function() require('config.build-system').build_release() end) --release build (Rust)
+map("n", "<F9>", function() require('config.build-system').build_and_run() end) --quick F9 build & run
+
 
 map("n", "<leader>nn", function() --toggle relative vs absolute line numbers
 	if vim.wo.relativenumber then
