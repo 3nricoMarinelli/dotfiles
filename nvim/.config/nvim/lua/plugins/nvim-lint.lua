@@ -2,10 +2,20 @@ require('lint').linters_by_ft = { --some of these need to be installed from pack
   lua = {'luac'},
   python = {'ruff'},
   sh = {'bash'},
-  c = {'cppcheck'},
+  c = {'cppcheck'},       -- Additional checks beyond clang-tidy
+  cpp = {'cppcheck'},     -- C++ linting
   rust = {'clippy'},
   css = {'stylelint'},
   html = {'htmlhint'},
+}
+
+-- Configure cppcheck for better C/C++ linting (VSCode-like)
+local cppcheck = require('lint').linters.cppcheck
+cppcheck.args = {
+  '--enable=warning,style,performance,portability',
+  '--inline-suppr',
+  '--quiet',
+  '--template={file}:{line}:{column}: [{severity}] {message} [{id}]',
 }
 
 -- Some linters require a file to be saved to disk, others support linting stdin input.

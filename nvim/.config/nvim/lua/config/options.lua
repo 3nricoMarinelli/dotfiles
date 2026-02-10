@@ -24,7 +24,10 @@ local options = {
 	smarttab = true, --indentation stuff
 	cindent = true,
 	autoindent = false,
-	tabstop = 2, --visual width of tab
+	expandtab = true, --convert tabs to spaces
+	tabstop = 4, --visual width of tab (4 spaces)
+	shiftwidth = 4, --indent width for autoindent (4 spaces)
+	softtabstop = 4, --number of spaces for <Tab> in insert mode
 
 	foldmethod = "expr",
 	foldlevel = 99, --disable folding, lower #s enable
@@ -48,3 +51,18 @@ end
 vim.diagnostic.config({
 	signs = false,
 })
+
+-- Disable unused providers to reduce startup warnings
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+-- Suppress vim.validate deprecation warnings from cmp-buffer
+-- (plugin maintainer reverted the fix, will be resolved eventually)
+local notify = vim.notify
+vim.notify = function(msg, level, opts)
+    if msg:match("vim.validate is deprecated") then
+        return
+    end
+    notify(msg, level, opts)
+end

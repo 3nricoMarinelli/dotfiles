@@ -1,4 +1,41 @@
 -- mappings, including plugins
+--
+-- C/C++/Python/Rust/Typst Development (inspired by cacharle/dotfiles):
+--
+-- LSP Keybindings:
+--   gd - Go to definition
+--   K - Hover documentation
+--   gk - Signature help
+--   <leader>rn - Rename symbol
+--   <leader>ld - LSP diagnostics (Telescope or quickfix)
+--   <leader>ls - LSP workspace symbols (C/C++ only)
+--   <leader>lr - LSP references
+--   [d / ]d - Previous/next diagnostic
+--
+-- C/C++ Utilities:
+--   <leader>aw - ArgWrap: toggle single/multi-line function arguments
+--   ga - EasyAlign: align on delimiter (visual or operator mode)
+--
+-- Python Utilities:
+--   <leader>ba - Add breakpoint() at current line
+--   <leader>bd - Delete all breakpoint() lines
+--
+-- Typst Utilities:
+--   <leader>tc - Compile current file (typst compile)
+--   <leader>tw - Watch & auto-compile (typst watch)
+--
+-- Completion (nvim-cmp):
+--   <Tab> - Confirm selection
+--   <C-n> - Next item / trigger completion
+--   <C-p> - Previous item
+--   <C-b/f> - Scroll docs
+--
+-- Installation:
+--   C/C++: brew install llvm (for clangd)
+--   Python: pip install 'python-lsp-server[all]' pyls-flake8
+--   Rust: rustup component add rust-analyzer
+--   Typst: cargo install typst-lsp && brew install typst
+--   Tools: brew install fswatch (for compile-on-save script)
 
 local function map(m, k, v)
 	vim.keymap.set(m, k, v, { noremap = true, silent = true })
@@ -67,7 +104,6 @@ map("n", "<leader>R", ":so %<CR>") --reload neovim config
 map("n", "<leader>u", ':silent !xdg-open "<cWORD>" &<CR>') --open a url under cursor
 map("v", "<leader>i", "=gv") --auto indent
 map("n", "<leader>W", ":set wrap!<CR>") --toggle wrap
-map("n", "<leader>l", ":Twilight<CR>") --surrounding dim
 
 -- decisive csv
 map("n", "<leader>csa", ":lua require('decisive').align_csv({})<cr>")
@@ -87,13 +123,31 @@ map("n", "<leader>ma", function() --quick make in dir of buffer
 	vim.cmd("!sudo make uninstall && sudo make clean install %")
 end)
 
--- Build system mappings (C, C++, Python, Rust)
-map("n", "<leader>bb", function() require('config.build-system').build() end) --build
-map("n", "<leader>br", function() require('config.build-system').run() end) --run
-map("n", "<leader>bR", function() require('config.build-system').build_and_run() end) --build & run
-map("n", "<leader>bc", function() require('config.build-system').clean() end) --clean
-map("n", "<leader>bx", function() require('config.build-system').build_release() end) --release build (Rust)
-map("n", "<F9>", function() require('config.build-system').build_and_run() end) --quick F9 build & run
+-- C/C++/Rust utilities from cacharle's config
+map("x", "ga", "<cmd>EasyAlign<cr>") --align selected text
+map("n", "ga", "<cmd>EasyAlign<cr>") --align operator
+
+-- ArgWrap: toggle function arguments between single/multi-line
+-- Will be configured with C/C++ specific settings (no trailing comma)
+vim.api.nvim_create_autocmd("VimEnter", {
+	once = true,
+	callback = function()
+		local argwrap_ok = pcall(vim.cmd, "ArgWrap")
+		if argwrap_ok then
+			vim.g.argwrap_tail_comma = 1
+			map("n", "<leader>aw", "<cmd>ArgWrap<cr>")
+
+			-- C/C++ specific: no trailing comma
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = { "c", "cpp" },
+				callback = function()
+					vim.g.argwrap_tail_comma = 0
+					vim.g.argwrap_wrap_closing_brace = 0
+				end,
+			})
+		end
+	end,
+})
 
 
 map("n", "<leader>nn", function() --toggle relative vs absolute line numbers

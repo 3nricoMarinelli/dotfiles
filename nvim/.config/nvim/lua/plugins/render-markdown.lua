@@ -1,4 +1,5 @@
 require('render-markdown').setup({
+    latex = { enabled = false }, -- Disable LaTeX support (using Typst instead)
     link = {
         -- Turn on / off inline link icon rendering.
         enabled = true,

@@ -48,6 +48,38 @@ vim.api.nvim_create_autocmd("FileType", {
 		end,
 })
 
+-- C/C++/CUDA specific settings (from cacharle's config)
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "c", "cpp", "cuda" },
+	callback = function()
+		vim.bo.commentstring = "// %s"  -- use // for comments
+		-- vim.opt_local.shiftwidth = 2  -- optional: 2-space indent for C/C++
+	end,
+})
+
+-- Set filetype for C++ standard library headers (no extension)
+vim.api.nvim_create_autocmd("BufReadPre", {
+	pattern = { "/usr/include/*", "/opt/homebrew/include/*" },
+	callback = function()
+		-- Detect C++ stdlib headers by path
+		local path = vim.fn.expand("<afile>")
+		if path:match("/c%+%+/") or path:match("include/std") then
+			vim.bo.filetype = "cpp"
+		end
+	end,
+})
+
+-- Remove trailing whitespace on save (cacharle's approach with mark preservation)
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = "*",
+	callback = function()
+		-- Save cursor position to avoid jumping
+		vim.cmd("normal! mA")
+		vim.cmd([[ %s/\s\+$//e ]])
+		vim.cmd("normal! `A")
+	end,
+})
+
 
 -- highlight text on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
