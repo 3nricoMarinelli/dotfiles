@@ -1,0 +1,5 @@
+background-opacity = 0.92
+
+keybind = shift+enter=text:\x1b\r
+keybind = super+up=scroll_page_up
+keybind = super+down=scroll_page_down
