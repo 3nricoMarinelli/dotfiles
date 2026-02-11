@@ -16,6 +16,11 @@
 --   <leader>aw - ArgWrap: toggle single/multi-line function arguments
 --   ga - EasyAlign: align on delimiter (visual or operator mode)
 --
+-- C/C++ CMake & Testing:
+--   <leader>cg - CMake: generate build files
+--   <leader>cb - CMake: build project
+--   <leader>gt - GoogleTest: run test under cursor
+--
 -- Python Utilities:
 --   <leader>ba - Add breakpoint() at current line
 --   <leader>bd - Delete all breakpoint() lines
@@ -126,6 +131,13 @@ end)
 -- C/C++/Rust utilities from cacharle's config
 map("x", "ga", "<cmd>EasyAlign<cr>") --align selected text
 map("n", "ga", "<cmd>EasyAlign<cr>") --align operator
+
+-- CMake integration (lazy loaded for C/C++ files)
+map("n", "<leader>cg", ":CMakeGenerate<CR>") --generate CMake build files
+map("n", "<leader>cb", ":CMakeBuild<CR>") --build CMake project
+
+-- GoogleTest integration (lazy loaded for C/C++ files)
+map("n", "<leader>ct", ":GTestRunUnderCursor<CR>") --run test under cursor
 
 -- ArgWrap: toggle function arguments between single/multi-line
 -- Will be configured with C/C++ specific settings (no trailing comma)

@@ -44,7 +44,7 @@ Plug('goolord/alpha-nvim') --pretty startup
 Plug('nvim-treesitter/nvim-treesitter') --improved syntax
 Plug('mfussenegger/nvim-lint') --async linter
 Plug('nvim-tree/nvim-tree.lua') --file explorer
-Plug('windwp/nvim-autopairs') --autopairs 
+Plug('windwp/nvim-autopairs') --autopairs
 Plug('lewis6991/gitsigns.nvim') --git
 Plug('numToStr/Comment.nvim') --easier comments
 Plug('brenoprata10/nvim-highlight-colors') --color highlight (modern replacement for nvim-colorizer)
@@ -64,18 +64,13 @@ Plug('hrsh7th/cmp-path') --path completions
 Plug('hrsh7th/cmp-nvim-lsp-signature-help') --signature help
 Plug('onsails/lspkind.nvim') --LSP kind icons
 Plug('nvim-lua/plenary.nvim') --required for some plugins
-
--- Rust-specific (lazy loaded, uses rustaceanvim instead of rust-tools)
 Plug('mrcjkb/rustaceanvim', { ['for'] = 'rust' })
-
--- Typst support (modern LaTeX alternative)
 Plug('kaarmu/typst.vim', { ['for'] = 'typst' }) --syntax & filetype detection
-
--- C/C++-specific utilities from cacharle's config
 Plug('FooSoft/vim-argwrap') --multi-line function arguments
 Plug('junegunn/vim-easy-align') --alignment tool
-
--- Optional: Telescope for better LSP UX
+Plug('cdelledonne/vim-cmake', { ['for'] = { 'c', 'cpp', 'cmake' } }) --CMake integration
+Plug('antoinemadec/FixCursorHold.nvim') --required for vim-cmake in neovim
+Plug('alepez/vim-gtest', { ['for'] = { 'c', 'cpp' } }) --GoogleTest integration
 Plug('nvim-telescope/telescope.nvim')
 
 vim.call('plug#end')
@@ -103,7 +98,7 @@ require("plugins.render-markdown")
 -- require("plugins.treesitter")
 -- require("plugins.which-key")
 
-vim.defer_fn(function() 
+vim.defer_fn(function()
 		--defer non-essential configs,
 		--purely for experimental purposes:
 		--this only makes a difference of +-10ms on initial startup
@@ -119,6 +114,8 @@ end, 100)
 -- Lazy load LSP per language (cacharle's approach)
 -- Setup on first FileType event, then start LSP immediately
 local c_cpp_lsp_loaded = false
+local cmake_loaded = false
+local gtest_loaded = false
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "c", "cpp" },
     callback = function(args)
@@ -128,6 +125,16 @@ vim.api.nvim_create_autocmd("FileType", {
         end
         -- Start LSP for this buffer
         require("plugins.c-cpp-lsp").start_lsp(args.buf)
+
+        -- Load CMake and GTest on first C/C++ file
+        if not cmake_loaded then
+            require("plugins.cmake").setup()
+            cmake_loaded = true
+        end
+        if not gtest_loaded then
+            require("plugins.gtest").setup()
+            gtest_loaded = true
+        end
     end,
 })
 
