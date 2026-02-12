@@ -153,3 +153,14 @@ vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEn
       end
    end,
 })
+
+-- auto-open fzf when nvim starts without file arguments
+vim.api.nvim_create_autocmd("VimEnter", {
+	callback = function()
+		if vim.fn.argc() == 0 and vim.fn.line2byte(vim.fn.line('$') + 1) == -1 then
+			vim.defer_fn(function()
+				require('fzf-lua').files()
+			end, 150)
+		end
+	end,
+})
