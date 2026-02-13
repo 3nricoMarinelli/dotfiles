@@ -3,6 +3,7 @@ require('diffview').setup {
   enhanced_diff_hl = true, -- better syntax highlighting in diffs
   use_icons = true,
   show_help_hints = true,
+  hg_cmd = nil, -- disable Mercurial support
   view = {
     default = {
       layout = "diff2_horizontal",

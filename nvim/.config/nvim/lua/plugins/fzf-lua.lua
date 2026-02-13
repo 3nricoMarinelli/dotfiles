@@ -1,5 +1,16 @@
 require("fzf-lua").setup{
 	file_icon_padding = ' ',
+  previewers = {
+    builtin = {
+      extensions = {
+        ["png"] = { "chafa" },
+        ["jpg"] = { "chafa" },
+        ["jpeg"] = { "chafa" },
+        ["gif"] = { "chafa" },
+        ["webp"] = { "chafa" },
+      },
+    },
+  },
 --   -- MISC GLOBAL SETUP OPTIONS, SEE BELOW
 --   -- fzf_bin = ...,
 --   winopts = { ...  },     -- UI Options
