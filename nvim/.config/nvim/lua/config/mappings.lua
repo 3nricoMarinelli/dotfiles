@@ -116,6 +116,59 @@ map("n", "<leader>csA", ":lua require('decisive').align_csv_clear({})<cr>")
 map("n", "[c", ":lua require('decisive').align_csv_prev_col()<cr>")
 map("n", "]c", ":lua require('decisive').align_csv_next_col()<cr>")
 
+-- Git Workflow (git-conflict.nvim + diffview.nvim + gitsigns.nvim)
+--
+-- Merge Conflict Resolution (git-conflict.nvim):
+--   <leader>co - Choose ours (current branch)
+--   <leader>ct - Choose theirs (incoming branch)
+--   <leader>cb - Choose both changes
+--   <leader>c0 - Choose none (delete conflict)
+--   <leader>cn - Next conflict
+--   <leader>cp - Previous conflict
+--   <leader>cl - List all conflicts (quickfix)
+--
+-- Diff & Merge Views (diffview.nvim):
+--   <leader>dv - Open diff view for current file
+--   <leader>dm - Open merge tool (3-way diff)
+--   <leader>dh - File history
+--   <leader>dc - Close diff view
+--
+-- Hunk Operations (gitsigns.nvim):
+--   <leader>hs - Stage hunk
+--   <leader>hu - Undo/reset hunk
+--   <leader>hp - Preview hunk
+--   <leader>hb - Blame line
+--   <leader>hd - Diff this file
+--   ]h / [h - Next/previous hunk
+
+-- git-conflict.nvim keybindings
+map('n', '<leader>co', '<cmd>GitConflictChooseOurs<cr>', { desc = 'Choose ours (current)' })
+map('n', '<leader>ct', '<cmd>GitConflictChooseTheirs<cr>', { desc = 'Choose theirs (incoming)' })
+map('n', '<leader>cb', '<cmd>GitConflictChooseBoth<cr>', { desc = 'Choose both' })
+map('n', '<leader>c0', '<cmd>GitConflictChooseNone<cr>', { desc = 'Choose none' })
+map('n', '<leader>cn', '<cmd>GitConflictNextConflict<cr>', { desc = 'Next conflict' })
+map('n', '<leader>cp', '<cmd>GitConflictPrevConflict<cr>', { desc = 'Previous conflict' })
+map('n', '<leader>cl', '<cmd>GitConflictListQf<cr>', { desc = 'List conflicts' })
+
+-- diffview.nvim keybindings
+map('n', '<leader>dv', '<cmd>DiffviewOpen<cr>', { desc = 'Open diff view' })
+map('n', '<leader>dm', '<cmd>DiffviewOpen -m<cr>', { desc = 'Open merge tool' })
+map('n', '<leader>dh', '<cmd>DiffviewFileHistory %<cr>', { desc = 'File history' })
+map('n', '<leader>dc', '<cmd>DiffviewClose<cr>', { desc = 'Close diff view' })
+
+-- gitsigns.nvim keybindings (hunk operations)
+map('n', '<leader>hs', ':Gitsigns stage_hunk<CR>', { desc = 'Stage hunk' })
+map('v', '<leader>hs', ':Gitsigns stage_hunk<CR>', { desc = 'Stage hunk' })
+map('n', '<leader>hu', ':Gitsigns undo_stage_hunk<CR>', { desc = 'Undo stage hunk' })
+map('n', '<leader>hr', ':Gitsigns reset_hunk<CR>', { desc = 'Reset hunk' })
+map('v', '<leader>hr', ':Gitsigns reset_hunk<CR>', { desc = 'Reset hunk' })
+map('n', '<leader>hp', ':Gitsigns preview_hunk<CR>', { desc = 'Preview hunk' })
+map('n', '<leader>hb', ':Gitsigns blame_line<CR>', { desc = 'Blame line' })
+map('n', '<leader>hd', ':Gitsigns diffthis<CR>', { desc = 'Diff this' })
+map('n', ']h', ':Gitsigns next_hunk<CR>', { desc = 'Next hunk' })
+map('n', '[h', ':Gitsigns prev_hunk<CR>', { desc = 'Previous hunk' })
+
+
 
 map("n", "<leader>H", function() --toggle htop in term
     _G.htop:toggle()
