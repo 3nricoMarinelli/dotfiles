@@ -89,6 +89,26 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
+-- highlight trailing whitespace (only in file buffers, not terminals or special buffers)
+vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave" }, {
+	pattern = "*",
+	callback = function()
+		local buftype = vim.bo.buftype
+		local filetype = vim.bo.filetype
+		-- Skip highlighting in terminal, quickfix, help, and other special buffers
+		if buftype == "" and filetype ~= "fterm" and filetype ~= "fterm_htop" then
+			vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
+		end
+	end,
+})
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+	pattern = "*",
+	callback = function()
+		vim.fn.clearmatches()
+	end,
+})
+
 
 -- reload files on external change
 --vim.api.nvim_create_autocmd("FocusGained", {

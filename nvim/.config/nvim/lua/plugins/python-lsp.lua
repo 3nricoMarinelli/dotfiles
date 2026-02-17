@@ -50,7 +50,16 @@ local on_attach = function(client, bufnr)
 end
 
 function M.setup()
-    vim.diagnostic.config({ signs = false, update_in_insert = false })
+    vim.diagnostic.config({
+        signs = true,
+        update_in_insert = false,
+        underline = true,
+        severity_sort = true,
+        virtual_text = {
+            spacing = 4,
+            prefix = '●',
+        },
+    })
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     local cmp_lsp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
