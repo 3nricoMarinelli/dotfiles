@@ -116,7 +116,7 @@ map("n", "<leader>csA", ":lua require('decisive').align_csv_clear({})<cr>")
 map("n", "[c", ":lua require('decisive').align_csv_prev_col()<cr>")
 map("n", "]c", ":lua require('decisive').align_csv_next_col()<cr>")
 
--- Git Workflow (git-conflict.nvim + diffview.nvim + gitsigns.nvim)
+-- Git Workflow (git-conflict.nvim + gitsigns.nvim)
 --
 -- Merge Conflict Resolution (git-conflict.nvim):
 --   <leader>co - Choose ours (current branch)
@@ -126,12 +126,6 @@ map("n", "]c", ":lua require('decisive').align_csv_next_col()<cr>")
 --   <leader>cn - Next conflict
 --   <leader>cp - Previous conflict
 --   <leader>cl - List all conflicts (quickfix)
---
--- Diff & Merge Views (diffview.nvim):
---   <leader>dv - Open diff view for current file
---   <leader>dm - Open merge tool (3-way diff)
---   <leader>dh - File history
---   <leader>dc - Close diff view
 --
 -- Hunk Operations (gitsigns.nvim):
 --   <leader>hs - Stage hunk
@@ -149,12 +143,6 @@ map('n', '<leader>c0', '<cmd>GitConflictChooseNone<cr>', { desc = 'Choose none' 
 map('n', '<leader>cn', '<cmd>GitConflictNextConflict<cr>', { desc = 'Next conflict' })
 map('n', '<leader>cp', '<cmd>GitConflictPrevConflict<cr>', { desc = 'Previous conflict' })
 map('n', '<leader>cl', '<cmd>GitConflictListQf<cr>', { desc = 'List conflicts' })
-
--- diffview.nvim keybindings
-map('n', '<leader>dv', '<cmd>DiffviewOpen<cr>', { desc = 'Open diff view' })
-map('n', '<leader>dm', '<cmd>DiffviewOpen -m<cr>', { desc = 'Open merge tool' })
-map('n', '<leader>dh', '<cmd>DiffviewFileHistory %<cr>', { desc = 'File history' })
-map('n', '<leader>dc', '<cmd>DiffviewClose<cr>', { desc = 'Close diff view' })
 
 -- gitsigns.nvim keybindings (hunk operations)
 map('n', '<leader>hs', ':Gitsigns stage_hunk<CR>', { desc = 'Stage hunk' })

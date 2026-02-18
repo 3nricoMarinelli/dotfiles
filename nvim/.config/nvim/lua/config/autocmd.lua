@@ -178,6 +178,28 @@ vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEn
 vim.api.nvim_create_autocmd("VimEnter", {
 	callback = function()
 		if vim.fn.argc() == 0 and vim.fn.line2byte(vim.fn.line('$') + 1) == -1 then
+			-- Check for conflicts using systemlist for better handling of file paths
+			local conflicts = vim.fn.systemlist("git status --porcelain 2>/dev/null | grep '^UU' | cut -c 4-")
+
+			if #conflicts > 0 then
+				vim.notify("Merge conflicts detected! Entering Single-View resolution mode.", vim.log.levels.WARN)
+				
+				for _, file in ipairs(conflicts) do
+					vim.cmd("badd " .. file)
+				end
+
+				-- Open first file and ensure filetype/syntax is triggered
+				vim.cmd("edit " .. conflicts[1])
+				vim.cmd("filetype detect")
+
+				-- Show the list of conflicts in the quickfix window
+				vim.defer_fn(function()
+					vim.cmd("GitConflictListQf")
+				end, 200)
+				return
+			end
+
+			-- Fallback to fzf if no conflicts
 			vim.defer_fn(function()
 				require('fzf-lua').files()
 			end, 150)

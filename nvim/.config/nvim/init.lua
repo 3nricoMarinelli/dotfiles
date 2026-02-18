@@ -47,7 +47,6 @@ Plug('nvim-tree/nvim-tree.lua') --file explorer
 Plug('windwp/nvim-autopairs') --autopairs
 Plug('lewis6991/gitsigns.nvim') --git
 Plug('akinsho/git-conflict.nvim') --git merge conflicts
-Plug('sindrets/diffview.nvim') --git diff view & 3-way merge
 Plug('numToStr/Comment.nvim') --easier comments
 Plug('brenoprata10/nvim-highlight-colors') --color highlight (modern replacement for nvim-colorizer)
 Plug('ibhagwan/fzf-lua') --fuzzy finder and grep
@@ -93,7 +92,6 @@ require("plugins.comment")
 -- require("plugins.fzf-lua")
 require("plugins.gitsigns")
 -- require("plugins.git-conflict") -- loaded after vim-plug installs plugins
--- require("plugins.diffview") -- loaded after vim-plug installs plugins
 require("plugins.lualine")
 require("plugins.cmp") --autocompletion (lazy loaded on InsertEnter)
 require("plugins.nvim-lint")
@@ -117,10 +115,6 @@ vim.defer_fn(function()
 	local git_conflict_ok, _ = pcall(require, 'git-conflict')
 	if git_conflict_ok then
 		require("plugins.git-conflict")
-	end
-	local diffview_ok, _ = pcall(require, 'diffview')
-	if diffview_ok then
-		require("plugins.diffview")
 	end
 end, 100)
 
