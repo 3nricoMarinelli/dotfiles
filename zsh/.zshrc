@@ -143,13 +143,7 @@ if [[ "$OS_FLAG" == "macos" ]]; then
     # Homebrew
     export HOMEBREW_NO_AUTO_UPDATE=0
     # default ARM
-    if [[ -f /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    fi
-    # Rosetta emulation
-    if [[ "$(arch)" == "i386" ]] && [[ -f /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 
     # OpenSSL
     if [[ -d /opt/homebrew/opt/openssl@3 ]]; then
@@ -283,7 +277,6 @@ if [[ "$OS_FLAG" == "macos" ]]; then
         if [[ -f /usr/local/bin/brew ]]; then
             eval "$(/usr/local/bin/brew shellenv)"
             echo "Switched to x86 Homebrew (Rosetta) at $(which brew)"
-            arch
         else
             echo "x86 Homebrew not installed."
         fi
@@ -294,14 +287,10 @@ if [[ "$OS_FLAG" == "macos" ]]; then
         if [[ -f /opt/homebrew/bin/brew ]]; then
             eval "$(/opt/homebrew/bin/brew shellenv)"
             echo "Switched to ARM Homebrew (native) at $(which brew)"
-            arch
         else
             echo "ARM Homebrew not installed."
         fi
     }
-
-    # Check current brew architecture
-    alias brew-which='echo "Current: $(which brew)" && arch'
 
     # SSH into local Ubuntu server
     ubuntu() {
