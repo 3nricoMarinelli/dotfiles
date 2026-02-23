@@ -56,6 +56,25 @@ Plug('MeanderingProgrammer/render-markdown.nvim') --render md inline
 Plug('emmanueltouzery/decisive.nvim') --view csv files
 Plug('folke/twilight.nvim') --surrounding dim
 
+-- Mason: LSP/tool environment management (:Mason for UI)
+Plug('williamboman/mason.nvim')
+Plug('williamboman/mason-lspconfig.nvim')       -- bridges Mason ↔ nvim-lspconfig
+Plug('WhoIsSethDaniel/mason-tool-installer.nvim') -- auto-installs linters/DAP adapters
+
+-- nvim-lspconfig: used by mason-lspconfig for Python LSP (pylsp)
+Plug('neovim/nvim-lspconfig')
+
+-- Python DAP debugging
+Plug('mfussenegger/nvim-dap')
+Plug('nvim-neotest/nvim-nio')                   -- required by nvim-dap-ui
+Plug('rcarriga/nvim-dap-ui')
+Plug('mfussenegger/nvim-dap-python')            -- Python debug adapter integration
+Plug('theHamsta/nvim-dap-virtual-text')         -- variable values as virtual text
+
+-- Python notebook support
+Plug('benlubas/molten-nvim')                    -- Jupyter kernel: pip install pynvim jupyter_client
+Plug('GCBallesteros/jupytext.nvim')             -- .ipynb ↔ .py (pip install jupytext)
+
 -- Language support plugins (lazy loaded)
 -- NOTE: Using vim.lsp.config (Neovim 0.11+) - no need for nvim-lspconfig plugin
 Plug('hrsh7th/nvim-cmp') --autocompletion
@@ -93,6 +112,7 @@ require("plugins.comment")
 require("plugins.gitsigns")
 -- require("plugins.git-conflict") -- loaded after vim-plug installs plugins
 require("plugins.lualine")
+require("plugins.mason")           -- must load before python-lsp (adds Mason bin to PATH)
 require("plugins.cmp") --autocompletion (lazy loaded on InsertEnter)
 require("plugins.nvim-lint")
 -- require("plugins.nvim-tree")
@@ -146,14 +166,40 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 local python_lsp_loaded = false
+local python_dap_loaded = false
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "python",
     callback = function(args)
+        -- Only for actual .py files, not for filetypes set on buffers without an extension
+        local ext = vim.fn.expand("%:e")
+        if ext ~= "py" and ext ~= "" then return end
+
         if not python_lsp_loaded then
             require("plugins.python-lsp").setup()
             python_lsp_loaded = true
         end
         require("plugins.python-lsp").start_lsp(args.buf)
+
+        -- Load DAP on first Python file (deferred so it doesn't slow startup)
+        if not python_dap_loaded then
+            vim.defer_fn(function()
+                require("plugins.nvim-dap")
+            end, 50)
+            python_dap_loaded = true
+        end
+    end,
+})
+
+-- Notebook plugins: only load when opening an .ipynb file
+local notebook_loaded = false
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+    pattern = "*.ipynb",
+    callback = function()
+        if not notebook_loaded then
+            require("plugins.jupytext")  -- .ipynb ↔ .py conversion (sets filetype to python)
+            require("plugins.molten")    -- Jupyter kernel + interactive execution
+            notebook_loaded = true
+        end
     end,
 })
 

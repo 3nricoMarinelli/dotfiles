@@ -60,6 +60,10 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
+-- Use dedicated neovim venv so pynvim + jupyter-client are always available
+-- (avoids PEP 668 install restrictions on Homebrew Python)
+vim.g.python3_host_prog = vim.fn.expand("~/.local/venvs/neovim/bin/python3")
+
 -- Suppress vim.validate deprecation warnings from cmp-buffer
 -- (plugin maintainer reverted the fix, will be resolved eventually)
 local notify = vim.notify
