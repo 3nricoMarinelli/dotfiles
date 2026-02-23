@@ -1,5 +1,10 @@
 background-opacity = 0.92
 
+clipboard-read = allow
+clipboard-write = allow
+copy-on-select = clipboard
+
 keybind = shift+enter=text:\x1b\r
 keybind = super+up=scroll_page_up
 keybind = super+down=scroll_page_down
+keybind = command+k=text:\x0c
