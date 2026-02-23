@@ -95,8 +95,10 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave" }, {
 	callback = function()
 		local buftype = vim.bo.buftype
 		local filetype = vim.bo.filetype
-		-- Skip highlighting in terminal, quickfix, help, and other special buffers
-		if buftype == "" and filetype ~= "fterm" and filetype ~= "fterm_htop" then
+		-- Skip highlighting in terminal, quickfix, help, special buffers,
+		-- and buffers without a file extension (dashboards, explorers, etc.)
+		local ext = vim.fn.expand("%:e")
+		if buftype == "" and ext ~= "" and filetype ~= "fterm" and filetype ~= "fterm_htop" then
 			vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
 		end
 	end,
