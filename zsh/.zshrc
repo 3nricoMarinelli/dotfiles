@@ -294,7 +294,7 @@ if [[ "$OS_FLAG" == "macos" ]]; then
 
     # SSH into local Ubuntu server
     ubuntu() {
-        ssh "$USER-ubuntu@$UBUNTU_IP"
+        ssh -Y "$USER-ubuntu@$UBUNTU_IP"
         }
 
     # Android SDK alias
