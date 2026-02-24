@@ -1,8 +1,6 @@
 -- Python LSP Configuration
--- Uses nvim-lspconfig + Mason (mason-lspconfig) when available,
--- falls back to native vim.lsp.start (Neovim 0.11+) otherwise.
---
--- Mason auto-installs pylsp (:MasonInstall pylsp or automatic via mason.lua)
+-- Uses native vim.lsp.config (Neovim 0.11+ API).
+-- Mason is used only for installation (:MasonInstall pylsp).
 -- Required manually if not using Mason:
 --   pip install 'python-lsp-server[all]' python-lsp-isort
 --
@@ -122,72 +120,39 @@ function M.setup()
         pylsp_cmd = venv_pylsp
     end
 
-    -- Try nvim-lspconfig + mason-lspconfig first (NeuralNine's approach)
-    local lspconfig_ok, lspconfig = pcall(require, "lspconfig")
-    local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+    -- Inject jedi environment into a copy of pylsp_settings
+    local settings = vim.deepcopy(pylsp_settings)
+    settings.pylsp.plugins.jedi = { environment = get_python_path() }
 
-    if lspconfig_ok and mason_lspconfig_ok then
-        -- mason-lspconfig handler: runs when mason ensures pylsp is installed
-        mason_lspconfig.setup_handlers({
-            ["pylsp"] = function()
-                lspconfig.pylsp.setup({
-                    capabilities = capabilities,
-                    settings     = pylsp_settings,
-                    before_init  = function(_, config)
-                        -- inject detected python path into jedi so pylsp uses the right env
-                        config.settings.pylsp.plugins.jedi = {
-                            environment = get_python_path(),
-                        }
-                    end,
-                })
-            end,
-        })
-    elseif lspconfig_ok then
-        -- lspconfig without mason: direct setup
-        lspconfig.pylsp.setup({
-            capabilities = capabilities,
-            settings     = pylsp_settings,
-            before_init  = function(_, config)
-                config.settings.pylsp.plugins.jedi = {
-                    environment = get_python_path(),
-                }
-            end,
-        })
-    else
-        -- Fallback: native vim.lsp.start (Neovim 0.11+ API)
-        M.lsp_config = {
-            name         = "pylsp",
-            cmd          = { pylsp_cmd },
-            capabilities = capabilities,
-            settings     = pylsp_settings,
-        }
-    end
+    -- Native vim.lsp.config (Neovim 0.11+ API)
+    vim.lsp.config("pylsp", {
+        cmd          = { pylsp_cmd },
+        filetypes    = { "python" },
+        root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
+        capabilities = capabilities,
+        settings     = settings,
+    })
+    vim.lsp.enable("pylsp")
 
     _G.python_lsp_setup_done = true
 end
 
 function M.start_lsp(bufnr)
-    -- nvim-lspconfig path: server is registered but FileType already fired before setup,
-    -- so lspconfig's internal autocmd missed this buffer → force start manually.
-    local lspconfig_ok, _ = pcall(require, "lspconfig")
-    if lspconfig_ok then
-        local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "pylsp" })
-        if #clients == 0 then
-            -- LspStart is provided by nvim-lspconfig and attaches to the current buf
-            vim.cmd("LspStart pylsp")
-        end
-        return
+    -- vim.lsp.enable registers an autocmd that fires on FileType, but since setup()
+    -- is called lazily (on first FileType python), the current buffer may have been
+    -- missed. Manually start if no client is attached yet.
+    local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "pylsp" })
+    if #clients == 0 then
+        local settings = vim.deepcopy(pylsp_settings)
+        settings.pylsp.plugins.jedi = { environment = get_python_path() }
+        vim.lsp.start({
+            name         = "pylsp",
+            cmd          = { "pylsp" },
+            root_dir     = vim.fs.root(bufnr, { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" }),
+            capabilities = vim.lsp.protocol.make_client_capabilities(),
+            settings     = settings,
+        }, { bufnr = bufnr })
     end
-
-    -- Fallback: native vim.lsp.start (only used when lspconfig is unavailable)
-    if not M.lsp_config then return end
-
-    local config     = vim.deepcopy(M.lsp_config)
-    config.root_dir  = vim.fs.root(bufnr, { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" })
-    config.before_init = function(_, cfg)
-        cfg.settings.pylsp.plugins.jedi = { environment = get_python_path() }
-    end
-    vim.lsp.start(config, { bufnr = bufnr })
 end
 
 return M
