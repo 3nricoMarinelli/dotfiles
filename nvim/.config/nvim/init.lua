@@ -119,6 +119,8 @@ require("plugins.nvim-lint")
 require("plugins.render-markdown")
 -- require("plugins.treesitter")
 -- require("plugins.which-key")
+require("plugins.molten")
+require("plugins.ipynb")    -- must load at startup so jupytext BufReadCmd is registered before any .ipynb open
 
 vim.defer_fn(function()
 		--defer non-essential configs,
@@ -172,7 +174,7 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = function(args)
         -- Only for actual .py files, not for filetypes set on buffers without an extension
         local ext = vim.fn.expand("%:e")
-        if ext ~= "py" and ext ~= "" then return end
+        if ext ~= "py" and ext ~= "" and ext ~= "ipynb" then return end
 
         if not python_lsp_loaded then
             require("plugins.python-lsp").setup()
@@ -190,18 +192,6 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- Notebook plugins: only load when opening an .ipynb file
-local notebook_loaded = false
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-    pattern = "*.ipynb",
-    callback = function()
-        if not notebook_loaded then
-            require("plugins.jupytext")  -- .ipynb ↔ .py conversion (sets filetype to python)
-            require("plugins.molten")    -- Jupyter kernel + interactive execution
-            notebook_loaded = true
-        end
-    end,
-})
 
 local rust_lsp_loaded = false
 vim.api.nvim_create_autocmd("FileType", {

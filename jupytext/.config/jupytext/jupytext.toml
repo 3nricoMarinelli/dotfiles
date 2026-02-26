@@ -1,0 +1,4 @@
+# Strip IDE-injected cell metadata (PyCharm, DataSpell, etc.)
+# Keeps cell type markers (# %%, # %% [markdown], # %% [raw]) and named cells (# %% My name)
+# but removes JSON blobs like pycharm={"name": "#%%\n"}
+cell_metadata_filter = "-all"
