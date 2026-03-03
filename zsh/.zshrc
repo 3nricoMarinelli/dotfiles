@@ -182,6 +182,7 @@ fi
 # --------------------------------------------
 alias storage='ncdu'
 alias v='nvim'
+alias gs='git status'
 
 # TMUX
 alias tn='tmux new-session -s'
@@ -293,9 +294,7 @@ if [[ "$OS_FLAG" == "macos" ]]; then
     }
 
     # SSH into local Ubuntu server
-    ubuntu() {
-        ssh -Y "$USER-ubuntu@$UBUNTU_IP"
-        }
+    ubuntu() {ssh -Y "$USER-ubuntu@$UBUNTU_IP"}
 
     # Android SDK alias
     if [[ -f "$HOME/Library/Android/sdk/platform-tools/adb" ]]; then
