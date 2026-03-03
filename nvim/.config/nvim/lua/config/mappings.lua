@@ -1,46 +1,4 @@
 -- mappings, including plugins
---
--- C/C++/Python/Rust/Typst Development (inspired by cacharle/dotfiles):
---
--- LSP Keybindings:
---   gd - Go to definition
---   K - Hover documentation
---   gk - Signature help
---   <leader>rn - Rename symbol
---   <leader>ld - LSP diagnostics (Telescope or quickfix)
---   <leader>ls - LSP workspace symbols (C/C++ only)
---   <leader>lr - LSP references
---   [d / ]d - Previous/next diagnostic
---
--- C/C++ Utilities:
---   <leader>aw - ArgWrap: toggle single/multi-line function arguments
---   ga - EasyAlign: align on delimiter (visual or operator mode)
---
--- C/C++ CMake & Testing:
---   <leader>cg - CMake: generate build files
---   <leader>cb - CMake: build project
---   <leader>gt - GoogleTest: run test under cursor
---
--- Python Utilities:
---   <leader>ba - Add breakpoint() at current line
---   <leader>bd - Delete all breakpoint() lines
---
--- Typst Utilities:
---   <leader>tc - Compile current file (typst compile)
---   <leader>tw - Watch & auto-compile (typst watch)
---
--- Completion (nvim-cmp):
---   <Tab> - Confirm selection
---   <C-n> - Next item / trigger completion
---   <C-p> - Previous item
---   <C-b/f> - Scroll docs
---
--- Installation:
---   C/C++: brew install llvm (for clangd)
---   Python: pip install 'python-lsp-server[all]' pyls-flake8
---   Rust: rustup component add rust-analyzer
---   Typst: cargo install typst-lsp && brew install typst
---   Tools: brew install fswatch (for compile-on-save script)
 
 local function map(m, k, v)
 	vim.keymap.set(m, k, v, { noremap = true, silent = true })
@@ -98,7 +56,7 @@ map("n", "<leader>G", ":lua require('fzf-lua').grep_cword()<CR>") --grep word un
 map("n", "<leader>s", ":%s//g<Left><Left>") --replace all
 map("n", "<leader>t", ":NvimTreeToggle<CR>") --open file explorer
 map("n", "<leader>p", switch_theme) --cycle themes
-map("n", "<leader>P", ":PlugInstall<CR>") --vim-plug
+map("n", "<leader>P", ":PlugUpgrade | PlugInstall | PlugUpdate<CR>") --vim-plug
 map('n', '<leader>z', ":lua require('FTerm').open()<CR>") --open term
 map('t', '<Esc>', '<C-\\><C-n><CMD>lua require("FTerm").close()<CR>') --preserves session
 map("n", "<leader>w", ":w<CR>") --write but one less key
@@ -106,7 +64,6 @@ map("n", "<leader>dd", ":w ") --duplicate to new name
 map("n", "<leader>x", "<cmd>!chmod +x %<CR>") --make a file executable
 map("n", "<leader>mv", ":!mv % ") --move a file to a new dir
 map("n", "<leader>R", ":so %<CR>") --reload neovim config
-map("n", "<leader>u", ':silent !xdg-open "<cWORD>" &<CR>') --open a url under cursor
 map("v", "<leader>i", "=gv") --auto indent
 map("n", "<leader>W", ":set wrap!<CR>") --toggle wrap
 
@@ -185,8 +142,7 @@ map("n", "<leader>ct", ":GTestRunUnderCursor<CR>") --run test under cursor
 vim.api.nvim_create_autocmd("VimEnter", {
 	once = true,
 	callback = function()
-		local argwrap_ok = pcall(vim.cmd, "ArgWrap")
-		if argwrap_ok then
+		if vim.fn.exists(":ArgWrap") > 0 then
 			vim.g.argwrap_tail_comma = 1
 			map("n", "<leader>aw", "<cmd>ArgWrap<cr>")
 
