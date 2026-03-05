@@ -46,7 +46,8 @@ Plug('mfussenegger/nvim-lint') --async linter
 Plug('nvim-tree/nvim-tree.lua') --file explorer
 Plug('windwp/nvim-autopairs') --autopairs
 Plug('lewis6991/gitsigns.nvim') --git
-Plug('akinsho/git-conflict.nvim') --git merge conflicts
+Plug('NeogitOrg/neogit') --git interface (replaces git-conflict)
+Plug('sindrets/diffview.nvim') --git diff view (works with neogit)
 Plug('numToStr/Comment.nvim') --easier comments
 Plug('brenoprata10/nvim-highlight-colors') --color highlight (modern replacement for nvim-colorizer)
 Plug('ibhagwan/fzf-lua') --fuzzy finder and grep
@@ -110,7 +111,7 @@ require("plugins.comment")
 -- require("plugins.fterm")
 -- require("plugins.fzf-lua")
 require("plugins.gitsigns")
--- require("plugins.git-conflict") -- loaded after vim-plug installs plugins
+require("plugins.neogit")
 require("plugins.lualine")
 require("plugins.mason")           -- must load before python-lsp (adds Mason bin to PATH)
 require("plugins.cmp") --autocompletion (lazy loaded on InsertEnter)
@@ -133,11 +134,6 @@ vim.defer_fn(function()
 	require("plugins.nvim-tree")
 	require("plugins.treesitter")
 	require("plugins.which-key")
-	-- Load git plugins after vim-plug installation
-	local git_conflict_ok, _ = pcall(require, 'git-conflict')
-	if git_conflict_ok then
-		require("plugins.git-conflict")
-	end
 end, 100)
 
 -- Lazy load LSP per language (cacharle's approach)

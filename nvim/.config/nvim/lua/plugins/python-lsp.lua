@@ -47,21 +47,20 @@ end
 local function on_attach(client, bufnr)
     local opts = { buffer = bufnr, noremap = true, silent = true }
 
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition,          vim.tbl_extend("force", opts, { desc = "Go to definition" }))
+    vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition,          vim.tbl_extend("force", opts, { desc = "Go to definition" }))
     vim.keymap.set("n", "K",  vim.lsp.buf.hover,               vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
-    vim.keymap.set("n", "gk", vim.lsp.buf.signature_help,      vim.tbl_extend("force", opts, { desc = "Signature help" }))
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration,         vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
-    vim.keymap.set({ "n", "v" }, "ga", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
+    vim.keymap.set("n", "<leader>lk", vim.lsp.buf.signature_help,      vim.tbl_extend("force", opts, { desc = "Signature help" }))
+    vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration,         vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+    vim.keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename,      vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
     vim.keymap.set("n", "[d", vim.diagnostic.goto_prev,        vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
     vim.keymap.set("n", "]d", vim.diagnostic.goto_next,        vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
 
     -- Telescope-powered LSP navigation
-    vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>",        vim.tbl_extend("force", opts, { desc = "LSP references" }))
-    vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>",   vim.tbl_extend("force", opts, { desc = "LSP implementations" }))
-    vim.keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>",  vim.tbl_extend("force", opts, { desc = "LSP type definitions" }))
-    vim.keymap.set("n", "<leader>ld", "<cmd>Telescope diagnostics<CR>",   vim.tbl_extend("force", opts, { desc = "LSP diagnostics" }))
-    vim.keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>",vim.tbl_extend("force", opts, { desc = "LSP references" }))
+    vim.keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>",        vim.tbl_extend("force", opts, { desc = "LSP references" }))
+    vim.keymap.set("n", "<leader>li", "<cmd>Telescope lsp_implementations<CR>",   vim.tbl_extend("force", opts, { desc = "LSP implementations" }))
+    vim.keymap.set("n", "<leader>lt", "<cmd>Telescope lsp_type_definitions<CR>",  vim.tbl_extend("force", opts, { desc = "LSP type definitions" }))
+    vim.keymap.set("n", "<leader>lx", "<cmd>Telescope diagnostics<CR>",   vim.tbl_extend("force", opts, { desc = "LSP diagnostics" }))
 
     -- Python-specific: breakpoint management
     vim.keymap.set("n", "<leader>ba", "obreakpoint()<esc>",               vim.tbl_extend("force", opts, { desc = "Add breakpoint()" }))

@@ -29,9 +29,9 @@ local on_attach = function(client, bufnr)
     local opts = { buffer = bufnr, noremap = true, silent = true }
     
     -- Navigation
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)  -- Go to definition
+    vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, opts)  -- Go to definition
     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)         -- Hover documentation
-    vim.keymap.set("n", "gk", vim.lsp.buf.signature_help, opts)  -- Signature help
+    vim.keymap.set("n", "<leader>lk", vim.lsp.buf.signature_help, opts)  -- Signature help
     
     -- Diagnostics navigation
     vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)  -- Previous diagnostic
@@ -43,11 +43,11 @@ local on_attach = function(client, bufnr)
     -- Telescope integrations (fallback to builtin if telescope not available)
     local has_telescope = pcall(require, "telescope")
     if has_telescope then
-        vim.keymap.set("n", "<leader>ld", "<cmd>Telescope diagnostics<CR>", opts)  -- List diagnostics
+        vim.keymap.set("n", "<leader>lx", "<cmd>Telescope diagnostics<CR>", opts)  -- List diagnostics
         vim.keymap.set("n", "<leader>ls", "<cmd>Telescope lsp_workspace_symbols<CR>", opts)  -- List symbols
         vim.keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>", opts)  -- List references
     else
-        vim.keymap.set("n", "<leader>ld", vim.diagnostic.setloclist, opts)
+        vim.keymap.set("n", "<leader>lx", vim.diagnostic.setloclist, opts)
         vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references, opts)
     end
 end

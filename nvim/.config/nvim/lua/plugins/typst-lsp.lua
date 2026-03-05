@@ -20,19 +20,19 @@ end
 local on_attach = function(client, bufnr)
     local opts = { buffer = bufnr, noremap = true, silent = true }
     
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, opts)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "gk", vim.lsp.buf.signature_help, opts)
+    vim.keymap.set("n", "<leader>lk", vim.lsp.buf.signature_help, opts)
     vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
     vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
     
     local has_telescope = pcall(require, "telescope")
     if has_telescope then
-        vim.keymap.set("n", "<leader>ld", "<cmd>Telescope diagnostics<CR>", opts)
+        vim.keymap.set("n", "<leader>lx", "<cmd>Telescope diagnostics<CR>", opts)
         vim.keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>", opts)
     else
-        vim.keymap.set("n", "<leader>ld", vim.diagnostic.setloclist, opts)
+        vim.keymap.set("n", "<leader>lx", vim.diagnostic.setloclist, opts)
         vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references, opts)
     end
     

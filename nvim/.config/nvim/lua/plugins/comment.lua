@@ -8,17 +8,24 @@ require("Comment").setup({
 	---LHS of toggle mappings in NORMAL mode
 	toggler = {
 		---Line-comment toggle keymap
-		line = "gcc",
+		line = "<leader>/",
 		---Block-comment toggle keymap
-		block = "gb",
+		block = "<leader>?",
 	},
 	---Enable keybindings
 	---NOTE: If given `false` then the plugin won't create any mappings
 	mappings = {
 		---Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
-		basic = false,
+		basic = true,
 		---Extra mapping; `gco`, `gcO`, `gcA`
-		extra = true,
+		extra = false,
+	},
+	---LHS of operator-pending mappings in NORMAL and VISUAL mode
+	opleader = {
+		---Line-comment keymap
+		line = "<leader>/",
+		---Block-comment keymap
+		block = "<leader>?",
 	},
 	---Function to call before (un)comment
 	pre_hook = nil,

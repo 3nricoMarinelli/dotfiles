@@ -48,12 +48,13 @@ map("n", "<leader>Fh", ":lua require('fzf-lua').files({ cwd = '~/' })<CR>") --se
 map("n", "<leader>Fc", ":lua require('fzf-lua').files({ cwd = '~/.config' })<CR>") --search .config
 map("n", "<leader>Fl", ":lua require('fzf-lua').files({ cwd = '~/.local/src' })<CR>") --search .local/src
 map("n", "<leader>Ff", ":lua require('fzf-lua').files({ cwd = '..' })<CR>") --search above
-map("n", "<leader>Fr", ":lua require('fzf-lua').resume()<CR>") --last search
-map("n", "<leader>g", ":lua require('fzf-lua').grep()<CR>") --grep
-map("n", "<leader>G", ":lua require('fzf-lua').grep_cword()<CR>") --grep word under cursor
+-- last search
+map("n", "<leader>Fr", ":lua require('fzf-lua').resume()<CR>")
+map("n", "<leader>sg", ":lua require('fzf-lua').grep()<CR>") --grep
+map("n", "<leader>sw", ":lua require('fzf-lua').grep_cword()<CR>") --grep word under cursor
 
 -- misc
-map("n", "<leader>s", ":%s//g<Left><Left>") --replace all
+map("n", "<leader>R", ":%s//g<Left><Left>") --replace all
 map("n", "<leader>t", ":NvimTreeToggle<CR>") --open file explorer
 map("n", "<leader>p", switch_theme) --cycle themes
 map("n", "<leader>P", ":PlugUpgrade | PlugInstall | PlugUpdate<CR>") --vim-plug
@@ -63,7 +64,7 @@ map("n", "<leader>w", ":w<CR>") --write but one less key
 map("n", "<leader>dd", ":w ") --duplicate to new name
 map("n", "<leader>x", "<cmd>!chmod +x %<CR>") --make a file executable
 map("n", "<leader>mv", ":!mv % ") --move a file to a new dir
-map("n", "<leader>R", ":so %<CR>") --reload neovim config
+map("n", "<leader>rl", ":so %<CR>") --reload neovim config
 map("v", "<leader>i", "=gv") --auto indent
 map("n", "<leader>W", ":set wrap!<CR>") --toggle wrap
 
@@ -73,47 +74,42 @@ map("n", "<leader>csA", ":lua require('decisive').align_csv_clear({})<cr>")
 map("n", "[c", ":lua require('decisive').align_csv_prev_col()<cr>")
 map("n", "]c", ":lua require('decisive').align_csv_next_col()<cr>")
 
--- Git Workflow (git-conflict.nvim + gitsigns.nvim)
---
--- Merge Conflict Resolution (git-conflict.nvim):
---   <leader>co - Choose ours (current branch)
---   <leader>ct - Choose theirs (incoming branch)
---   <leader>cb - Choose both changes
---   <leader>c0 - Choose none (delete conflict)
---   <leader>cn - Next conflict
---   <leader>cp - Previous conflict
---   <leader>cl - List all conflicts (quickfix)
---
--- Hunk Operations (gitsigns.nvim):
---   <leader>hs - Stage hunk
---   <leader>hu - Undo/reset hunk
---   <leader>hp - Preview hunk
---   <leader>hb - Blame line
---   <leader>hd - Diff this file
---   ]h / [h - Next/previous hunk
+-- Git mappings (starting with g)
+-- Disable Neovim 0.10+ and 0.11 default mappings to avoid overlaps with git
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+        -- Disable built-in comment and LSP mappings that start with g
+        pcall(vim.keymap.del, "n", "gc")
+        pcall(vim.keymap.del, "n", "gcc")
+        pcall(vim.keymap.del, "n", "grn")
+        pcall(vim.keymap.del, "n", "gra")
+        pcall(vim.keymap.del, "n", "grr")
+        pcall(vim.keymap.del, "n", "gri")
+        pcall(vim.keymap.del, "n", "grt")
+        pcall(vim.keymap.del, "x", "gra")
+    end
+})
 
--- git-conflict.nvim keybindings
-map('n', '<leader>co', '<cmd>GitConflictChooseOurs<cr>', { desc = 'Choose ours (current)' })
-map('n', '<leader>ct', '<cmd>GitConflictChooseTheirs<cr>', { desc = 'Choose theirs (incoming)' })
-map('n', '<leader>cb', '<cmd>GitConflictChooseBoth<cr>', { desc = 'Choose both' })
-map('n', '<leader>c0', '<cmd>GitConflictChooseNone<cr>', { desc = 'Choose none' })
-map('n', '<leader>cn', '<cmd>GitConflictNextConflict<cr>', { desc = 'Next conflict' })
-map('n', '<leader>cp', '<cmd>GitConflictPrevConflict<cr>', { desc = 'Previous conflict' })
-map('n', '<leader>cl', '<cmd>GitConflictListQf<cr>', { desc = 'List conflicts' })
+-- Neogit
+map('n', 'gs', '<cmd>Neogit<cr>', { desc = 'Git status (Neogit)' })
+map('n', 'gc', '<cmd>Neogit commit<cr>', { desc = 'Git commit (Neogit)' })
+map('n', 'gu', '<cmd>Neogit pull<cr>', { desc = 'Git pull (Neogit)' })
+map('n', 'gp', '<cmd>Neogit push<cr>', { desc = 'Git push (Neogit)' })
+-- Diffview
+map('n', 'gd', '<cmd>DiffviewOpen<cr>', { desc = 'Open Diffview' })
+map('n', 'gD', '<cmd>DiffviewClose<cr>', { desc = 'Close Diffview' })
+map('n', 'gh', '<cmd>DiffviewFileHistory %<cr>', { desc = 'File history' })
 
--- gitsigns.nvim keybindings (hunk operations)
-map('n', '<leader>hs', ':Gitsigns stage_hunk<CR>', { desc = 'Stage hunk' })
-map('v', '<leader>hs', ':Gitsigns stage_hunk<CR>', { desc = 'Stage hunk' })
-map('n', '<leader>hu', ':Gitsigns undo_stage_hunk<CR>', { desc = 'Undo stage hunk' })
-map('n', '<leader>hr', ':Gitsigns reset_hunk<CR>', { desc = 'Reset hunk' })
-map('v', '<leader>hr', ':Gitsigns reset_hunk<CR>', { desc = 'Reset hunk' })
-map('n', '<leader>hp', ':Gitsigns preview_hunk<CR>', { desc = 'Preview hunk' })
-map('n', '<leader>hb', ':Gitsigns blame_line<CR>', { desc = 'Blame line' })
-map('n', '<leader>hd', ':Gitsigns diffthis<CR>', { desc = 'Diff this' })
-map('n', ']h', ':Gitsigns next_hunk<CR>', { desc = 'Next hunk' })
-map('n', '[h', ':Gitsigns prev_hunk<CR>', { desc = 'Previous hunk' })
-
-
+-- Gitsigns (starting with g)
+map('n', 'ga', ':Gitsigns stage_hunk<CR>', { desc = 'Stage hunk' })
+map('v', 'ga', ':Gitsigns stage_hunk<CR>', { desc = 'Stage hunk' })
+map('n', 'gU', ':Gitsigns undo_stage_hunk<CR>', { desc = 'Undo stage hunk' })
+map('n', 'gr', ':Gitsigns reset_hunk<CR>', { desc = 'Reset hunk' })
+map('v', 'gr', ':Gitsigns reset_hunk<CR>', { desc = 'Reset hunk' })
+map('n', 'gv', ':Gitsigns preview_hunk<CR>', { desc = 'Preview hunk' })
+map('n', 'gb', ':Gitsigns blame_line<CR>', { desc = 'Blame line' })
+map('n', 'gj', ':Gitsigns next_hunk<CR>', { desc = 'Next hunk' })
+map('n', 'gk', ':Gitsigns prev_hunk<CR>', { desc = 'Previous hunk' })
 
 map("n", "<leader>H", function() --toggle htop in term
     _G.htop:toggle()
@@ -127,8 +123,10 @@ map("n", "<leader>ma", function() --quick make in dir of buffer
 end)
 
 -- C/C++/Rust utilities from cacharle's config
-map("x", "ga", "<cmd>EasyAlign<cr>") --align selected text
-map("n", "ga", "<cmd>EasyAlign<cr>") --align operator
+map("x", "<leader>al", "<cmd>EasyAlign<cr>") --align selected text
+map("n", "<leader>al", "<cmd>EasyAlign<cr>") --align operator
+
+
 
 -- CMake integration (lazy loaded for C/C++ files)
 map("n", "<leader>cg", ":CMakeGenerate<CR>") --generate CMake build files

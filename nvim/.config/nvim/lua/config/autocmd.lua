@@ -184,19 +184,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			local conflicts = vim.fn.systemlist("git status --porcelain 2>/dev/null | grep '^UU' | cut -c 4-")
 
 			if #conflicts > 0 then
-				vim.notify("Merge conflicts detected! Entering Single-View resolution mode.", vim.log.levels.WARN)
+				vim.notify("Merge conflicts detected! Opening Neogit.", vim.log.levels.WARN)
 				
-				for _, file in ipairs(conflicts) do
-					vim.cmd("badd " .. file)
-				end
-
-				-- Open first file and ensure filetype/syntax is triggered
-				vim.cmd("edit " .. conflicts[1])
-				vim.cmd("filetype detect")
-
-				-- Show the list of conflicts in the quickfix window
 				vim.defer_fn(function()
-					vim.cmd("GitConflictListQf")
+					vim.cmd("Neogit kind=replace")
 				end, 200)
 				return
 			end
