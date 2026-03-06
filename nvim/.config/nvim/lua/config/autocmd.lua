@@ -98,8 +98,25 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave" }, {
 		-- Skip highlighting in terminal, quickfix, help, special buffers,
 		-- and buffers without a file extension (dashboards, explorers, etc.)
 		local ext = vim.fn.expand("%:e")
-		if buftype == "" and ext ~= "" and filetype ~= "fterm" and filetype ~= "fterm_htop" then
+		if buftype == "" and ext ~= "" and filetype ~= "fterm" then
 			vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
+		end
+	end,
+})
+
+-- highlight todo keywords
+vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave" }, {
+	pattern = "*",
+	callback = function()
+		local buftype = vim.bo.buftype
+		local filetype = vim.bo.filetype
+		local ext = vim.fn.expand("%:e")
+		-- Skip highlighting in terminal, quickfix, help, special buffers,
+		-- and buffers without a file extension (dashboards, explorers, etc.)
+		if buftype == "" and ext ~= "" and filetype ~= "fterm" then
+			vim.fn.matchadd("Todo", "TODO")
+			vim.fn.matchadd("Todo", [[\vFIX(-?ME)?]])
+            -- Add other keywords here
 		end
 	end,
 })
@@ -185,7 +202,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 			if #conflicts > 0 then
 				vim.notify("Merge conflicts detected! Opening Neogit.", vim.log.levels.WARN)
-				
+
 				vim.defer_fn(function()
 					vim.cmd("Neogit kind=replace")
 				end, 200)

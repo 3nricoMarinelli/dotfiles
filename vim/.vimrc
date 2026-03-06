@@ -76,8 +76,11 @@ highlight String           ctermfg=12   ctermbg=none    cterm=none
 highlight Number           ctermfg=1    ctermbg=none    cterm=none
 highlight Function         ctermfg=1    ctermbg=none    cterm=none
 highlight WildMenu         ctermfg=1    ctermbg=8       cterm=none
+highlight Todo             cterm=bold   gui=bold        guifg=#303446 guibg=#eebebe
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
+match Todo "/TODO/"
+match Todo "/FIX\(-\?ME\)/"
 
 map Q lxh
 

@@ -51,6 +51,9 @@ end
 -- highlight trailing whitespace in dark pastel red (Catppuccin maroon)
 vim.cmd([[highlight ExtraWhitespace ctermbg=darkred guibg=#eba0ac]])
 
+-- highlight special keywords
+vim.cmd([[highlight SpecialKeyword term=bold cterm=reverse gui=reverse]])
+
 vim.diagnostic.config({
 	signs = false,
 })
