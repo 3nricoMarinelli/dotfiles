@@ -12,7 +12,7 @@
 --   gd - Go to definition
 --   K - Hover docs
 --   gk - Signature help
---   <leader>rn - Rename symbol
+--   <leader>r - Rename symbol
 --   <leader>ld - LSP diagnostics
 --   <leader>ls - LSP workspace symbols
 --   <leader>lr - LSP references
@@ -38,7 +38,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)  -- Next diagnostic
     
     -- Refactoring
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)  -- Rename symbol
+    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)  -- Rename symbol
     
     -- Telescope integrations (fallback to builtin if telescope not available)
     local has_telescope = pcall(require, "telescope")

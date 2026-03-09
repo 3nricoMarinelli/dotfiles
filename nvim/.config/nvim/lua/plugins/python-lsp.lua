@@ -16,7 +16,7 @@
 --   gd            - Go to definition      K  - Hover docs
 --   gk            - Signature help        gR - LSP references (Telescope)
 --   gi            - Implementations       gt - Type definitions
---   <leader>rn    - Rename symbol         ga - Code actions
+--   <leader>r     - Rename symbol         ga - Code actions
 --   <leader>ld    - Diagnostics (Telescope)
 --   [d / ]d       - Navigate diagnostics
 --
@@ -52,7 +52,7 @@ local function on_attach(client, bufnr)
     vim.keymap.set("n", "<leader>lk", vim.lsp.buf.signature_help,      vim.tbl_extend("force", opts, { desc = "Signature help" }))
     vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration,         vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
     vim.keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename,      vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
+    vim.keymap.set("n", "<leader>r",  vim.lsp.buf.rename,      vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
     vim.keymap.set("n", "[d", vim.diagnostic.goto_prev,        vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
     vim.keymap.set("n", "]d", vim.diagnostic.goto_next,        vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
 

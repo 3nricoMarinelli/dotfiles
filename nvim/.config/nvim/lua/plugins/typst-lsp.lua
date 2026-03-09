@@ -7,7 +7,7 @@
 -- LSP Keybindings (same as other languages):
 --   gd - Go to definition
 --   K - Hover docs
---   <leader>rn - Rename
+--   <leader>r - Rename
 --   [d / ]d - Navigate diagnostics
 
 local M = {}
@@ -25,7 +25,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "<leader>lk", vim.lsp.buf.signature_help, opts)
     vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
     vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)
     
     local has_telescope = pcall(require, "telescope")
     if has_telescope then

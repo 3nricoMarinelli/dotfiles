@@ -209,8 +209,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
 				return
 			end
 
-			-- Fallback to fzf if no conflicts
+			-- Fallback to fzf and nvim-tree if no conflicts
 			vim.defer_fn(function()
+				vim.cmd("NvimTreeToggle")
 				require('fzf-lua').files()
 			end, 150)
 		end

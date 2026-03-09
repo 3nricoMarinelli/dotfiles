@@ -45,10 +45,10 @@ function M.setup()
         
         -- Sources priority (LSP first, then buffer)
         sources = {
-            { name = "nvim_lsp" },
-            { name = "nvim_lsp_signature_help" },
-            { name = "path" },
-            { name = "buffer", keyword_length = 3 },
+            { name = "nvim_lsp", max_item_count = 5 },
+            { name = "nvim_lsp_signature_help", max_item_count = 5 },
+            { name = "path", max_item_count = 5 },
+            { name = "buffer", keyword_length = 3, max_item_count = 5 },
         },
         
         -- UI formatting
