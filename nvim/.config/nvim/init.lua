@@ -9,11 +9,9 @@
 --     - pylsp for Python (with flake8 linting)
 --     - rust-analyzer via rustaceanvim for Rust
 --   Utilities:
---     - ArgWrap: <leader>aw to toggle multi-line function args
---     - EasyAlign: ga for alignment
 --     - Auto-detect C++ stdlib headers (/usr/include/c++/*)
 --     - compile-on-save script in ~/dotfiles/scripts/
---   LSP Keys: gd, K, <leader>rn, <leader>q, <leader>r, [d, ]d
+--   LSP Keys: gd, K, <leader>r, <leader>q, [d, ]d
 --   Install: brew install llvm && pip install 'python-lsp-server[all]' pyls-flake8
 --   Note: No nvim-lspconfig plugin needed - using native vim.lsp.config!
 
@@ -52,10 +50,8 @@ Plug('numToStr/Comment.nvim') --easier comments
 Plug('brenoprata10/nvim-highlight-colors') --color highlight (modern replacement for nvim-colorizer)
 Plug('ibhagwan/fzf-lua') --fuzzy finder and grep
 Plug('numToStr/FTerm.nvim') --floating terminal
-Plug('ron-rs/ron.vim') --ron syntax highlighting
 Plug('MeanderingProgrammer/render-markdown.nvim') --render md inline
 Plug('emmanueltouzery/decisive.nvim') --view csv files
-Plug('folke/twilight.nvim') --surrounding dim
 
 -- Mason: LSP/tool environment management (:Mason for UI)
 Plug('williamboman/mason.nvim')
@@ -86,13 +82,10 @@ Plug('hrsh7th/cmp-nvim-lsp-signature-help') --signature help
 Plug('onsails/lspkind.nvim') --LSP kind icons
 Plug('nvim-lua/plenary.nvim') --required for some plugins
 Plug('mrcjkb/rustaceanvim', { ['for'] = 'rust' })
-Plug('kaarmu/typst.vim', { ['for'] = 'typst' }) --syntax & filetype detection
-Plug('FooSoft/vim-argwrap') --multi-line function arguments
-Plug('junegunn/vim-easy-align') --alignment tool
+Plug('kaarmu/typst.vim', { ['for'] = { 'typst' } }) --syntax & filetype detection
 Plug('cdelledonne/vim-cmake', { ['for'] = { 'c', 'cpp', 'cmake' } }) --CMake integration
 Plug('antoinemadec/FixCursorHold.nvim') --required for vim-cmake in neovim
 Plug('alepez/vim-gtest', { ['for'] = { 'c', 'cpp' } }) --GoogleTest integration
-Plug('nvim-telescope/telescope.nvim')
 
 vim.call('plug#end')
 
