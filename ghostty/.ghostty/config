@@ -9,4 +9,7 @@ keybind = super+up=scroll_page_up
 keybind = super+down=scroll_page_down
 keybind = command+k=text:\x0c
 
-font-family = "UbuntuMonoNerdFontPropo-Bold"
+font-family = "UbuntuMono Nerd Font"
+font-thicken = true
+font-thicken-strength = 31
+font-size = 19
