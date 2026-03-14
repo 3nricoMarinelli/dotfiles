@@ -7,8 +7,9 @@ local theme_file = vim.fn.stdpath("config") .. "/lua/config/saved_theme"
 _G.load_theme = function()
     local file = io.open(theme_file, "r")
 	if file then
-		vim.cmd("colorscheme " .. file:read("*l"))
-		require("lualine").setup({ options = { theme = file:read("*l") } })
+		local colorscheme = file:read("*l")
+		vim.cmd("colorscheme " .. colorscheme)
+		require("lualine").setup({ options = { theme = "auto" } })
 	file:close() end
 end
 
@@ -24,7 +25,7 @@ _G.switch_theme = function()
 	current_theme_index = current_theme_index % #themes + 1
 	local colorscheme, lualine = unpack(themes[current_theme_index])
 	vim.cmd("colorscheme " .. colorscheme)
-	require("lualine").setup({ options = { theme = lualine } })
+	require("lualine").setup({ options = { theme = "auto" } })
 	local file = io.open(theme_file, "w")
 	if file then file:write(colorscheme .. "\n" .. lualine) file:close() end
 end
