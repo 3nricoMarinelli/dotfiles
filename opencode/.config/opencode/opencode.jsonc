@@ -1,0 +1,113 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // === Models ===
+  // No model pinned — all agents inherit the active session model.
+  // Switch models at runtime with /models or --model flag.
+  "autoupdate": true,
+  "default_agent": "build",
+
+  // === Permissions ===
+  // Global permissions - uses ask/allow/deny pattern
+  // Last matching rule wins
+  "permission": {
+    "external_directory": "ask",
+    "bash": {
+      "sudo *": "deny",
+      "rm -rf /": "deny",
+      "rm -rf /*": "deny",
+      "rm -rf ~": "deny",
+      ":(){:|:&};:": "deny"
+    }
+  },
+
+  // === Formatters ===
+  // Domains: embedded (C/C++), Rust, mobile (Swift/Kotlin/Flutter/Go), robotics (Python/ROS)
+  "formatter": {
+    "clang-format": {
+      "command": ["clang-format", "-i", "$FILE"],
+      "extensions": [".c", ".cc", ".cpp", ".cxx", ".h", ".hpp", ".hxx", ".ino"]
+    },
+    "rustfmt": {
+      "command": ["rustfmt", "$FILE"],
+      "extensions": [".rs"]
+    },
+    "ruff": {
+      "command": ["ruff", "format", "$FILE"],
+      "extensions": [".py"]
+    },
+    "gofmt": {
+      "command": ["gofmt", "-w", "$FILE"],
+      "extensions": [".go"]
+    },
+    "swift-format": {
+      "command": ["swift-format", "format", "--in-place", "$FILE"],
+      "extensions": [".swift"]
+    },
+    "ktlint": {
+      "command": ["ktlint", "--format", "$FILE"],
+      "extensions": [".kt", ".kts"]
+    }
+  },
+
+  // === MCP Servers ===
+  // context7: library/SDK docs lookup (supports C++, Rust, Swift, Kotlin, Go, Python, ROS)
+  // fetch: general web fetching for datasheets, specs, RFCs
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "fetch": {
+      "type": "local",
+      "command": ["uvx", "mcp-server-fetch"]
+    }
+  },
+
+  // === Agent Strategy ===
+  //
+  // PRIMARY AGENTS (Tab to cycle):
+  //   build — full capability, orchestrates subagents in parallel swarms
+  //   plan — read-only analysis, asks before any change
+  //
+  // SUBAGENTS (@mention or spawned via Task tool):
+  //   See agents/ directory for full list
+  //
+  // DYNAMIC SCALING:
+  //   Build (orchestrator) spawns N instances per role based on task scope — all parallel.
+  //   Use swarm_* tools for parallel multi-agent coordination.
+  //   No model is pinned anywhere.
+
+  "agent": {
+    // ─── SUBAGENT: Security DevOps ────────────────────────────────────────────────────
+    "security-devops": {
+      "mode": "subagent",
+      "temperature": 0.1,
+      "description": "Security audits, CI/CD, infrastructure, DevOps automation",
+      "tools": {
+        "write": true,
+        "edit": true
+      },
+      "permission": {
+        "task": { "*": "allow" },
+        "swarm_*": "allow"
+      }
+    },
+
+    // ─── PRIMARY: Docs ─────────────────────────────────────────────────────────
+    "docs": {
+      "temperature": 0.3,
+      "description": "Documentation writer - README, API docs, changelogs",
+      "permission": {
+        "write": {
+          "**/*.md": "allow",
+          "**/*.mdx": "allow",
+          "**/*.rst": "allow",
+          "*": "deny"
+        },
+        "task": { "*": "allow" },
+        "swarm_*": "allow"
+      }
+    }
+  }
+}
