@@ -41,21 +41,22 @@ Based on your analysis, choose the appropriate workflow:
 
 ### Step 3: Select Subagents
 
-Choose the right subagents based on task needs:
+The "builder" role is achieved by combining subagents based on task needs:
 
 | Subagent | Purpose | Use When |
 |----------|---------|----------|
-| **builder** | Implementation, TDD, code generation | Writing/modifying code |
+| **architect** | Design decisions, patterns | Design first, architectural changes |
 | **tester** | Unit, integration, e2e testing | Any code change needs tests |
 | **debugger** | Troubleshooting, root cause analysis | Bug fixes, errors |
 | **researcher** | Tech research, codebase exploration | Need domain knowledge |
-| **architect** | Design decisions, patterns | Architectural changes |
 | **reviewer** | Code review, safety audits | Before completion |
 | **migrator** | Code migrations, dependency upgrades | Refactoring, upgrades |
 | **integrator** | Third-party APIs, SDK integrations | External service work |
 | **perf-engineer** | Profiling, optimization | Performance-critical |
 | **security-devops** | Security audits, CI/CD | Infrastructure changes |
 | **issue-tracker** | Bug triage, issue filing | Finding issues to file |
+
+**Implementation workflow**: Spawn `@architect` for design, then coordinate other subagents for execution.
 
 ---
 
@@ -113,8 +114,9 @@ For complex tasks, you MAY spawn these before main work:
 - `@architect` - Design approach for architectural changes
 
 ### Execution (Always)
-Spawn appropriate subagents based on task:
-- `@builder` - Implementation
+Spawn appropriate subagents based on task. The "builder" role is fulfilled by:
+- `@architect` - Design the implementation approach first
+- Coordinate other subagents (tester, debugger, integrator, etc.) for execution
 - `@tester` - Testing
 - `@debugger` - Bug investigation
 - `@integrator` - API integrations
@@ -153,14 +155,18 @@ Before completing any task:
 ---
 
 ## Allowed Subagents
-- **builder** - Implementation, TDD, code generation
+
+The "builder" role is achieved by combining subagents:
+
+- **architect** - Design first (the foundation of building)
 - **tester** - Unit, integration, e2e testing
 - **debugger** - Troubleshooting, root cause analysis
 - **migrator** - Code migrations, dependency upgrades
 - **integrator** - Third-party APIs, SDK integrations
 - **perf-engineer** - Profiling, optimization, benchmarking
 - **researcher** - Tech research, codebase exploration
-- **architect** - Design consultation
 - **reviewer** - Code review before completion
 - **issue-tracker** - File bugs found during work
 - **security-devops** - Security audits, CI/CD, infrastructure
+
+**Note**: For implementation tasks, spawn `@architect` to design the approach, then coordinate execution via appropriate subagents.

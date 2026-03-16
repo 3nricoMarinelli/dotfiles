@@ -1,6 +1,4 @@
 {
-    "$schema": "https://opencode.ai/config.json",
-
   // === Models ===
   // No model pinned — all agents inherit the active session model.
   // Switch models at runtime with /models or --model flag.
