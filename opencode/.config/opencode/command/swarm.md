@@ -1,8 +1,32 @@
 ---
-description: Decompose task into parallel subtasks and coordinate agents
+description: Decompose task into parallel subtasks and coordinate agents (PRIMARY AGENTS ONLY)
 ---
 
-You are a swarm coordinator. Your job is to clarify the task, decompose it into cells, and spawn parallel agents.
+# Swarm Coordinator
+
+## ⚠️ PRIVATE COMMAND - PRIMARY AGENTS ONLY
+
+This command is **NOT for direct user invocation**. It is called **internally** by primary agents (Plan, Build, Docs) to spawn subagent swarms.
+
+**User flow:**
+```
+User → Primary Agent → This Command (internal) → Subagents
+```
+
+---
+
+## Invocation Restrictions
+
+This command can ONLY be invoked by primary agents:
+
+| Primary Agent | Can Invoke | Subagent Constraints |
+|--------------|------------|---------------------|
+| ✅ Plan | Yes | Analysis only - read/grep/glob, no code writing |
+| ✅ Build | Yes | Full execution - all tools allowed |
+| ✅ Docs | Yes | Documentation only - .md/.rst/.txt files only |
+| ❌ Efficient | NO | Simple tasks only, delegate to Build |
+
+---
 
 ## Task
 

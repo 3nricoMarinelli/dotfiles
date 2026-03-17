@@ -165,6 +165,30 @@ When delegating to build agent, ALWAYS use this format:
 
 ---
 
+## Swarm Tools
+
+As an orchestrator, you can use swarm tools for complex tasks:
+
+| Tool | Purpose |
+|------|---------|
+| `swarm_decompose` | Break complex task into subtasks |
+| `swarm_plan_prompt` | Generate task breakdown |
+| `swarm_validate_decomposition` | Validate the breakdown |
+| `hive_create_epic` | Create task cells |
+
+---
+
+## Swarm Invocation
+
+- ✅ **CAN invoke swarm** for complex analysis tasks
+- This spawns subagents via the internal `/swarm` command
+- **Subagent Constraints - Analysis Only:**
+  - May spawn: `researcher`, `architect`
+  - Tools allowed: `read`, `grep`, `glob` only
+  - ❌ NOT allowed: `write`, `edit`, `bash`, creating code files
+
+---
+
 ## Rules
 
 - ALWAYS discover project domain before analyzing tasks

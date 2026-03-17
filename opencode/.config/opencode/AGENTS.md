@@ -66,26 +66,36 @@ Fix all lint/static-analysis errors before commit. No "pre-existing" excuses.
 
 ### Primary Agents (Tab to cycle)
 
+Cycle order: **Efficient → Plan → Build → Docs**
+
 | Agent | Mode | Can Write Code | Purpose |
 |-------|------|---------------|---------|
-| `orchestrator` | primary | Yes | Orchestrates parallel subagent swarms, delegates work, manages decomposition |
-| `planner` | primary | No | Task planning, scope definition, analysis |
-| `docs` | primary | Docs only | Documentation, README, API docs, changelogs |
+| `efficient` | primary | Limited | Lightweight direct execution for simple tasks |
+| `plan` | primary | No | Task analysis, scope definition, creates breakdown |
+| `build` | primary | Yes | Coordinates subagent swarms for complex tasks |
+| `docs` | primary | Docs only | Documentation - high and low level |
 
 ### Subagents (spawn via Task tool)
 
+All subagents can be spawned by primary agents for specific tasks:
+
 | Agent | Mode | Can Write Code | Purpose |
 |-------|------|---------------|---------|
-| `security-devops` | subagent | Yes | Security audits, CI/CD, infrastructure, DevOps |
+| `architect` | subagent | No | Design decisions, patterns, system architecture |
+| `builder` | subagent | Yes | Implements code based on architect specs, coordinates execution |
+| `tdd-guide` | subagent | Yes | Enforces RED → GREEN → REFACTOR TDD methodology |
 | `tester` | subagent | Yes | Unit, integration, e2e testing |
 | `debugger` | subagent | Yes | Troubleshooting, root cause analysis |
-| `researcher` | subagent | No | Tech research, library evaluation, codebase exploration |
-| `architect` | subagent | No | Design decisions, patterns, system architecture |
+| `build-error-resolver` | subagent | Yes | Diagnoses and fixes build errors across toolchains |
+| `e2e-runner` | subagent | Yes | Executes end-to-end tests for critical user flows |
+| `refactor-cleaner` | subagent | Yes | Identifies and removes dead code, improves structure |
 | `migrator` | subagent | Yes | Code migrations, dependency upgrades |
 | `integrator` | subagent | Yes | Third-party APIs, SDK integrations |
 | `perf-engineer` | subagent | Yes | Profiling, optimization, benchmarking |
-| `auditor` | subagent | Yes | Security audits, compliance checks |
+| `researcher` | subagent | No | Tech research, library evaluation, codebase exploration |
 | `reviewer` | subagent | No | Code review, safety audits |
+| `security-devops` | subagent | Yes | Security audits, CI/CD, infrastructure, DevOps |
+| `auditor` | subagent | Yes | Security audits, compliance checks |
 | `issue-tracker` | subagent | Docs only | Bug triage, issue filing |
 
 For detailed agent definitions, see `agents/` directory.
@@ -120,10 +130,10 @@ Example — bug fix:
 
 ### Coordination Protocol
 
-1. **planner** analyzes task, creates breakdown
-2. **orchestrator** spawns subagent swarm for parallel execution
-3. **researcher** explores codebase, maps dependencies
-4. **architect** defines architecture and patterns
+1. **plan** analyzes task, creates breakdown
+2. **build** coordinates execution, spawns subagent swarm for parallel work
+3. **architect** defines architecture and patterns
+4. **builder** implements code based on architect specs
 5. Workers execute in parallel via swarm
 6. **reviewer** reviews completed work
 7. **issue-tracker** files any deferred work
@@ -132,7 +142,7 @@ Example — bug fix:
 ### Rules
 
 - 3+ files, features, refactors, or bug fix + tests → use `/swarm` for parallel execution.
-- Orchestrator spawns subagents as needed; all subagents run in parallel by default.
+- Primary agents (plan, build, docs) orchestrate subagents; all subagents run in parallel by default.
 - Use `swarm_*` tools to coordinate multi-agent work.
 - Report progress every ~30 min via `swarmmail_send`.
 - If blocked >5 min, escalate with `swarmmail_send(importance="high")`.

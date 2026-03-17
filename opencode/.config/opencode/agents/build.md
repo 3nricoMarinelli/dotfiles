@@ -41,13 +41,18 @@ Based on your analysis, choose the appropriate workflow:
 
 ### Step 3: Select Subagents
 
-The "builder" role is achieved by combining subagents based on task needs:
+You coordinate subagents to fulfill the "builder" role. Select based on task needs:
 
 | Subagent | Purpose | Use When |
 |----------|---------|----------|
 | **architect** | Design decisions, patterns | Design first, architectural changes |
+| **builder** | Implements code, coordinates execution subagents | Feature implementation, complex tasks |
+| **tdd-guide** | Enforces RED → GREEN → REFACTOR | Every feature implementation |
 | **tester** | Unit, integration, e2e testing | Any code change needs tests |
 | **debugger** | Troubleshooting, root cause analysis | Bug fixes, errors |
+| **build-error-resolver** | Fix build errors | Compilation failures |
+| **e2e-runner** | E2E tests | Integration validation |
+| **refactor-cleaner** | Remove dead code | Code cleanup |
 | **researcher** | Tech research, codebase exploration | Need domain knowledge |
 | **reviewer** | Code review, safety audits | Before completion |
 | **migrator** | Code migrations, dependency upgrades | Refactoring, upgrades |
@@ -56,7 +61,7 @@ The "builder" role is achieved by combining subagents based on task needs:
 | **security-devops** | Security audits, CI/CD | Infrastructure changes |
 | **issue-tracker** | Bug triage, issue filing | Finding issues to file |
 
-**Implementation workflow**: Spawn `@architect` for design, then coordinate other subagents for execution.
+**Implementation workflow**: Spawn `@architect` for design, then spawn `@builder` to coordinate execution.
 
 ---
 
@@ -103,6 +108,17 @@ Use these tools for full-swarm orchestration:
 | `swarm_complete` | Mark subtask complete with verification |
 | `swarm_broadcast` | Send context update to all workers |
 | `swarm_record_outcome` | Record task outcome for learning |
+
+---
+
+## Swarm Invocation
+
+- ✅ **CAN invoke swarm** for complex implementation tasks
+- This spawns subagents via the internal `/swarm` command
+- **Subagent Constraints - Full Execution:**
+  - May spawn: Any execution subagent (builder, tdd-guide, tester, debugger, etc.)
+  - Tools allowed: ALL tools (`read`, `write`, `edit`, `bash`, etc.)
+  - Full code execution capabilities
 
 ---
 
@@ -156,17 +172,32 @@ Before completing any task:
 
 ## Allowed Subagents
 
-The "builder" role is achieved by combining subagents:
+You coordinate subagents to fulfill the "builder" role. The full set includes:
 
+### Design & Research
 - **architect** - Design first (the foundation of building)
-- **tester** - Unit, integration, e2e testing
-- **debugger** - Troubleshooting, root cause analysis
-- **migrator** - Code migrations, dependency upgrades
-- **integrator** - Third-party APIs, SDK integrations
-- **perf-engineer** - Profiling, optimization, benchmarking
 - **researcher** - Tech research, codebase exploration
-- **reviewer** - Code review before completion
-- **issue-tracker** - File bugs found during work
-- **security-devops** - Security audits, CI/CD, infrastructure
 
-**Note**: For implementation tasks, spawn `@architect` to design the approach, then coordinate execution via appropriate subagents.
+### Implementation
+- **builder** - Coordinates execution subagents for implementation
+- **tdd-guide** - Enforces RED → GREEN → REFACTOR
+- **integrator** - Third-party APIs, SDK integrations
+- **migrator** - Code migrations, dependency upgrades
+
+### Testing & Verification
+- **tester** - Unit, integration, e2e testing
+- **e2e-runner** - End-to-end test execution
+- **reviewer** - Code review before completion
+- **refactor-cleaner** - Dead code removal
+
+### Problem Solving
+- **debugger** - Troubleshooting, root cause analysis
+- **build-error-resolver** - Fix build errors across toolchains
+- **perf-engineer** - Profiling, optimization, benchmarking
+
+### Quality & Compliance
+- **security-devops** - Security audits, CI/CD, infrastructure
+- **auditor** - Compliance checks
+- **issue-tracker** - File bugs found during work
+
+**Note**: For implementation tasks, spawn `@architect` to design the approach, then spawn `@builder` to coordinate execution subagents.
