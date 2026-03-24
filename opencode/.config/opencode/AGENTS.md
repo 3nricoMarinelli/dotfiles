@@ -40,7 +40,7 @@ RED → GREEN → REFACTOR for every feature/bug fix. Tests first. No exceptions
 
 ### Lint Is Law
 
-Fix all lint/static-analysis errors before commit. No "pre-existing" excuses.
+Fix all lint/static-analysis errors before completing todo-lists. No "pre-existing" excuses.
 
 - C/C++: `clang-tidy`, `cppcheck`
 - Rust: `cargo clippy`
@@ -107,7 +107,7 @@ Spawn N instances per role based on task scope. All instances of the same role r
 
 The swarm plugin automatically:
 1. Decomposes tasks into subtasks via `swarm_decompose`
-2. Spawns worker agents via `swarm_spawn_subtask` 
+2. Spawns worker agents via `swarm_spawn_subtask`
 3. Tracks progress and coordinates via swarm_* tools
 4. Scales horizontally based on available subtasks
 
@@ -148,6 +148,7 @@ Example — bug fix:
 - If blocked >5 min, escalate with `swarmmail_send(importance="high")`.
 - Complete with `swarm_complete` (not manual close).
 - **No model is ever pinned in agent config.** All agents inherit the active session model.
+- **Do not push any git commit.
 
 ## Hive End of Session
 
