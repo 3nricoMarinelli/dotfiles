@@ -168,6 +168,8 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 
+local augroup = vim.api.nvim_create_augroup("RelativeLineNumber", { clear = true })
+
 vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, {
    pattern = "*",
    group = augroup,
@@ -209,9 +211,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
 				return
 			end
 
-			-- Fallback to fzf and nvim-tree if no conflicts
+			-- Fallback to fzf if no conflicts
 			vim.defer_fn(function()
-				vim.cmd("NvimTreeToggle")
 				require('fzf-lua').files()
 			end, 150)
 		end

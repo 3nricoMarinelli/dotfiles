@@ -1,5 +1,5 @@
 require("nvim-tree").setup({
-renderer = {
+	renderer = {
 --note on icons:
 --in some terminals, some patched fonts cut off glyphs if not given extra space
 --either add extra space, disable icons, or change font

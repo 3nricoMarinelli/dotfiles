@@ -52,6 +52,8 @@ Plug('ibhagwan/fzf-lua') --fuzzy finder and grep
 Plug('numToStr/FTerm.nvim') --floating terminal
 Plug('MeanderingProgrammer/render-markdown.nvim') --render md inline
 Plug('emmanueltouzery/decisive.nvim') --view csv files
+Plug('famiu/bufdelete.nvim') --smart buffer deletion
+Plug('NickvanDyke/opencode.nvim') --AI coding assistant
 
 -- Mason: LSP/tool environment management (:Mason for UI)
 Plug('williamboman/mason.nvim')
@@ -94,6 +96,7 @@ require("config.theme")
 require("config.mappings")
 require("config.options")
 require("config.autocmd")
+require("config.lint-toggle")
 
 require("plugins.alpha")
 -- require("plugins.autopairs")
@@ -128,6 +131,13 @@ vim.defer_fn(function()
 	require("plugins.nvim-tree")
 	require("plugins.treesitter")
 	require("plugins.which-key")
+
+	-- bufdelete: smart buffer deletion (requires :PlugInstall)
+-- Module loaded directly, no setup function needed
+local bufdel_ok, _ = pcall(require, "bufdelete")
+if bufdel_ok then
+	-- Plugin auto-configures on require
+end
 end, 100)
 
 -- Lazy load LSP per language (cacharle's approach)

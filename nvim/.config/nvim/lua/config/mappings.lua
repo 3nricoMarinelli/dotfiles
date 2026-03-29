@@ -1,11 +1,12 @@
 -- mappings, including plugins
 
+vim.o.timeoutlen = 300 --wait 300ms for next key in a sequence
+
 local function map(m, k, v)
 	vim.keymap.set(m, k, v, { noremap = true, silent = true })
 end
 
--- set leader
-map("", "<Space>", "<Nop>")
+-- set leader (do NOT map <Space> to <Nop> -- which-key v3 manages it natively)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -19,8 +20,8 @@ vim.keymap.del("x", "gc")
 map("n", "<S-l>", ":bnext<CR>")
 map("n", "<S-h>", ":bprevious<CR>")
 map("n", "<leader>q", ":BufferClose<CR>")
-map("n", "<leader>Q", ":BufferClose!<CR>")
-map("n", "<leader>U", "::bufdo bd<CR>") --close all
+map("n", "<leader>Q", "::qa!<CR>")
+map("n", "<leader>U", ":bufdo bd<CR>") --close all
 map('n', '<leader>v', ':vsplit<CR>:bnext<CR>') --ver split + open next buffer
 
 -- buffer position nav + reorder
@@ -59,6 +60,22 @@ map("n", "<leader>Fr", ":lua require('fzf-lua').resume()<CR>")
 map("n", "<leader>gg", ":lua require('fzf-lua').grep()<CR>") --grep
 map("n", "<leader>gw", ":lua require('fzf-lua').grep_cword()<CR>") --grep word under cursor
 
+-- git (neogit + gitsigns + diffview)
+map("n", "<leader>gs", function() require("neogit").open({ kind = "tab" }) end) --git status
+map("n", "<leader>gc", function() require("neogit").action("Commit", "commit", {})() end) --git commit
+map("n", "<leader>gu", function() require("neogit").action("Pull", "pull", {})() end) --git pull
+map("n", "<leader>gp", function() require("neogit").action("Push", "push", {})() end) --git push
+map("n", "<leader>gd", ":DiffviewOpen<CR>") --diff open
+map("n", "<leader>gD", ":DiffviewClose<CR>") --diff close
+map("n", "<leader>gh", ":DiffviewFileHistory<CR>") --file history
+map("n", "<leader>ga", function() require("gitsigns").stage_hunk() end) --stage hunk
+map("n", "<leader>gU", function() require("gitsigns").undo_stage_hunk() end) --undo stage hunk
+map("n", "<leader>gr", function() require("gitsigns").reset_hunk() end) --reset hunk
+map("n", "<leader>gv", function() require("gitsigns").preview_hunk() end) --preview hunk
+map("n", "<leader>gb", function() require("gitsigns").blame_line({ full = true }) end) --blame line
+map("n", "<leader>gj", function() require("gitsigns").next_hunk() end) --next hunk
+map("n", "<leader>gk", function() require("gitsigns").prev_hunk() end) --prev hunk
+
 -- misc
 map("n", "<leader>R", ":%s//g<Left><Left>") --replace all
 map("n", "<leader>t", ":NvimTreeToggle<CR>") --open file explorer
@@ -71,6 +88,8 @@ map("n", "<leader>w", ":w<CR>") --write but one less key
 map("n", "<leader>m", ":!mv % ") --move a file to a new dir
 map("v", "<leader>i", "=gv") --auto indent
 map("n", "<leader>W", ":set wrap!<CR>") --toggle wrap
+map("n", "<leader>/", function() require('Comment.api').toggle.linewise.current() end) --toggle comment line
+map("n", "<leader>?", function() require('Comment.api').toggle.blockwise.current() end) --toggle block comment
 map("v", "<leader>/", "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>") --toggle comment visual
 map("v", "<leader>?", "<ESC><CMD>lua require('Comment.api').toggle.blockwise(vim.fn.visualmode())<CR>") --toggle block visual
 
