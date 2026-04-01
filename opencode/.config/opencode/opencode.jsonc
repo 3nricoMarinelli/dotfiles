@@ -1,5 +1,4 @@
 {
-  // === Models ===
   // No model pinned — all agents inherit the active session model.
   // Switch models at runtime with /models or --model flag.
   "autoupdate": true,
@@ -11,6 +10,22 @@
           "options": {
               "timeout": 1200000,
               "chunkTimeout": 600000
+          }
+      },
+      "llama.cpp": {
+          "npm": "@ai-sdk/openai-compatible",
+          "name": "llama-server (local)",
+          "options": {
+              "baseURL": "http://localhost:9090/v1"
+          },
+          "models": {
+              "qwen3": {
+                  "name": "Qwen3",
+                  "limit": {
+                      "context": 128000,
+                      "output": 65536
+                  }
+              }
           }
       },
       "opencode": {
