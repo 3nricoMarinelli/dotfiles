@@ -5,27 +5,29 @@
   "default_agent": "plan",
 
   "$schema": "https://opencode.ai/config.json",
+  "model": "ollama/{env:OLLAMA_LOADED_MODEL}",
+
   "provider": {
+      "ollama": {
+          "npm": "@ai-sdk/openai-compatible",
+          "name": "Ollama (Local)",
+          "options": {
+        // Build the URL using OLLAMA_HOST
+        "baseURL": "http://{env:OLLAMA_HOST}/v1"
+          },
+          "models": {
+              "{env:OLLAMA_LOADED_MODEL}": {
+                  "name": "Active: {env:OLLAMA_LOADED_MODEL}",
+                  "agent_settings": {
+                      "system_prompt_prefix": "CRITICAL INSTRUCTION: You are a local engineering agent running directly on the user's machine via OpenCode. YOU HAVE FULL, AUTHORIZED ACCESS TO THE LOCAL FILE SYSTEM. You MUST use the provided tools (like `write` and `bash`) to modify files directly. DO NOT tell the user to do it themselves. DO NOT claim you lack access."
+                  }
+              }
+          }
+      },
       "github-copilot": {
           "options": {
               "timeout": 1200000,
               "chunkTimeout": 600000
-          }
-      },
-      "llama.cpp": {
-          "npm": "@ai-sdk/openai-compatible",
-          "name": "llama-server (local)",
-          "options": {
-              "baseURL": "http://localhost:9090/v1"
-          },
-          "models": {
-              "qwen3": {
-                  "name": "Qwen3",
-                  "limit": {
-                      "context": 128000,
-                      "output": 65536
-                  }
-              }
           }
       },
       "opencode": {
