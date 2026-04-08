@@ -88,312 +88,40 @@ elif [[ "$OS_FLAG" == "linux" ]]; then
     plugins+=(ubuntu systemd)
 fi
 
+# Source Oh My Zsh
 source "$ZSH/oh-my-zsh.sh"
 
 # ============================================
-# Environment Variables & PATH
+# Modular Source Files
 # ============================================
 
-# Editor
-export EDITOR=nvim
+# Determine the directory where this .zshrc is located
+ZSH_MODULES_DIR="${${(%):-%N}:A:h}/.zsh"
 
-# Less configuration for color support and better defaults
-export LESS='-R -F -X -i -M -W'
-# -R: Allow raw control characters (for colors)
-# -F: Quit if entire file fits on one screen
-# -X: Don't clear screen on exit
-# -i: Ignore case in searches
-# -M: Long prompt with line numbers
-# -W: Highlight first unread line after scrolling
+# Environment variables & PATH
+source "$ZSH_MODULES_DIR/environment.zsh"
 
-# Man pages with color highlighting
-export LESS_TERMCAP_mb=$'\e[1;32m'     # Begin blinking (green)
-export LESS_TERMCAP_md=$'\e[1;34m'     # Begin bold (blue)
-export LESS_TERMCAP_me=$'\e[0m'        # End all mode
-export LESS_TERMCAP_se=$'\e[0m'        # End standout mode
-export LESS_TERMCAP_so=$'\e[1;43;30m'  # Begin standout mode (yellow background)
-export LESS_TERMCAP_ue=$'\e[0m'        # End underline
-export LESS_TERMCAP_us=$'\e[1;4;31m'   # Begin underline (red)
+# Shell aliases
+source "$ZSH_MODULES_DIR/aliases.zsh"
 
-# Pager for man pages
-export MANPAGER='less -R'
+# Shell functions
+source "$ZSH_MODULES_DIR/functions.zsh"
 
-# PATH
-export PATH="$HOME/.local/bin:$PATH"
+# Extras (FZF, zsh hacks, zmv)
+source "$ZSH_MODULES_DIR/extras.zsh"
 
-# Python Virtual Environments
-export VENV_HOME="$HOME/.virtualenvs"
-[[ -d "$VENV_HOME" ]] || mkdir -p "$VENV_HOME"
+# Terminal-specific configuration (Powerlevel10k)
+source "$ZSH_MODULES_DIR/terminal/p10k.zsh"
 
-# Micromamba/Conda
-export MAMBA_EXE="$HOME/.local/bin/micromamba"
-export MAMBA_ROOT_PREFIX="$HOME/micromamba"
-
-# Load local environment if exists
-[[ -f "$HOME/.local/bin/env" ]] && source "$HOME/.local/bin/env"
-
-# ============================================
-# OS-Specific Configuration
-# ============================================
-
-# --------------------------------------------
-# macOS
-# --------------------------------------------
+# OS-specific configuration
 if [[ "$OS_FLAG" == "macos" ]]; then
-    # Homebrew
-    export HOMEBREW_NO_AUTO_UPDATE=0
-    # default ARM
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-
-    # OpenSSL
-    if [[ -d /opt/homebrew/opt/openssl@3 ]]; then
-        export OPENSSL_ROOT_DIR="/opt/homebrew/opt/openssl@3"
-    fi
+    source "$ZSH_MODULES_DIR/os/macos.zsh"
+elif [[ "$OS_FLAG" == "linux" ]]; then
+    source "$ZSH_MODULES_DIR/os/linux.zsh"
 fi
 
-# --------------------------------------------
-# Linux
-# --------------------------------------------
-if [[ "$OS_FLAG" == "linux" ]]; then
-    # Display configuration for GUI apps in SSH
-    alias bat="batcat"
-fi
+# Autocompletions
+source "$ZSH_MODULES_DIR/completions.zsh"
 
-# ============================================
-# Terminal & Appearance
-# ============================================
-
-# Powerlevel10k configuration based on terminal
-if [[ "$TERM" == "xterm-ghostty" ]]; then
-    [[ -f "$HOME/.p10k-ghostty.zsh" ]] && source "$HOME/.p10k-ghostty.zsh"
-    if ! infocmp "$TERM" &>/dev/null; then
-        export TERM="xterm-256color"
-    fi
-else
-    [[ -f "$HOME/.p10k-vscode.zsh" ]] && source "$HOME/.p10k-vscode.zsh"
-fi
-
-# ============================================
-# Aliases
-# ============================================
-
-# --------------------------------------------
-# General Aliases
-# --------------------------------------------
-alias storage='ncdu'
-alias v='nvim'
-alias gs='git status'
-alias gds='git diff --stat'
-alias o='opencode'
-
-# TMUX
-alias tn='tmux new-session -s'
-alias tl='tmux list-session'
-alias ta='tmux attach-session'
-
-# --------------------------------------------
-# Suffix Aliases (Open files by extension)
-# --------------------------------------------
-alias -s json=jless
-alias -s html=open
-alias -s log=bat
-alias -s md=bat
-alias -s txt='$EDITOR'
-alias -s c='$EDITOR'
-alias -s h='$EDITOR'
-alias -s cpp='$EDITOR'
-alias -s hpp='$EDITOR'
-alias -s cu='$EDITOR'
-alias -s cuh='$EDITOR'
-alias -s rs='$EDITOR'
-alias -s py='$EDITOR'
-alias -s go='$EDITOR'
-alias -s dart='$EDITOR'
-
-# --------------------------------------------
-# Global Aliases (Use anywhere in commands)
-# --------------------------------------------
-alias -g NE='2>/dev/null'      # Redirect stderr to /dev/null
-alias -g NO='>/dev/null'       # Redirect stdout to /dev/null
-alias -g NUL='>/dev/null 2>&1' # Redirect both to /dev/null
-alias -g J='| jq'              # Pipe to jq
-alias -g L='| less -R'         # Pipe to less with color support
-alias -g G='| grep --color=always'  # Pipe to grep with color preserved
-
-# macOS-specific global alias
-if [[ "$OS_FLAG" == "macos" ]]; then
-    export ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
-    alias -g C='| pbcopy' # Copy output to clipboard
-fi
-
-# ============================================
-# Zsh Enhancements & Tools
-# ============================================
-
-# --------------------------------------------
-# FZF
-# --------------------------------------------
-fcd() {
-    local dir
-    dir=$(find ${1:-.} -type d -not -path '*/\.*' 2>/dev/null | fzf +m) && cd "$dir"
-}
-
-[[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
-
-# --------------------------------------------
-# Python Virtual Environment Functions
-# --------------------------------------------
-lsvenv() {
-    ls -1 "$VENV_HOME"
-}
-
-venv() {
-    if [[ $# -eq 0 ]]; then
-        echo "Usage: venv <name>"
-    else
-        source "$VENV_HOME/$1/bin/activate"
-    fi
-}
-
-mkvenv() {
-    if [[ $# -eq 0 ]]; then
-        echo "Usage: mkvenv <name>"
-    else
-        python3 -m venv "$VENV_HOME/$1"
-    fi
-}
-
-rmvenv() {
-    if [[ $# -eq 0 ]]; then
-        echo "Usage: rmvenv <name>"
-    else
-        rm -rf "$VENV_HOME/$1"
-    fi
-}
-
-# --------------------------------------------
-# macOS-Specific Functions
-# --------------------------------------------
-if [[ "$OS_FLAG" == "macos" ]]; then
-    # Switch to x86 Homebrew (Rosetta)
-    brew-x86() {
-        if [[ -f /usr/local/bin/brew ]]; then
-            eval "$(/usr/local/bin/brew shellenv)"
-            echo "Switched to x86 Homebrew (Rosetta) at $(which brew)"
-        else
-            echo "x86 Homebrew not installed."
-        fi
-    }
-
-    # Switch to ARM Homebrew (native)
-    brew-arm() {
-        if [[ -f /opt/homebrew/bin/brew ]]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-            echo "Switched to ARM Homebrew (native) at $(which brew)"
-        else
-            echo "ARM Homebrew not installed."
-        fi
-    }
-
-    # SSH into local Ubuntu server
-    ubuntu() {ssh -Y "$USER@$UBUNTU_IP"}
-
-    # Android SDK alias
-    if [[ -f "$HOME/Library/Android/sdk/platform-tools/adb" ]]; then
-        alias adb="$HOME/Library/Android/sdk/platform-tools/adb"
-    fi
-fi
-
-# ============================================
-# Hooks
-# ============================================
-
-# On directory change, list contents and auto-activate Python virtual environment
-chpwd() {
-  ls -a
-  if [[ -d .venv ]]; then
-    source .venv/bin/activate
-  fi
-}
-
-# ============================================
-# Zsh Enhancements & Tools
-# ============================================
-
-# --------------------------------------------
-# FZF
-# --------------------------------------------
-[[ -f "$HOME/.fzf.zsh" ]] && source "$HOME/.fzf.zsh"
-
-# --------------------------------------------
-# Zsh Hacks
-# --------------------------------------------
-# Press Ctrl+X followed by Ctrl+E to trigger
-autoload -Uz edit-command-line
-zle -N edit-command-line
-bindkey '^X^E' edit-command-line
-bindkey -M vicmd 'v' edit-command-line
-
-# Press Ctrl+_ (Ctrl+Underscore) to undo in zsh
-
-# Expands history expressions like !! or !$ when you press space
-bindkey ' ' magic-space
-
-# Enable zmv
-autoload -Uz zmv
-
-# Usage examples:
-# zmv '(*).log' '$1.txt'           # Rename .log to .txt
-# zmv -w '*.log' '*.txt'           # Same thing, simpler syntax
-# zmv -n '(*).log' '$1.txt'        # Dry run (preview changes)
-# zmv -i '(*).log' '$1.txt'        # Interactive mode (confirm each)
-
-# Helpful aliases for zmv
-alias zcp='zmv -C'  # Copy with patterns
-alias zln='zmv -L'  # Link with patterns
-
-# --------------------------------------------
-# Micromamba/Conda
-# --------------------------------------------
-if [[ -f "$MAMBA_EXE" ]]; then
-    __mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
-    if [[ $? -eq 0 ]]; then
-        eval "$__mamba_setup"
-    else
-        alias micromamba="$MAMBA_EXE"
-    fi
-    unset __mamba_setup
-    eval "$(micromamba shell hook -s zsh)"
-fi
-
-# --------------------------------------------
-# Completions
-# --------------------------------------------
-if type brew &>/dev/null; then
-    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-    autoload -Uz compinit
-    compinit -i
-fi
-
-if [[ "$OS_FLAG" == "macos" ]]; then
-    [[ -s "/usr/local/share/zsh/site-functions/_bun" ]] && source "/usr/local/share/zsh/site-functions/_bun"
-fi
-
-_opencode_yargs_completions()
-{
-  local reply
-  local si=$IFS
-  IFS=$'
-' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" opencode --get-yargs-completions "${words[@]}"))
-  IFS=$si
-  if [[ ${#reply} -gt 0 ]]; then
-    _describe 'values' reply
-  else
-    _default
-  fi
-}
-if [[ "'${zsh_eval_context[-1]}" == "loadautofunc" ]]; then
-  _opencode_yargs_completions "$@"
-else
-  compdef _opencode_yargs_completions opencode
-fi
+# Load OpenCode modular script (if exists)
+[[ -f "$HOME/.zsh/opencode-llama.zsh" ]] && source "$HOME/.zsh/opencode-llama.zsh"
