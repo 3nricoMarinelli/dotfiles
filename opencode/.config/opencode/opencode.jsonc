@@ -5,7 +5,6 @@
   "default_agent": "plan",
 
   "$schema": "https://opencode.ai/config.json",
-  "model": "ollama/{env:OLLAMA_LOADED_MODEL}",
 
   "provider": {
       "ollama": {

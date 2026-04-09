@@ -15,17 +15,15 @@ opencode() {
 
     export OLLAMA_LOADED_MODEL=$(ollama ps | tail -n +2 | awk '{print $1}' | head -n 1)
 
-    local selection=$( (ollama list | tail -n +2 | awk '{print $1}'; echo "✨ Pull a new model...") | fzf --height 40% --reverse --border --header "Select an Ollama Model")
+    local no_model="☁️ Cloud Models Only"
+    local selection=$( (echo "$no_model"; ollama list | tail -n +2 | awk '{print "💠 " $1}'; echo "✨ Pull a new model...") | fzf --height 40% --reverse --border --header "Select an Ollama Model")
 
-    if [[ -z "$selection" ]]; then
-        echo "↩️  Cancelled."
-        return 1
-    fi
+    if [[ ! ( -z "$selection" || "$selection" == "$no_model" ) && "$selection" != "$OLLAMA_LOADED_MODEL" ]]; then
 
-    if [[ "$selection" != "$OLLAMA_LOADED_MODEL" ]]; then
         if [[ "$selection" == "✨ Pull a new model..." ]]; then
             echo -n "🔍 Enter model name to pull (e.g., gemma4:e4b): "
             read model_to_pull
+
             if [[ -n "$model_to_pull" ]]; then
                 echo "📥 Pulling $model_to_pull... this may take a minute."
                 ollama pull "$model_to_pull"
@@ -44,10 +42,9 @@ opencode() {
                 \"num_gpu\": -1,
                 \"num_thread\": 8
             },
-        \"keep_alive\": "15m"
-    }" > /dev/null 2>&1 &
-export OLLAMA_LOADED_MODEL="$selection"
+        \"keep_alive\": \"15m\"
+        }" > /dev/null 2>&1 &
+        export OLLAMA_LOADED_MODEL="$selection"
     fi
-
     command opencode -c "$@"
 }
