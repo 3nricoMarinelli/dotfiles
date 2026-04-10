@@ -7,6 +7,15 @@
 # =============================================================================
 
 # --------------------------------------------
+# Homebrew Completions
+# --------------------------------------------
+if type brew &>/dev/null; then
+    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+    autoload -Uz compinit
+    compinit -i
+fi
+
+# --------------------------------------------
 # OpenCode Completions
 # --------------------------------------------
 _opencode_yargs_completions()

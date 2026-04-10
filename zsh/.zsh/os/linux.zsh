@@ -6,6 +6,4 @@
 #
 # =============================================================================
 
-# Bat command alias
-alias bat="batcat"
-
+# No specific Linux configuration needed yet

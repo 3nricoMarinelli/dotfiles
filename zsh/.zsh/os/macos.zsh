@@ -12,12 +12,6 @@
 export HOMEBREW_NO_AUTO_UPDATE=0
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-if type brew &>/dev/null; then
-    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-    autoload -Uz compinit
-    compinit -i
-fi
-
 # --------------------------------------------
 # OpenSSL
 # --------------------------------------------
@@ -61,10 +55,6 @@ daily_upgrade() {
     sleep 10
     kill $nvimpid
 }
-
-# iCloud alias
-export ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
-alias -g C='| pbcopy' # Copy output to clipboard
 
 # Android SDK alias
 if [[ -f "$HOME/Library/Android/sdk/platform-tools/adb" ]]; then
