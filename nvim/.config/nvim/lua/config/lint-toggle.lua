@@ -1,26 +1,25 @@
 -- Linting Toggle Configuration
--- Disabled by default - use :ToggleLint to enable
--- Can also set: vim.g.lint_enabled = true to enable on startup
+-- Keeps current behavior: lint always runs on write (see autocmd.lua).
+-- This toggle controls *extra* lint triggers on text-change/insert-leave.
 
 vim.g.lint_enabled = false -- disabled by default
 
 local function toggle_lint()
     if vim.g.lint_enabled then
         vim.g.lint_enabled = false
-        vim.cmd("LintDisable")
-        vim.notify("Linting disabled", vim.log.levels.INFO)
+        vim.notify("Extra lint-on-change disabled (write lint stays on)", vim.log.levels.INFO)
     else
         vim.g.lint_enabled = true
-        vim.cmd("LintEnable")
-        vim.notify("Linting enabled", vim.log.levels.INFO)
+        vim.notify("Extra lint-on-change enabled", vim.log.levels.INFO)
     end
 end
 
 vim.api.nvim_create_user_command("ToggleLint", toggle_lint, {})
-vim.keymap.set("n", "<leader>tl", toggle_lint, { desc = "Toggle linting" })
+-- Use <leader>ll to avoid overlap with tree prefix (<leader>t)
+vim.keymap.set("n", "<leader>ll", toggle_lint, { desc = "Toggle linting" })
 
--- Linting autocmd - only runs if linting is enabled
-vim.api.nvim_create_autocmd({ "BufWritePost", "TextChanged", "InsertLeave" }, {
+-- Extra linting autocmd - only runs if explicitly enabled.
+vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
     group = vim.api.nvim_create_augroup("LintOnSave", { clear = false }),
     callback = function()
         if vim.g.lint_enabled then

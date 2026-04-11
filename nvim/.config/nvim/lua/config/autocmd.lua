@@ -1,10 +1,13 @@
 --useful stuff
 
--- close nvim-tree if it's last buffer open
+-- close neo-tree if it's last buffer open
 vim.api.nvim_create_autocmd("BufEnter", {
 	pattern = "*",
 	callback = function()
-		if #vim.api.nvim_list_bufs() == 1 and vim.bo.filetype == "NvimTree" then
+		if vim.g.__dashboard_opening_tree then
+			return
+		end
+		if #vim.api.nvim_list_bufs() == 1 and vim.bo.filetype == "neo-tree" then
 	vim.cmd("quit")
 	end
 	end,
@@ -159,6 +162,10 @@ vim.api.nvim_create_autocmd("User", {
 	pattern = "BDeletePre *",
 	group = "alpha_on_empty",
 	callback = function()
+		if vim.g.__dashboard_opening_tree then
+			vim.g.__dashboard_opening_tree = nil
+			return
+		end
 		local bufnr = vim.api.nvim_get_current_buf()
 		local name = vim.api.nvim_buf_get_name(bufnr)
 		if name == "" then
@@ -195,26 +202,5 @@ vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEn
    end,
 })
 
--- auto-open dual picker when nvim starts without file arguments
-vim.api.nvim_create_autocmd("VimEnter", {
-	callback = function()
-		if vim.fn.argc() == 0 and vim.fn.line2byte(vim.fn.line('$') + 1) == -1 then
-			-- Check for conflicts using systemlist for better handling of file paths
-			local conflicts = vim.fn.systemlist("git status --porcelain 2>/dev/null | grep '^UU' | cut -c 4-")
-
-			if #conflicts > 0 then
-				vim.notify("Merge conflicts detected! Opening Neogit.", vim.log.levels.WARN)
-
-				vim.defer_fn(function()
-					vim.cmd("Neogit kind=replace")
-				end, 200)
-				return
-			end
-
-			-- Launch fzf-lua picker (Files with toggle to Grep via Ctrl-G)
-			vim.defer_fn(function()
-				require("utils.fzf-launcher").startup()
-			end, 150)
-		end
-	end,
-})
+-- Startup picker is intentionally disabled.
+-- Alpha dashboard is now the startup command launcher.

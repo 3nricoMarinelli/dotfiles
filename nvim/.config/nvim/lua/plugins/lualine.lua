@@ -58,7 +58,7 @@ sections = {
 	lualine_y = { "location" },
 	lualine_z = { progress },
 	},
-	extensions = { 'nvim-tree' },
+	extensions = { 'neo-tree' },
 })
 
 -- transparency override if using old pywal, shouldn't be needed with 16
