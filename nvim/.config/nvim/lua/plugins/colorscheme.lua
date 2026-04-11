@@ -1,38 +1,47 @@
--- catppuccin + gruvbox colorscheme configuration
+-- Colorscheme setup helpers
 
-require("catppuccin").setup({
-	flavour = "frappe",
-	transparent_background = true,
-        styles = {
-           sidebars = "transparent",
-           floats = "transparent",
-        },
-})
+local M = {}
 
-require("gruvbox").setup({
-  terminal_colors = true, -- add neovim terminal colors
-  undercurl = true,
-  underline = true,
-  bold = true,
-  italic = {
-    strings = true,
-    emphasis = true,
-    comments = true,
-    operators = false,
-    folds = true,
-  },
-  strikethrough = true,
-  invert_selection = false,
-  invert_signs = false,
-  invert_tabline = false,
-  inverse = true, -- invert background for search, diffs, statuslines and errors
-  contrast = "", -- can be "hard", "soft" or empty string
-  palette_overrides = {},
-  overrides = {},
-  dim_inactive = false,
-  transparent_mode = true,
-})
+function M.setup_catppuccin()
+	require("catppuccin").setup({
+		flavour = "frappe",
+		transparent_background = true,
+		styles = {
+			sidebars = "transparent",
+			floats = "transparent",
+		},
+	})
+end
 
--- if you want to get rid of toggling and just set one scheme, you can set here
--- local colorscheme = "catppuccin"
--- vim.cmd('silent! colorscheme catppuccin')
+function M.setup_gruvbox()
+	local ok, gruvbox = pcall(require, "gruvbox")
+	if not ok then
+		return
+	end
+
+	gruvbox.setup({
+		terminal_colors = true,
+		undercurl = true,
+		underline = true,
+		bold = true,
+		italic = {
+			strings = true,
+			emphasis = true,
+			comments = true,
+			operators = false,
+			folds = true,
+		},
+		strikethrough = true,
+		invert_selection = false,
+		invert_signs = false,
+		invert_tabline = false,
+		inverse = true,
+		contrast = "",
+		palette_overrides = {},
+		overrides = {},
+		dim_inactive = false,
+		transparent_mode = true,
+	})
+end
+
+return M
