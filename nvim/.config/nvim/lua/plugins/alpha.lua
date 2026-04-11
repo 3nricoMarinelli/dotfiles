@@ -33,7 +33,7 @@ local onefetch_minimal_cmd = table.concat({
 dashboard.section.buttons.val = {
 	dashboard.button("s", "󰚰  Restore", ":SessionLoadLast<CR>"),
 	dashboard.button("t", "  Tree", ":lua alpha_open_tree_fullscreen()<CR>"),
-	dashboard.button("f", "󰱼  Finder", ":lua require('utils.fzf-launcher').startup()<CR>"),
+	dashboard.button("f", "󰱼  Finder", ":lua pcall(require('utils.telescope-launcher').startup)<CR>"),
 	dashboard.button("q", "󰅙  Quit", ":q!<CR>"),
 }
 

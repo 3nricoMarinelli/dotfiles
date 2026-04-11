@@ -70,15 +70,15 @@ km.register("n", "<A-p>", "<Cmd>BufferPin<CR>", "pin/unpin buffer")
 km.register("n", "<AS-h>", "<Cmd>BufferMovePrevious<CR>", "move buffer left")
 km.register("n", "<AS-l>", "<Cmd>BufferMoveNext<CR>", "move buffer right")
 
--- Plugins: FZF-lua
-km.register("n", "<leader>f", ":lua require('fzf-lua').files()<CR>", "fzf files cwd", { group = "fzf" })
-km.register("n", "<leader>Fh", ":lua require('fzf-lua').files({ cwd = '~/' })<CR>", "fzf files home", { group = "fzf" })
-km.register("n", "<leader>Fc", ":lua require('fzf-lua').files({ cwd = '~/.config' })<CR>", "fzf files .config", { group = "fzf" })
-km.register("n", "<leader>Fl", ":lua require('fzf-lua').files({ cwd = '~/.local/src' })<CR>", "fzf files .local/src", { group = "fzf" })
-km.register("n", "<leader>Ff", ":lua require('fzf-lua').files({ cwd = '..' })<CR>", "fzf files parent", { group = "fzf" })
-km.register("n", "<leader>Fr", ":lua require('fzf-lua').resume()<CR>", "fzf resume", { group = "fzf" })
-km.register("n", "<leader>gg", ":lua require('fzf-lua').grep()<CR>", "grep", { group = "grep" })
-km.register("n", "<leader>gw", ":lua require('fzf-lua').grep_cword()<CR>", "grep word under cursor", { group = "grep" })
+-- Plugins: Telescope
+km.register("n", "<leader>f", ":Telescope find_files<CR>", "telescope files cwd", { group = "telescope" })
+km.register("n", "<leader>Fh", ":lua require('telescope.builtin').find_files({ cwd = '~/' })<CR>", "telescope files home", { group = "telescope" })
+km.register("n", "<leader>Fc", ":lua require('telescope.builtin').find_files({ cwd = '~/.config' })<CR>", "telescope files .config", { group = "telescope" })
+km.register("n", "<leader>Fl", ":lua require('telescope.builtin').find_files({ cwd = '~/.local/src' })<CR>", "telescope files .local/src", { group = "telescope" })
+km.register("n", "<leader>Ff", ":lua require('telescope.builtin').find_files({ cwd = '..' })<CR>", "telescope files parent", { group = "telescope" })
+km.register("n", "<leader>Fr", ":Telescope resume<CR>", "telescope resume", { group = "telescope" })
+km.register("n", "<leader>gg", ":Telescope live_grep<CR>", "grep", { group = "grep" })
+km.register("n", "<leader>gw", ":lua require('telescope.builtin').grep_string()<CR>", "grep word under cursor", { group = "grep" })
 
 -- Plugins: Comment.nvim
 km.register("n", "<leader>/", function() require('Comment.api').toggle.linewise.current() end, "comment line", { group = "comment" })
@@ -140,6 +140,6 @@ km.register("n", "<leader>ct", ":GTestRunUnderCursor<CR>", "gtest run", { group 
 -- Plugins: OpenCode (AI assistant)
 -- Mappings can be added here when OpenCode is configured
 
--- Plugins: FZF-launcher (startup picker with Tab toggle)
+-- Plugins: Telescope (startup picker with Tab toggle)
 -- Auto-launched on VimEnter, no manual mapping needed
 -- Tab toggles between Files and Grep within picker

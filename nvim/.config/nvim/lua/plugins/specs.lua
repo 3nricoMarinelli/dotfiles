@@ -92,10 +92,11 @@ return {
     end,
   },
   {
-    "ibhagwan/fzf-lua",
-    cmd = "FzfLua",
+    "nvim-telescope/telescope.nvim",
+    cmd = "Telescope",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("plugins.fzf-lua")
+      require("plugins.telescope")
     end,
   },
   {
