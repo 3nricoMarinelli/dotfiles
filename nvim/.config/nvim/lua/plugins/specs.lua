@@ -65,12 +65,13 @@ return {
       require("plugins.treesitter")
     end,
   },
-  {
-    "brenoprata10/nvim-highlight-colors",
-    config = function()
-      require("plugins.colorizer")
-    end,
-  },
+   {
+     "brenoprata10/nvim-highlight-colors",
+     event = { "BufRead", "BufNewFile" },
+     config = function()
+       require("plugins.colorizer")
+     end,
+   },
   {
     "MeanderingProgrammer/render-markdown.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
@@ -99,12 +100,13 @@ return {
       require("plugins.telescope")
     end,
   },
-  {
-    "numToStr/FTerm.nvim",
-    config = function()
-      require("plugins.fterm")
-    end,
-  },
+   {
+     "numToStr/FTerm.nvim",
+     cmd = { "FTermToggle", "FTermOpen", "FTermClose" },
+     config = function()
+       require("plugins.fterm")
+     end,
+   },
   { "famiu/bufdelete.nvim" },
   { "emmanueltouzery/decisive.nvim" },
 
@@ -116,12 +118,13 @@ return {
       require("plugins.autopairs")
     end,
   },
-  {
-    "numToStr/Comment.nvim",
-    config = function()
-      require("plugins.comment")
-    end,
-  },
+   {
+     "numToStr/Comment.nvim",
+     event = { "BufRead", "BufNewFile" },
+     config = function()
+       require("plugins.comment")
+     end,
+   },
 
   -- Git
   {
@@ -144,18 +147,19 @@ return {
     end,
   },
 
-  -- LSP / tooling
-  {
-    "williamboman/mason.nvim",
-    lazy = false,
-    dependencies = {
-      "williamboman/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
-    },
-    config = function()
-      require("plugins.mason")
-    end,
-  },
+   -- LSP / tooling
+   {
+     "williamboman/mason.nvim",
+     cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUpdate" },
+     event = "VeryLazy",
+     dependencies = {
+       "williamboman/mason-lspconfig.nvim",
+       "WhoIsSethDaniel/mason-tool-installer.nvim",
+     },
+     config = function()
+       require("plugins.mason")
+     end,
+   },
   {
     "williamboman/mason-lspconfig.nvim",
     opts = {
@@ -218,27 +222,37 @@ return {
   { "rcarriga/nvim-dap-ui" },
   { "mfussenegger/nvim-dap-python" },
   { "theHamsta/nvim-dap-virtual-text" },
-  {
-    "benlubas/molten-nvim",
-    lazy = false,
-    config = function()
-      require("plugins.molten")
-    end,
-  },
-  {
-    "GCBallesteros/jupytext.nvim",
-    lazy = false,
-    config = function()
-      require("plugins.ipynb")
-    end,
-  },
-  {
-    "NickvanDyke/opencode.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("plugins.opencode")
-    end,
-  },
+   {
+     "benlubas/molten-nvim",
+     ft = { "python", "ipynb", "quarto" },
+     config = function()
+       require("plugins.molten")
+     end,
+   },
+   {
+     "GCBallesteros/jupytext.nvim",
+     ft = { "python", "ipynb", "quarto" },
+     config = function()
+       require("plugins.ipynb")
+     end,
+   },
+    {
+      "NickvanDyke/opencode.nvim",
+      cmd = { "OpenCode" },
+      keys = {
+        { "<leader>ot", mode = { "n", "v" }, desc = "Toggle embedded" },
+        { "<leader>oa", mode = { "n", "v" }, desc = "Ask about this" },
+        { "<leader>o+", mode = { "n", "v" }, desc = "Add to prompt" },
+        { "<leader>oe", mode = { "n", "v" }, desc = "Explain code" },
+        { "<leader>on", mode = { "n", "v" }, desc = "New session" },
+        { "<S-C-u>", mode = { "n" }, desc = "Messages up" },
+        { "<S-C-d>", mode = { "n" }, desc = "Messages down" },
+        { "<leader>os", mode = { "n", "v" }, desc = "Select prompt" },
+      },
+      config = function()
+        require("plugins.opencode")
+      end,
+    },
 
   -- Shared deps / language extras
   { "nvim-lua/plenary.nvim" },
