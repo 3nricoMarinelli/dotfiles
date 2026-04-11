@@ -54,23 +54,10 @@ end
 
 function M.setup()
     -- Show signs and update diagnostics as you type (VSCode-like)
-    vim.diagnostic.config({
-        signs = true,
-        update_in_insert = false,
-        underline = true,
-        severity_sort = true,
-        virtual_text = {
-            spacing = 4,
-            prefix = '●',
-        },
-    })
+    require("config.diagnostics").apply("lsp_verbose")
 
     -- Get capabilities for autocompletion
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    local cmp_lsp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-    if cmp_lsp_ok then
-        capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-    end
+    local capabilities = require("config.lsp-common").capabilities()
 
     -- Store config for later use
     M.lsp_config = {

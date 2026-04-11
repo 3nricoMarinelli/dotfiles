@@ -22,7 +22,7 @@ function M.setup()
         return
     end
 
-    vim.diagnostic.config({ signs = false, update_in_insert = false })
+    require("config.diagnostics").apply("lsp_minimal")
     
     -- Auto-format with rustfmt if config exists
     vim.g.rustfmt_autosave_if_config_present = 1

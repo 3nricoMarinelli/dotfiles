@@ -48,7 +48,10 @@ if mason_tool_installer_ok then
         ensure_installed = {
             "ruff",     -- Python linter & formatter
             "isort",    -- Python import sorter
+            "black",    -- Python formatter (conform)
             "debugpy",  -- Python debug adapter (nvim-dap-python)
+            "stylua",   -- Lua formatter (conform)
+            "shfmt",    -- shell formatter (conform)
         },
         auto_update = false,
         run_on_start = true,

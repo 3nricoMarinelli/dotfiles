@@ -54,9 +54,7 @@ vim.cmd([[highlight ExtraWhitespace ctermbg=darkred guibg=#eba0ac]])
 -- highlight special keywords
 vim.cmd([[highlight SpecialKeyword term=bold cterm=reverse gui=reverse]])
 
-vim.diagnostic.config({
-	signs = false,
-})
+require("config.diagnostics").apply("default")
 
 -- Disable unused providers to reduce startup warnings
 vim.g.loaded_node_provider = 0

@@ -87,19 +87,9 @@ local pylsp_settings = {
 }
 
 function M.setup()
-    vim.diagnostic.config({
-        signs            = true,
-        update_in_insert = false,
-        underline        = true,
-        severity_sort    = true,
-        virtual_text     = { spacing = 4, prefix = "●" },
-    })
+    require("config.diagnostics").apply("lsp_verbose")
 
-    local cmp_lsp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    if cmp_lsp_ok then
-        capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-    end
+    local capabilities = require("config.lsp-common").capabilities()
 
     -- Register keybindings via LspAttach (fires for pylsp only)
     vim.api.nvim_create_autocmd("LspAttach", {
@@ -148,7 +138,7 @@ function M.start_lsp(bufnr)
             name         = "pylsp",
             cmd          = { "pylsp" },
             root_dir     = vim.fs.root(bufnr, { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" }),
-            capabilities = vim.lsp.protocol.make_client_capabilities(),
+            capabilities = require("config.lsp-common").capabilities(),
             settings     = settings,
         }, { bufnr = bufnr })
     end

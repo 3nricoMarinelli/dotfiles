@@ -42,13 +42,9 @@ local on_attach = function(client, bufnr)
 end
 
 function M.setup()
-    vim.diagnostic.config({ signs = false, update_in_insert = false })
+    require("config.diagnostics").apply("lsp_minimal")
 
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    local cmp_lsp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-    if cmp_lsp_ok then
-        capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-    end
+    local capabilities = require("config.lsp-common").capabilities()
 
     -- Store config for later use
     M.lsp_config = {

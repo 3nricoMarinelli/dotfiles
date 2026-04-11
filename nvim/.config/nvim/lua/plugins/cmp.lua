@@ -79,12 +79,4 @@ function M.setup()
     })
 end
 
--- Auto-setup on first InsertEnter
-vim.api.nvim_create_autocmd("InsertEnter", {
-    once = true,
-    callback = function()
-        require("plugins.cmp").setup()
-    end,
-})
-
 return M
