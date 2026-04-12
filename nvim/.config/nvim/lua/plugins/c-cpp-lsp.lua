@@ -8,15 +8,18 @@
 --   - clang-tidy (via clangd) - real-time as you type
 --   - cppcheck (via nvim-lint) - on save (see nvim-lint.lua)
 --
--- LSP Keybindings:
---   gd - Go to definition
---   K - Hover docs
---   gk - Signature help
---   <leader>r - Rename symbol
---   <leader>ld - LSP diagnostics
---   <leader>ls - LSP workspace symbols
---   <leader>lr - LSP references
---   [d / ]d - Navigate diagnostics
+-- LSP Keybindings (unified across all languages, see lsp-keymaps.lua):
+--   <leader>ld  - Go to definition
+--   K           - Hover documentation
+--   <leader>lk  - Signature help
+--   <leader>r   - Rename symbol
+--   <leader>la  - Code actions
+--   <leader>li  - Implementations
+--   <leader>lt  - Type definitions
+--   <leader>lD  - Declarations
+--   <leader>lr  - References
+--   <leader>lx  - Diagnostics (Telescope)
+--   [d / ]d     - Navigate diagnostics
 
 local M = {}
 
@@ -26,35 +29,13 @@ if _G.c_cpp_lsp_setup_done then
 end
 
 local on_attach = function(client, bufnr)
-    local opts = { buffer = bufnr, noremap = true, silent = true }
-    
-    -- Navigation
-    vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, opts)  -- Go to definition
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)         -- Hover documentation
-    vim.keymap.set("n", "<leader>lk", vim.lsp.buf.signature_help, opts)  -- Signature help
-    
-    -- Diagnostics navigation
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)  -- Previous diagnostic
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)  -- Next diagnostic
-    
-    -- Refactoring
-    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)  -- Rename symbol
-    
-    -- Telescope integrations (fallback to builtin if telescope not available)
-    local has_telescope = pcall(require, "telescope")
-    if has_telescope then
-        vim.keymap.set("n", "<leader>lx", "<cmd>Telescope diagnostics<CR>", opts)  -- List diagnostics
-        vim.keymap.set("n", "<leader>ls", "<cmd>Telescope lsp_workspace_symbols<CR>", opts)  -- List symbols
-        vim.keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>", opts)  -- List references
-    else
-        vim.keymap.set("n", "<leader>lx", vim.diagnostic.setloclist, opts)
-        vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references, opts)
-    end
+    -- Apply unified LSP keybindings from lsp-keymaps module
+    require("config.lsp-keymaps").apply(bufnr)
 end
 
 function M.setup()
-    -- Show signs and update diagnostics as you type (VSCode-like)
-    require("config.diagnostics").apply("lsp_verbose")
+    -- Use clean-insert profile: verbose in normal mode, clean while typing
+    require("config.diagnostics").apply("lsp_clean_insert")
 
     -- Get capabilities for autocompletion
     local capabilities = require("config.lsp-common").capabilities()

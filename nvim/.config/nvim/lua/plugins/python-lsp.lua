@@ -12,17 +12,22 @@
 --   isort         - import sorting (requires python-lsp-isort)
 --   pylint        - disabled (use ruff via nvim-lint instead)
 --
--- LSP Keybindings:
---   gd            - Go to definition      K  - Hover docs
---   gk            - Signature help        gR - LSP references (Telescope)
---   gi            - Implementations       gt - Type definitions
---   <leader>r     - Rename symbol         ga - Code actions
---   <leader>ld    - Diagnostics (Telescope)
---   [d / ]d       - Navigate diagnostics
+-- LSP Keybindings (unified, see lsp-keymaps.lua):
+--   <leader>ld  - Go to definition
+--   K           - Hover documentation
+--   <leader>lk  - Signature help
+--   <leader>r   - Rename symbol
+--   <leader>la  - Code actions
+--   <leader>li  - Implementations
+--   <leader>lt  - Type definitions
+--   <leader>lD  - Declarations
+--   <leader>lr  - References
+--   <leader>lx  - Diagnostics (Telescope)
+--   [d / ]d     - Navigate diagnostics
 --
--- Python-specific:
---   <leader>ba    - Add breakpoint() at current line
---   <leader>bd    - Delete all breakpoint() lines
+-- Python-specific (breakpoint management):
+--   <leader>pb  - Add breakpoint() at current line
+--   <leader>pB  - Delete all breakpoint() lines
 
 local M = {}
 
@@ -45,26 +50,14 @@ end
 
 -- Keybindings attached when pylsp connects to a buffer
 local function on_attach(client, bufnr)
+    -- Apply unified LSP keybindings from lsp-keymaps module
+    require("config.lsp-keymaps").apply(bufnr)
+    
     local opts = { buffer = bufnr, noremap = true, silent = true }
-
-    vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition,          vim.tbl_extend("force", opts, { desc = "Go to definition" }))
-    vim.keymap.set("n", "K",  vim.lsp.buf.hover,               vim.tbl_extend("force", opts, { desc = "Hover documentation" }))
-    vim.keymap.set("n", "<leader>lk", vim.lsp.buf.signature_help,      vim.tbl_extend("force", opts, { desc = "Signature help" }))
-    vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration,         vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
-    vim.keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code actions" }))
-    vim.keymap.set("n", "<leader>r",  vim.lsp.buf.rename,      vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev,        vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next,        vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
-
-    -- Telescope-powered LSP navigation
-    vim.keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>",        vim.tbl_extend("force", opts, { desc = "LSP references" }))
-    vim.keymap.set("n", "<leader>li", "<cmd>Telescope lsp_implementations<CR>",   vim.tbl_extend("force", opts, { desc = "LSP implementations" }))
-    vim.keymap.set("n", "<leader>lt", "<cmd>Telescope lsp_type_definitions<CR>",  vim.tbl_extend("force", opts, { desc = "LSP type definitions" }))
-    vim.keymap.set("n", "<leader>lx", "<cmd>Telescope diagnostics<CR>",   vim.tbl_extend("force", opts, { desc = "LSP diagnostics" }))
-
-    -- Python-specific: breakpoint management
-    vim.keymap.set("n", "<leader>ba", "obreakpoint()<esc>",               vim.tbl_extend("force", opts, { desc = "Add breakpoint()" }))
-    vim.keymap.set("n", "<leader>bd", ":g/^\\s*breakpoint()$/d<cr>",      vim.tbl_extend("force", opts, { desc = "Delete all breakpoints" }))
+    
+    -- Python-specific: breakpoint management (namespaced to <leader>p*)
+    vim.keymap.set("n", "<leader>pb", "obreakpoint()<esc>", opts)
+    vim.keymap.set("n", "<leader>pB", ":g/^\\s*breakpoint()$/d<cr>", opts)
 end
 
 -- Shared pylsp settings (NeuralNine-style: more plugins enabled)
@@ -87,7 +80,7 @@ local pylsp_settings = {
 }
 
 function M.setup()
-    require("config.diagnostics").apply("lsp_verbose")
+    require("config.diagnostics").apply("lsp_clean_insert")
 
     local capabilities = require("config.lsp-common").capabilities()
 

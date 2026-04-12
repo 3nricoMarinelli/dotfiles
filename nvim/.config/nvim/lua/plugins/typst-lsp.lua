@@ -4,11 +4,22 @@
 -- Required: typst-lsp (cargo install typst-lsp)
 -- Optional: typst (brew install typst) for compilation
 --
--- LSP Keybindings (same as other languages):
---   gd - Go to definition
---   K - Hover docs
---   <leader>r - Rename
---   [d / ]d - Navigate diagnostics
+-- LSP Keybindings (unified, see lsp-keymaps.lua):
+--   <leader>ld  - Go to definition
+--   K           - Hover documentation
+--   <leader>lk  - Signature help
+--   <leader>r   - Rename symbol
+--   <leader>la  - Code actions
+--   <leader>li  - Implementations
+--   <leader>lt  - Type definitions
+--   <leader>lD  - Declarations
+--   <leader>lr  - References
+--   <leader>lx  - Diagnostics (Telescope)
+--   [d / ]d     - Navigate diagnostics
+--
+-- Typst-specific (compilation):
+--   <leader>tc  - Compile current file
+--   <leader>tw  - Watch file for changes
 
 local M = {}
 
@@ -18,31 +29,18 @@ if _G.typst_lsp_setup_done then
 end
 
 local on_attach = function(client, bufnr)
+    -- Apply unified LSP keybindings from lsp-keymaps module
+    require("config.lsp-keymaps").apply(bufnr)
+    
     local opts = { buffer = bufnr, noremap = true, silent = true }
     
-    vim.keymap.set("n", "<leader>ld", vim.lsp.buf.definition, opts)
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "<leader>lk", vim.lsp.buf.signature_help, opts)
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)
-    
-    local has_telescope = pcall(require, "telescope")
-    if has_telescope then
-        vim.keymap.set("n", "<leader>lx", "<cmd>Telescope diagnostics<CR>", opts)
-        vim.keymap.set("n", "<leader>lr", "<cmd>Telescope lsp_references<CR>", opts)
-    else
-        vim.keymap.set("n", "<leader>lx", vim.diagnostic.setloclist, opts)
-        vim.keymap.set("n", "<leader>lr", vim.lsp.buf.references, opts)
-    end
-    
-    -- Typst-specific: compile on save
+    -- Typst-specific: compilation (namespaced to <leader>t*)
     vim.keymap.set("n", "<leader>tc", ":!typst compile %<CR>", opts)
     vim.keymap.set("n", "<leader>tw", ":!typst watch %<CR>", opts)
 end
 
 function M.setup()
-    require("config.diagnostics").apply("lsp_minimal")
+    require("config.diagnostics").apply("lsp_clean_insert")
 
     local capabilities = require("config.lsp-common").capabilities()
 

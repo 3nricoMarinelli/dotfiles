@@ -128,8 +128,14 @@ km.register("n", "<leader>P", ":Lazy sync<CR>", "plugins sync")
 km.register("n", "<leader>cg", ":CMakeGenerate<CR>", "cmake generate", { group = "cmake" })
 km.register("n", "<leader>cb", ":CMakeBuild<CR>", "cmake build", { group = "cmake" })
 
+-- Plugins: Python (breakpoint management, namespaced to <leader>p*)
+-- <leader>pb and <leader>pB are set dynamically in python-lsp.lua on attach
+
 -- Plugins: GoogleTest (C/C++)
 km.register("n", "<leader>ct", ":GTestRunUnderCursor<CR>", "gtest run", { group = "cmake" })
+
+-- Plugins: Typst (compilation, namespaced to <leader>t*)
+-- <leader>tc and <leader>tw are set dynamically in typst-lsp.lua on attach
 
 -- Plugins: NvimDAP (debugging)
 -- Mappings can be added here when DAP is configured for specific languages

@@ -4,28 +4,26 @@ wk.add({
 	{ "<leader>p", desc = "toggle theme" },
 	{ "<leader>u", desc = "open url" },
 	{ "<leader>z", desc = "floating terminal" },
-	{ "<leader>w", desc = "write" },
+	{ "<leader>w", desc = "write file" },
 	{ "<leader>W", desc = "toggle wrap" },
 	{ "<leader>R", desc = "replace all" },
 	{ "<leader>nn", desc = "toggle relative nums" },
-	{ "<leader>P", desc = "vim-plug update" },
+	{ "<leader>P", desc = "plugins sync (lazy)" },
 	{ "<leader>i", desc = "auto indent" },
 
 	-- Buffers
-	{ "<leader>q", desc = "close buf" },
+	{ "<leader>q", desc = "close buffer" },
 	{ "<leader>Q", desc = "force quit nvim" },
-	{ "<leader>U", desc = "close ALL buf" },
+	{ "<leader>U", desc = "close ALL buffers" },
 	{ "<leader>v", desc = "vsplit next buf" },
 
-	-- File tree + toggles
-	{ "<leader>t", group = "tree/toggle" },
-	{ "<leader>t", desc = "view files" },
+	-- File tree
+	{ "<leader>t", desc = "toggle tree" },
 	{ "<leader>tl", desc = "toggle linting" },
 	{ "T", desc = "toggle tree" },
 
-	-- Fzf
-	{ "<leader>f", desc = "fzf files" },
-	{ "<leader>F", group = "fzf opts" },
+	-- Telescope (file finding)
+	{ "<leader>f", group = "telescope" },
 	{ "<leader>Fh", desc = "files home" },
 	{ "<leader>Fc", desc = "files .config" },
 	{ "<leader>Fl", desc = "files .local/src" },
@@ -58,7 +56,7 @@ wk.add({
 	{ "<leader>gj", desc = "next hunk" },
 	{ "<leader>gk", desc = "prev hunk" },
 
-	-- LSP
+	-- LSP (unified across all languages)
 	{ "<leader>l", group = "LSP" },
 	{ "<leader>ld", desc = "definition" },
 	{ "<leader>lD", desc = "declaration" },
@@ -81,6 +79,11 @@ wk.add({
 	{ "<leader>tc", desc = "typst compile" },
 	{ "<leader>tw", desc = "typst watch" },
 
+	-- Python debugging
+	{ "<leader>p", group = "python" },
+	{ "<leader>pb", desc = "add breakpoint()" },
+	{ "<leader>pB", desc = "delete breakpoints" },
+
 	-- DAP debugger
 	{ "<leader>d", group = "debug" },
 	{ "<leader>db", desc = "toggle breakpoint" },
@@ -91,13 +94,8 @@ wk.add({
 	{ "<leader>dq", desc = "terminate" },
 	{ "<leader>du", desc = "toggle UI" },
 
-	-- Python breakpoints
-	{ "<leader>b", group = "breakpoints" },
-	{ "<leader>ba", desc = "add breakpoint()" },
-	{ "<leader>bd", desc = "delete breakpoints" },
-
 	-- Molten (Jupyter)
-	{ "<leader>m", desc = "move file" },
+	{ "<leader>m", group = "molten" },
 	{ "<leader>mi", desc = "init kernel" },
 	{ "<leader>mc", desc = "run cell" },
 	{ "<leader>me", desc = "evaluate" },

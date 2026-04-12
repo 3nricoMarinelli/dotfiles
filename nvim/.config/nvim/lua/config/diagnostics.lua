@@ -1,4 +1,11 @@
 -- Shared diagnostic profiles to keep behavior consistent across modules.
+--
+-- Profiles:
+--   default         - Minimal (no signs)
+--   lsp_verbose     - Full feedback: signs + underlines + virtual text
+--   lsp_minimal     - Clean: no signs, no virtual text
+--   lsp_clean_insert - Verbose in normal mode, clean in insert mode
+--                      (used universally for LSP to reduce noise while typing)
 
 local M = {}
 
@@ -21,6 +28,18 @@ M.profiles = {
   lsp_minimal = {
     signs = false,
     update_in_insert = false,
+  },
+
+  -- Best of both: verbose in normal mode, clean while typing
+  lsp_clean_insert = {
+    signs = true,
+    update_in_insert = false,  -- Don't update diagnostics while typing
+    underline = true,
+    severity_sort = true,
+    virtual_text = {
+      spacing = 4,
+      prefix = "●",
+    },
   },
 }
 
