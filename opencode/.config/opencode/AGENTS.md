@@ -169,6 +169,7 @@ Example — bug fix:
 
 - Use `permission` rules with `allow` / `ask` / `deny`; the last matching rule wins.
 - Use the **Plan** agent for analysis-only work; it asks before edits or bash.
+- Never commit.
 - Do not suggest commits unless explicitly stated from the user.
 - Never push any commit.
 - Never change git history.
