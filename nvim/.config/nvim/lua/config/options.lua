@@ -56,6 +56,9 @@ vim.cmd([[highlight SpecialKeyword term=bold cterm=reverse gui=reverse]])
 
 require("config.diagnostics").apply("default")
 
+-- Set up LSP handlers for split view (before any LSP server starts)
+require("config.lsp-common").setup_handlers()
+
 -- Disable unused providers to reduce startup warnings
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0

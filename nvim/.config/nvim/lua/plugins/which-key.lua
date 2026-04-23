@@ -1,46 +1,62 @@
 local wk = require("which-key")
 wk.add({
-	-- Misc
-	{ "<leader>p", desc = "toggle theme" },
+	-- ============================================================================
+	-- MISC / GENERAL
+	-- ============================================================================
+	{ "<leader>T", desc = "toggle theme" },
 	{ "<leader>u", desc = "open url" },
 	{ "<leader>z", desc = "floating terminal" },
 	{ "<leader>w", desc = "write file" },
 	{ "<leader>W", desc = "toggle wrap" },
 	{ "<leader>R", desc = "replace all" },
 	{ "<leader>nn", desc = "toggle relative nums" },
-	{ "<leader>P", desc = "plugins sync (lazy)" },
+	{ "<leader>P", desc = "plugins sync" },
 	{ "<leader>i", desc = "auto indent" },
 
-	-- Buffers
-	{ "<leader>q", desc = "close buffer" },
-	{ "<leader>Q", desc = "force quit nvim" },
-	{ "<leader>U", desc = "close ALL buffers" },
-	{ "<leader>v", desc = "vsplit next buf" },
+	-- ============================================================================
+	-- BUFFERS (remapped for LSP compatibility)
+	-- ============================================================================
+	-- NOTE: <leader>q is now LSP diagnostics (see LSP section)
+	--       <leader>p is now workspace symbols (see LSP section)
+	{ "<leader>x", desc = "close buffer" },
+	{ "<leader>Q", desc = "force quit" },
+	{ "<leader>U", desc = "close all buffers" },
+	{ "<leader>v", desc = "vsplit buffer" },
 
-	-- File tree
-	{ "<leader>t", desc = "toggle tree" },
+	-- ============================================================================
+	-- FILE TREE / EXPLORER
+	-- ============================================================================
+	{ "<leader>t", desc = "reveal tree", nowait = true },  -- nowait to allow <leader>tc etc.
 	{ "<leader>tl", desc = "toggle linting" },
 	{ "T", desc = "toggle tree" },
 
-	-- Telescope (file finding)
+	-- ============================================================================
+	-- TELESCOPE (FILE FINDING)
+	-- ============================================================================
 	{ "<leader>f", group = "telescope" },
-	{ "<leader>Fh", desc = "files home" },
-	{ "<leader>Fc", desc = "files .config" },
-	{ "<leader>Fl", desc = "files .local/src" },
-	{ "<leader>Ff", desc = "files parent" },
+	{ "<leader>Fh", desc = "find home" },
+	{ "<leader>Fc", desc = "find config" },
+	{ "<leader>Fl", desc = "find .local" },
+	{ "<leader>Ff", desc = "find parent" },
 	{ "<leader>Fr", desc = "resume" },
+	{ "<leader>gg", desc = "live grep" },
+	{ "<leader>gw", desc = "grep word" },
 
-	-- Search/replace
+	-- ============================================================================
+	-- SEARCH / REPLACE
+	-- ============================================================================
 	{ "<leader>s", group = "search/replace" },
 
-	-- Comments
+	-- ============================================================================
+	-- COMMENTS
+	-- ============================================================================
 	{ "<leader>/", desc = "comment line" },
 	{ "<leader>?", desc = "comment block" },
 
-	-- Git + Grep
-	{ "<leader>g", group = "git/grep" },
-	{ "<leader>gg", desc = "grep" },
-	{ "<leader>gw", desc = "grep under cursor" },
+	-- ============================================================================
+	-- GIT / VERSION CONTROL
+	-- ============================================================================
+	{ "<leader>g", group = "git" },
 	{ "<leader>gs", desc = "git status" },
 	{ "<leader>gc", desc = "git commit" },
 	{ "<leader>gu", desc = "git pull" },
@@ -49,43 +65,65 @@ wk.add({
 	{ "<leader>gD", desc = "diff close" },
 	{ "<leader>gh", desc = "file history" },
 	{ "<leader>ga", desc = "stage hunk" },
-	{ "<leader>gU", desc = "undo stage hunk" },
+	{ "<leader>gU", desc = "unstage hunk" },
 	{ "<leader>gr", desc = "reset hunk" },
 	{ "<leader>gv", desc = "preview hunk" },
 	{ "<leader>gb", desc = "blame line" },
 	{ "<leader>gj", desc = "next hunk" },
 	{ "<leader>gk", desc = "prev hunk" },
 
-	-- LSP (unified across all languages)
+	-- ============================================================================
+	-- LSP (UNIFIED ACROSS ALL LANGUAGES)
+	-- ============================================================================
+	-- Navigation
 	{ "<leader>l", group = "LSP" },
-	{ "<leader>ld", desc = "definition" },
-	{ "<leader>lD", desc = "declaration" },
-	{ "<leader>lk", desc = "signature" },
+	{ "<leader>ld", desc = "go definition" },
+	{ "<leader>]", desc = "go definition" },
+	{ "<leader>lD", desc = "go declaration" },
+	{ "<leader>[", desc = "go declaration" },
+
+	-- Refactoring
+	{ "<leader>r", desc = "rename symbol" },
+	{ "<leader>rn", desc = "rename symbol" },
 	{ "<leader>la", desc = "code action" },
-	{ "<leader>lr", desc = "references" },
+
+	-- Discovery
 	{ "<leader>li", desc = "implementations" },
 	{ "<leader>lt", desc = "type definition" },
-	{ "<leader>lx", desc = "diagnostics" },
-	{ "<leader>ls", desc = "workspace symbols" },
-	{ "<leader>r", desc = "rename" },
+	{ "<leader>lr", desc = "show references" },
+	{ "<leader>p", desc = "workspace symbols" },
 
-	-- C/C++ tools
+	-- Diagnostics
+	{ "<leader>lx", desc = "list diagnostics" },
+	{ "<leader>q", desc = "list diagnostics" },
+
+	-- ============================================================================
+	-- C/C++ TOOLS
+	-- ============================================================================
 	{ "<leader>c", group = "C/C++" },
 	{ "<leader>cg", desc = "cmake generate" },
 	{ "<leader>cb", desc = "cmake build" },
 	{ "<leader>ct", desc = "gtest run" },
 
-	-- Typst
+	-- ============================================================================
+	-- TYPST (COMPILATION)
+	-- ============================================================================
+	-- Note: <leader>t is tree (with nowait), <leader>tc/tw are typst
+	-- This works because typst bindings are only active in .typ files
 	{ "<leader>tc", desc = "typst compile" },
 	{ "<leader>tw", desc = "typst watch" },
 
-	-- Python debugging
-	{ "<leader>p", group = "python" },
-	{ "<leader>pb", desc = "add breakpoint()" },
+	-- ============================================================================
+	-- PYTHON (DEBUGGING / BREAKPOINTS)
+	-- ============================================================================
+	-- Note: <leader>p is workspace symbols (LSP), so breakpoints use <leader>pb/pB
+	{ "<leader>pb", desc = "add breakpoint" },
 	{ "<leader>pB", desc = "delete breakpoints" },
 
-	-- DAP debugger
-	{ "<leader>d", group = "debug" },
+	-- ============================================================================
+	-- DAP DEBUGGER (C/C++, Python, etc.)
+	-- ============================================================================
+	{ "<leader>d", group = "debugger" },
 	{ "<leader>db", desc = "toggle breakpoint" },
 	{ "<leader>dc", desc = "continue" },
 	{ "<leader>do", desc = "step over" },
@@ -94,7 +132,9 @@ wk.add({
 	{ "<leader>dq", desc = "terminate" },
 	{ "<leader>du", desc = "toggle UI" },
 
-	-- Molten (Jupyter)
+	-- ============================================================================
+	-- MOLTEN (JUPYTER NOTEBOOKS)
+	-- ============================================================================
 	{ "<leader>m", group = "molten" },
 	{ "<leader>mi", desc = "init kernel" },
 	{ "<leader>mc", desc = "run cell" },
@@ -106,12 +146,24 @@ wk.add({
 	{ "<leader>mq", desc = "deinit kernel" },
 	{ "<leader>md", desc = "delete output" },
 
-	-- Opencode
+	-- ============================================================================
+	-- OPENCODE (AI ASSISTANT)
+	-- ============================================================================
 	{ "<leader>o", group = "opencode" },
 	{ "<leader>ot", desc = "toggle embedded" },
-	{ "<leader>oa", desc = "ask about this" },
-	{ "<leader>o+", desc = "add to prompt" },
+	{ "<leader>oa", desc = "ask about" },
+	{ "<leader>o+", desc = "add prompt" },
 	{ "<leader>oe", desc = "explain code" },
 	{ "<leader>on", desc = "new session" },
 	{ "<leader>os", desc = "select prompt" },
+
+	-- ============================================================================
+	-- NORMAL MODE KEYBINDINGS (non-<leader> prefix)
+	-- ============================================================================
+	{ "[d", desc = "prev diagnostic" },
+	{ "]d", desc = "next diagnostic" },
+	{ "K", desc = "hover docs" },
+	{ "gk", desc = "signature help" },
 })
+
+

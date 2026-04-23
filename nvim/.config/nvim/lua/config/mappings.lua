@@ -19,7 +19,7 @@ km.register("n", "<S-l>", ":bnext<CR>", "next buffer")
 km.register("n", "<S-h>", ":bprevious<CR>", "prev buffer")
 km.register("n", "<C-S-Right>", ":bnext<CR>", "next buffer (alt)")
 km.register("n", "<C-S-Left>", ":bprevious<CR>", "prev buffer (alt)")
-km.register("n", "<leader>q", ":BufferClose<CR>", "close buffer")
+km.register("n", "<leader>x", ":BufferClose<CR>", "close buffer")
 km.register("n", "<leader>Q", ":qa!<CR>", "force quit nvim")
 km.register("n", "<leader>U", ":bufdo bd<CR>", "close ALL buffers")
 km.register("n", "<leader>v", ":vsplit<CR>:bnext<CR>", "vsplit next buf")
@@ -111,7 +111,7 @@ km.register("n", "<leader>t", ":Neotree filesystem reveal left<CR>", "reveal tre
 km.register("n", "T", ":Neotree filesystem toggle<CR>", "toggle tree")
 
 -- Plugins: Comment & Miscellaneous UI
-km.register("n", "<leader>p", switch_theme, "toggle theme")
+km.register("n", "<leader>T", switch_theme, "toggle theme")
 km.register("n", "<leader>w", ":w<CR>", "write file")
 
 -- Plugins: FTerm (floating terminal)

@@ -5,17 +5,18 @@
 -- Optional: typst (brew install typst) for compilation
 --
 -- LSP Keybindings (unified, see lsp-keymaps.lua):
---   <leader>ld  - Go to definition
---   K           - Hover documentation
---   <leader>lk  - Signature help
---   <leader>r   - Rename symbol
---   <leader>la  - Code actions
---   <leader>li  - Implementations
---   <leader>lt  - Type definitions
---   <leader>lD  - Declarations
---   <leader>lr  - References
---   <leader>lx  - Diagnostics (Telescope)
---   [d / ]d     - Navigate diagnostics
+--   <leader>ld / <leader>]  - Go to definition
+--   K                        - Hover documentation
+--   <leader>lk / gk         - Signature help
+--   <leader>r / <leader>rn  - Rename symbol
+--   <leader>la              - Code actions
+--   <leader>li              - Implementations
+--   <leader>lt              - Type definitions
+--   <leader>lD / <leader>[  - Declarations
+--   <leader>lr              - References
+--   <leader>lx / <leader>q  - Diagnostics (Telescope)
+--   <leader>p               - Workspace symbols (Telescope)
+--   [d / ]d                 - Navigate diagnostics
 --
 -- Typst-specific (compilation):
 --   <leader>tc  - Compile current file
