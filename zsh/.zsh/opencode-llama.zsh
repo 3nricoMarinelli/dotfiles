@@ -45,6 +45,8 @@ opencode() {
         \"keep_alive\": \"15m\"
         }" > /dev/null 2>&1 &
         export OLLAMA_LOADED_MODEL="$selection"
+    else
+        kill $(ps | grep ollama | awk '{print $1}' | head -n 1)
     fi
     command opencode -c "$@"
 }
