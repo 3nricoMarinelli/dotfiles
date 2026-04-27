@@ -44,7 +44,7 @@ brew-arm() {
 }
 
 # SSH into local Ubuntu server
-ubuntu() { ssh -Y "$USER@$UBUNTU_IP" }
+ubuntu() { ssh -Y "$USER@$UBUNTU_IP" -p "$UBUNTU_PORT" -i "$UBUNTU_PK"}
 
 # Daily upgrade script
 daily_upgrade() {
