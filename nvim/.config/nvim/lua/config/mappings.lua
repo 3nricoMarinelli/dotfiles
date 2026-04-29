@@ -110,8 +110,7 @@ km.register("n", "<leader>gk", function() require("gitsigns").prev_hunk() end, "
 km.register("n", "<leader>t", ":Neotree filesystem reveal left<CR>", "reveal tree", { group = "tree" })
 km.register("n", "T", ":Neotree filesystem toggle<CR>", "toggle tree")
 
--- Plugins: Comment & Miscellaneous UI
-km.register("n", "<leader>T", switch_theme, "toggle theme")
+-- Plugins: Miscellaneous UI
 km.register("n", "<leader>w", ":w<CR>", "write file")
 
 -- Plugins: FTerm (floating terminal)

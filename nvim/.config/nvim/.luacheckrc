@@ -3,7 +3,6 @@
 globals = {
   "vim",
   "load_theme",
-  "switch_theme",
 }
 
 read_globals = {

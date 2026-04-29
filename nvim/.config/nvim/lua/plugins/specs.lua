@@ -3,19 +3,19 @@
 
 return {
   -- Colors / theme
-  { "catppuccin/nvim", name = "catppuccin" },
   {
     "ellisonleao/gruvbox.nvim",
-    name = "gruvbox",
-    dependencies = { "catppuccin" },
+    dependencies = { "rktjmp/lush.nvim" },
     config = function()
-      local cs = require("plugins.colorscheme")
-      cs.setup_catppuccin()
-      cs.setup_gruvbox()
+      vim.opt.termguicolors = true
+      vim.opt.background = "dark"
+      require("gruvbox").setup({
+        italic = { strings = false },
+        invert_selection = false,
+      })
+      vim.cmd([[ colorscheme gruvbox ]])
     end,
   },
-  { "uZer/pywal16.nvim", name = "pywal16" },
-
   -- UI
   {
     "nvim-lualine/lualine.nvim",
@@ -53,7 +53,15 @@ return {
   {
     "folke/persistence.nvim",
     event = "BufReadPre",
-    cmd = { "SessionLoad", "SessionLoadLast", "SessionSelect", "SessionStop", "PersistenceLoad", "PersistenceSelect", "PersistenceStop" },
+    cmd = {
+      "SessionLoad",
+      "SessionLoadLast",
+      "SessionSelect",
+      "SessionStop",
+      "PersistenceLoad",
+      "PersistenceSelect",
+      "PersistenceStop",
+    },
     config = function()
       require("plugins.persistence").setup()
     end,
@@ -65,13 +73,13 @@ return {
       require("plugins.treesitter")
     end,
   },
-   {
-     "brenoprata10/nvim-highlight-colors",
-     event = { "BufRead", "BufNewFile" },
-     config = function()
-       require("plugins.colorizer")
-     end,
-   },
+  {
+    "brenoprata10/nvim-highlight-colors",
+    event = { "BufRead", "BufNewFile" },
+    config = function()
+      require("plugins.colorizer")
+    end,
+  },
   {
     "MeanderingProgrammer/render-markdown.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
@@ -87,7 +95,11 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     cmd = "Neotree",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
     config = function()
       require("plugins.neo-tree")
     end,
@@ -100,13 +112,13 @@ return {
       require("plugins.telescope")
     end,
   },
-   {
-     "numToStr/FTerm.nvim",
-     cmd = { "FTermToggle", "FTermOpen", "FTermClose" },
-     config = function()
-       require("plugins.fterm")
-     end,
-   },
+  {
+    "numToStr/FTerm.nvim",
+    cmd = { "FTermToggle", "FTermOpen", "FTermClose" },
+    config = function()
+      require("plugins.fterm")
+    end,
+  },
   { "famiu/bufdelete.nvim" },
   { "emmanueltouzery/decisive.nvim" },
 
@@ -118,13 +130,13 @@ return {
       require("plugins.autopairs")
     end,
   },
-   {
-     "numToStr/Comment.nvim",
-     event = { "BufRead", "BufNewFile" },
-     config = function()
-       require("plugins.comment")
-     end,
-   },
+  {
+    "numToStr/Comment.nvim",
+    event = { "BufRead", "BufNewFile" },
+    config = function()
+      require("plugins.comment")
+    end,
+  },
 
   -- Git
   {
@@ -147,19 +159,19 @@ return {
     end,
   },
 
-   -- LSP / tooling
-   {
-     "williamboman/mason.nvim",
-     cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUpdate" },
-     event = "VeryLazy",
-     dependencies = {
-       "williamboman/mason-lspconfig.nvim",
-       "WhoIsSethDaniel/mason-tool-installer.nvim",
-     },
-     config = function()
-       require("plugins.mason")
-     end,
-   },
+  -- LSP / tooling
+  {
+    "williamboman/mason.nvim",
+    cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUpdate" },
+    event = "VeryLazy",
+    dependencies = {
+      "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
+    },
+    config = function()
+      require("plugins.mason")
+    end,
+  },
   {
     "williamboman/mason-lspconfig.nvim",
     opts = {
@@ -222,37 +234,37 @@ return {
   { "rcarriga/nvim-dap-ui" },
   { "mfussenegger/nvim-dap-python" },
   { "theHamsta/nvim-dap-virtual-text" },
-   {
-     "benlubas/molten-nvim",
-     ft = { "python", "ipynb", "quarto" },
-     config = function()
-       require("plugins.molten")
-     end,
-   },
-   {
-     "GCBallesteros/jupytext.nvim",
-     ft = { "python", "ipynb", "quarto" },
-     config = function()
-       require("plugins.ipynb")
-     end,
-   },
-    {
-      "NickvanDyke/opencode.nvim",
-      cmd = { "OpenCode" },
-      keys = {
-        { "<leader>ot", mode = { "n", "v" }, desc = "Toggle embedded" },
-        { "<leader>oa", mode = { "n", "v" }, desc = "Ask about this" },
-        { "<leader>o+", mode = { "n", "v" }, desc = "Add to prompt" },
-        { "<leader>oe", mode = { "n", "v" }, desc = "Explain code" },
-        { "<leader>on", mode = { "n", "v" }, desc = "New session" },
-        { "<S-C-u>", mode = { "n" }, desc = "Messages up" },
-        { "<S-C-d>", mode = { "n" }, desc = "Messages down" },
-        { "<leader>os", mode = { "n", "v" }, desc = "Select prompt" },
-      },
-      config = function()
-        require("plugins.opencode")
-      end,
+  {
+    "benlubas/molten-nvim",
+    ft = { "python", "ipynb", "quarto" },
+    config = function()
+      require("plugins.molten")
+    end,
+  },
+  {
+    "GCBallesteros/jupytext.nvim",
+    ft = { "python", "ipynb", "quarto" },
+    config = function()
+      require("plugins.ipynb")
+    end,
+  },
+  {
+    "NickvanDyke/opencode.nvim",
+    cmd = { "OpenCode" },
+    keys = {
+      { "<leader>ot", mode = { "n", "v" }, desc = "Toggle embedded" },
+      { "<leader>oa", mode = { "n", "v" }, desc = "Ask about this" },
+      { "<leader>o+", mode = { "n", "v" }, desc = "Add to prompt" },
+      { "<leader>oe", mode = { "n", "v" }, desc = "Explain code" },
+      { "<leader>on", mode = { "n", "v" }, desc = "New session" },
+      { "<S-C-u>", mode = { "n" }, desc = "Messages up" },
+      { "<S-C-d>", mode = { "n" }, desc = "Messages down" },
+      { "<leader>os", mode = { "n", "v" }, desc = "Select prompt" },
     },
+    config = function()
+      require("plugins.opencode")
+    end,
+  },
 
   -- Shared deps / language extras
   { "nvim-lua/plenary.nvim" },
