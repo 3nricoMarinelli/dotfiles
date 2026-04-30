@@ -9,6 +9,7 @@
 # --------------------------------------------
 # General Aliases
 # --------------------------------------------
+alias pip3=/usr/bin/pip3
 alias storage='ncdu'
 alias v='nvim'
 alias gs='git status'

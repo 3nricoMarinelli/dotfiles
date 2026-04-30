@@ -56,10 +56,9 @@ daily_upgrade() {
     kill $nvimpid
 }
 
-# Android SDK alias
-if [[ -f "$HOME/Library/Android/sdk/platform-tools/adb" ]]; then
-    alias adb="$HOME/Library/Android/sdk/platform-tools/adb"
-fi
-
-# Bun completion
-[[ -s "/usr/local/share/zsh/site-functions/_bun" ]] && source "/usr/local/share/zsh/site-functions/_bun"
+brew() {
+    command brew "$@"
+    if [[ "$1" == "install" || "$1" == "uninstall" || "$1" == "tap" || "$1" == "untap" ]]; then
+        brew bundle dump --force --file=~/dotfiles/brew/Brewfile
+    fi
+}
