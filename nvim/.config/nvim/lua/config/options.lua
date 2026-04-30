@@ -1,51 +1,51 @@
 local options = {
-	encoding = "utf-8",
-	fileencoding = "utf-8",
-	laststatus = 3,
-	ruler = false, --disable extra numbering
-	showmode = false, --not needed due to lualine
-	showcmd = false,
-	wrap = true, --toggle bound to leader W
-	mouse = "a", --enable mouse
-	clipboard = "unnamedplus", --system clipboard integration
-	history = 100, --command line history
-	swapfile = false, --swap just gets in the way, usually
-	backup = false,
-	undofile = true, --undos are saved to file
-	cursorline = true, --highlight line
-	ttyfast = true, --faster scrolling
-	smoothscroll = true,
-	title = true, --automatic window titlebar
+  encoding = "utf-8",
+  fileencoding = "utf-8",
+  laststatus = 3,
+  ruler = false, --disable extra numbering
+  showmode = false, --not needed due to lualine
+  showcmd = false,
+  wrap = true, --toggle bound to leader W
+  mouse = "a", --enable mouse
+  clipboard = "unnamedplus", --system clipboard integration
+  history = 100, --command line history
+  swapfile = false, --swap just gets in the way, usually
+  backup = false,
+  undofile = true, --undos are saved to file
+  cursorline = true, --highlight line
+  ttyfast = true, --faster scrolling
+  smoothscroll = true,
+  title = true, --automatic window titlebar
 
-	number = true, --numbering lines
-	relativenumber = true, --toggle bound to leader nn
-	numberwidth = 4,
+  number = true, --numbering lines
+  relativenumber = true, --toggle bound to leader nn
+  numberwidth = 4,
 
-	smarttab = true, --indentation stuff
-	cindent = true,
-	autoindent = false,
-	expandtab = true, --convert tabs to spaces
-	tabstop = 4, --visual width of tab (4 spaces)
-	shiftwidth = 4, --indent width for autoindent (4 spaces)
-	softtabstop = 4, --number of spaces for <Tab> in insert mode
+  smarttab = true, --indentation stuff
+  cindent = true,
+  autoindent = false,
+  expandtab = true, --convert tabs to spaces
+  tabstop = 4, --visual width of tab (4 spaces)
+  shiftwidth = 4, --indent width for autoindent (4 spaces)
+  softtabstop = 4, --number of spaces for <Tab> in insert mode
 
-	foldmethod = "expr",
-	foldlevel = 99, --disable folding, lower #s enable
-	foldexpr = "nvim_treesitter#foldexpr()",
+  foldmethod = "expr",
+  foldlevel = 99, --disable folding, lower #s enable
+  foldexpr = "nvim_treesitter#foldexpr()",
 
-	termguicolors = true,
+  termguicolors = true,
 
-	ignorecase = true, --ignore case while searching
-	smartcase = true, --but do not ignore if caps are used
+  ignorecase = true, --ignore case while searching
+  smartcase = true, --but do not ignore if caps are used
 
-	conceallevel = 2, --markdown conceal
-	concealcursor = "nc",
+  conceallevel = 2, --markdown conceal
+  concealcursor = "nc",
 
-	splitkeep = 'screen', --stablizie window open/close
+  splitkeep = "screen", --stablizie window open/close
 }
 
 for k, v in pairs(options) do
-	vim.opt[k] = v
+  vim.opt[k] = v
 end
 
 -- highlight trailing whitespace in dark pastel red (Catppuccin maroon)
@@ -58,6 +58,22 @@ require("config.diagnostics").apply("default")
 
 -- Set up LSP handlers for split view (before any LSP server starts)
 require("config.lsp-common").setup_handlers()
+
+-- Clipboard through SSH handling
+if vim.env.SSH_TTY ~= nil then
+  -- Over SSH: use OSC52
+  vim.g.clipboard = {
+    name = "OSC52",
+    copy = {
+      ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+    },
+    paste = {
+      ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+    },
+  }
+end
 
 -- Disable unused providers to reduce startup warnings
 vim.g.loaded_node_provider = 0
@@ -72,8 +88,8 @@ vim.g.python3_host_prog = vim.fn.expand("~/.local/venvs/neovim/bin/python3")
 -- (plugin maintainer reverted the fix, will be resolved eventually)
 local notify = vim.notify
 vim.notify = function(msg, level, opts)
-    if msg:match("vim.validate is deprecated") then
-        return
-    end
-    notify(msg, level, opts)
+  if msg:match("vim.validate is deprecated") then
+    return
+  end
+  notify(msg, level, opts)
 end
