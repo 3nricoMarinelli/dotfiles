@@ -33,7 +33,7 @@ M.profiles = {
   -- Best of both: verbose in normal mode, clean while typing
   lsp_clean_insert = {
     signs = true,
-    update_in_insert = false,  -- Don't update diagnostics while typing
+    update_in_insert = false, -- Don't update diagnostics while typing
     underline = true,
     severity_sort = true,
     virtual_text = {

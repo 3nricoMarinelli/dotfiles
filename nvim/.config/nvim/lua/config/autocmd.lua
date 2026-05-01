@@ -2,17 +2,16 @@
 
 -- close neo-tree if it's last buffer open
 vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "*",
-	callback = function()
-		if vim.g.__dashboard_opening_tree then
-			return
-		end
-		if #vim.api.nvim_list_bufs() == 1 and vim.bo.filetype == "neo-tree" then
-	vim.cmd("quit")
-	end
-	end,
+  pattern = "*",
+  callback = function()
+    if vim.g.__dashboard_opening_tree then
+      return
+    end
+    if #vim.api.nvim_list_bufs() == 1 and vim.bo.filetype == "neo-tree" then
+      vim.cmd("quit")
+    end
+  end,
 })
-
 
 -- auto-create missing dirs when saving a file
 --vim.api.nvim_create_autocmd("BufWritePre", {
@@ -25,7 +24,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
 --end,
 --})
 
-
 -- linting when file is written to
 vim.api.nvim_create_autocmd("BufWritePost", {
   callback = function()
@@ -35,102 +33,98 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   end,
 })
 
-
 -- spellcheck in md
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = "markdown",
-	command = "setlocal spell wrap",
+  pattern = "markdown",
+  command = "setlocal spell wrap",
 })
-
 
 -- disable automatic comment on newline
 vim.api.nvim_create_autocmd("FileType", {
-		pattern = "*",
-		callback = function()
-		vim.opt_local.formatoptions:remove({ "c", "r", "o" })
-		end,
+  pattern = "*",
+  callback = function()
+    vim.opt_local.formatoptions:remove({ "c", "r", "o" })
+  end,
 })
 
 -- C/C++/CUDA specific settings (from cacharle's config)
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "c", "cpp", "cuda" },
-	callback = function()
-		vim.bo.commentstring = "// %s"  -- use // for comments
-		-- vim.opt_local.shiftwidth = 2  -- optional: 2-space indent for C/C++
-	end,
+  pattern = { "c", "cpp", "cuda" },
+  callback = function()
+    vim.bo.commentstring = "// %s" -- use // for comments
+    -- vim.opt_local.shiftwidth = 2  -- optional: 2-space indent for C/C++
+  end,
 })
 
 -- Set filetype for C++ standard library headers (no extension)
 vim.api.nvim_create_autocmd("BufReadPre", {
-	pattern = { "/usr/include/*", "/opt/homebrew/include/*" },
-	callback = function()
-		-- Detect C++ stdlib headers by path
-		local path = vim.fn.expand("<afile>")
-		if path:match("/c%+%+/") or path:match("include/std") then
-			vim.bo.filetype = "cpp"
-		end
-	end,
+  pattern = { "/usr/include/*", "/opt/homebrew/include/*" },
+  callback = function()
+    -- Detect C++ stdlib headers by path
+    local path = vim.fn.expand("<afile>")
+    if path:match("/c%+%+/") or path:match("include/std") then
+      vim.bo.filetype = "cpp"
+    end
+  end,
 })
 
 -- Remove trailing whitespace on save (cacharle's approach with mark preservation)
 vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*",
-	callback = function()
-		-- Save cursor position to avoid jumping
-		vim.cmd("normal! mA")
-		vim.cmd([[ %s/\s\+$//e ]])
-		vim.cmd("normal! `A")
-	end,
+  pattern = "*",
+  callback = function()
+    -- Save cursor position to avoid jumping
+    vim.cmd("normal! mA")
+    vim.cmd([[ %s/\s\+$//e ]])
+    vim.cmd("normal! `A")
+  end,
 })
-
 
 -- highlight text on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
-	pattern = "*",
-	callback = function()
-	vim.highlight.on_yank({ timeout = 300 })
-	end,
+  pattern = "*",
+  callback = function()
+    vim.highlight.on_yank({ timeout = 300 })
+  end,
 })
 
 -- highlight trailing whitespace (only in file buffers, not terminals or special buffers)
 vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave" }, {
-	pattern = "*",
-	callback = function()
-		local buftype = vim.bo.buftype
-		local filetype = vim.bo.filetype
-		-- Skip highlighting in terminal, quickfix, help, special buffers,
-		-- and buffers without a file extension (dashboards, explorers, etc.)
-		local ext = vim.fn.expand("%:e")
-		if buftype == "" and ext ~= "" and filetype ~= "fterm" then
-			vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
-		end
-	end,
+  pattern = "*",
+  callback = function()
+    local buftype = vim.bo.buftype
+    local filetype = vim.bo.filetype
+    -- Skip highlighting in terminal, quickfix, help, special buffers,
+    -- and buffers without a file extension (dashboards, explorers, etc.)
+    local ext = vim.fn.expand("%:e")
+    if buftype == "" and ext ~= "" and filetype ~= "fterm" then
+      vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
+    end
+  end,
 })
 
 -- highlight todo keywords
 vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave" }, {
-	pattern = "*",
-	callback = function()
-		local buftype = vim.bo.buftype
-		local filetype = vim.bo.filetype
-		local ext = vim.fn.expand("%:e")
-		-- Skip highlighting in terminal, quickfix, help, special buffers,
-		-- and buffers without a file extension (dashboards, explorers, etc.)
-		if buftype == "" and ext ~= "" and filetype ~= "fterm" then
-			vim.fn.matchadd("Todo", "TODO")
-			vim.fn.matchadd("Todo", [[\vFIX(-?ME)?]])
-            -- Add other keywords here
-		end
-	end,
+  pattern = "*",
+  callback = function()
+    local buftype = vim.bo.buftype
+    local filetype = vim.bo.filetype
+    local ext = vim.fn.expand("%:e")
+    -- Skip highlighting in terminal, quickfix, help, special buffers,
+    -- and buffers without a file extension (dashboards, explorers, etc.)
+    if buftype == "" and ext ~= "" and filetype ~= "fterm" then
+      vim.fn.matchadd("Todo", "TODO")
+      vim.fn.matchadd("Todo", [[\vFIX(-?ME)?]])
+      -- Add other keywords here
+    end
+  end,
 })
 
 vim.api.nvim_create_autocmd("InsertEnter", {
-	pattern = "*",
-	callback = function()
-		vim.fn.clearmatches()
-	end,
+  pattern = "*",
+  callback = function()
+    vim.fn.clearmatches()
+  end,
 })
-
 
 -- reload files on external change
 --vim.api.nvim_create_autocmd("FocusGained", {
@@ -138,16 +132,15 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 --	command = "checktime",
 --})
 
-
 -- restore cursor pos on file open
 vim.api.nvim_create_autocmd("BufReadPost", {
-	pattern = "*",
-	callback = function()
-	local line = vim.fn.line("'\"")
-	if line > 1 and line <= vim.fn.line("$") then
-		vim.cmd("normal! g'\"")
-	end
-end,
+  pattern = "*",
+  callback = function()
+    local line = vim.fn.line("'\"")
+    if line > 1 and line <= vim.fn.line("$") then
+      vim.cmd("normal! g'\"")
+    end
+  end,
 })
 
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -159,48 +152,53 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 vim.api.nvim_create_augroup("alpha_on_empty", { clear = true })
 vim.api.nvim_create_autocmd("User", {
-	pattern = "BDeletePre *",
-	group = "alpha_on_empty",
-	callback = function()
-		if vim.g.__dashboard_opening_tree then
-			vim.g.__dashboard_opening_tree = nil
-			return
-		end
-		local bufnr = vim.api.nvim_get_current_buf()
-		local name = vim.api.nvim_buf_get_name(bufnr)
-		if name == "" then
+  pattern = "BDeletePre *",
+  group = "alpha_on_empty",
+  callback = function()
+    if vim.g.__dashboard_opening_tree then
+      vim.g.__dashboard_opening_tree = nil
+      return
+    end
+    local bufnr = vim.api.nvim_get_current_buf()
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    if name == "" then
       vim.cmd([[:Alpha | bd#]])
-		end
-	end,
+    end
+  end,
 })
-
 
 local augroup = vim.api.nvim_create_augroup("RelativeLineNumber", { clear = true })
 
-vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, {
-   pattern = "*",
-   group = augroup,
-   callback = function()
+vim.api.nvim_create_autocmd(
+  { "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" },
+  {
+    pattern = "*",
+    group = augroup,
+    callback = function()
       if vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
-         vim.opt.relativenumber = true
+        vim.opt.relativenumber = true
       end
-   end,
-})
+    end,
+  }
+)
 
-vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" }, {
-   pattern = "*",
-   group = augroup,
-   callback = function()
+vim.api.nvim_create_autocmd(
+  { "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" },
+  {
+    pattern = "*",
+    group = augroup,
+    callback = function()
       if vim.o.nu then
-         vim.opt.relativenumber = false
-         -- Conditional taken from https://github.com/rockyzhang24/dotfiles/commit/03dd14b5d43f812661b88c4660c03d714132abcf
-         -- Workaround for https://github.com/neovim/neovim/issues/32068
-         if not vim.tbl_contains({"@", "-"}, vim.v.event.cmdtype) then
-            vim.cmd "redraw"
-         end
+        vim.opt.relativenumber = false
+        -- Conditional taken from https://github.com/rockyzhang24/dotfiles/commit/03dd14b5d43f812661b88c4660c03d714132abcf
+        -- Workaround for https://github.com/neovim/neovim/issues/32068
+        if not vim.tbl_contains({ "@", "-" }, vim.v.event.cmdtype) then
+          vim.cmd("redraw")
+        end
       end
-   end,
-})
+    end,
+  }
+)
 
 -- Startup picker is intentionally disabled.
 -- Alpha dashboard is now the startup command launcher.

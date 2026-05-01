@@ -54,29 +54,29 @@ dashboard.section.header.opts.hl = "Question"
 local onefetch_minimal_cmd = _G.get_dashboard_command()
 
 dashboard.section.buttons.val = {
-	dashboard.button("s", "󰚰  Restore", ":SessionLoadLast<CR>"),
-	dashboard.button("t", "󰙅  Tree", ":lua alpha_open_tree_fullscreen()<CR>"),
-	dashboard.button(
-		"f",
-		"󰱼  Finder",
-		":lua pcall(require('utils.telescope-launcher').startup)<CR>"
-	),
-	dashboard.button("q", "󰅙  Quit", ":q!<CR>"),
+  dashboard.button("s", "󰚰  Restore", ":SessionLoadLast<CR>"),
+  dashboard.button("t", "󰙅  Tree", ":lua alpha_open_tree_fullscreen()<CR>"),
+  dashboard.button(
+    "f",
+    "󰱼  Finder",
+    ":lua pcall(require('utils.telescope-launcher').startup)<CR>"
+  ),
+  dashboard.button("q", "󰅙  Quit", ":q!<CR>"),
 }
 
 dashboard.section.footer.val = ""
 
 dashboard.section.buttons.opts.hl = "Keyword"
 if vim.fn.executable("onefetch") == 1 then
-	dashboard.section.terminal.command = onefetch_minimal_cmd
-	dashboard.section.terminal.width = 120
-	dashboard.section.terminal.height = 22
-	dashboard.opts.layout = {
-		{ type = "padding", val = 1 },
-		dashboard.section.terminal,
-		{ type = "padding", val = 2 },
-		dashboard.section.buttons,
-	}
+  dashboard.section.terminal.command = onefetch_minimal_cmd
+  dashboard.section.terminal.width = 120
+  dashboard.section.terminal.height = 22
+  dashboard.opts.layout = {
+    { type = "padding", val = 1 },
+    dashboard.section.terminal,
+    { type = "padding", val = 2 },
+    dashboard.section.buttons,
+  }
 end
 dashboard.opts.opts.noautocmd = true
 alpha.setup(dashboard.opts)
@@ -84,71 +84,71 @@ alpha.setup(dashboard.opts)
 local alpha_term_group = vim.api.nvim_create_augroup("vimrc_alpha_term", { clear = true })
 
 vim.api.nvim_create_autocmd("TermOpen", {
-	group = alpha_term_group,
-	pattern = "*",
-	callback = function(ev)
-		local title = vim.b[ev.buf].term_title
-		local name = vim.api.nvim_buf_get_name(ev.buf)
-		if title ~= "alpha_terminal" and not name:match("onefetch") then
-			return
-		end
-		vim.opt_local.scrollback = 1
-		vim.opt_local.number = false
-		vim.opt_local.relativenumber = false
-		vim.opt_local.signcolumn = "no"
-		for _, k in ipairs({
-			"<ScrollWheelUp>",
-			"<ScrollWheelDown>",
-			"<PageUp>",
-			"<PageDown>",
-			"<C-y>",
-			"<C-e>",
-		}) do
-			vim.keymap.set({ "n", "t" }, k, "<Nop>", { buffer = ev.buf, silent = true })
-		end
-	end,
+  group = alpha_term_group,
+  pattern = "*",
+  callback = function(ev)
+    local title = vim.b[ev.buf].term_title
+    local name = vim.api.nvim_buf_get_name(ev.buf)
+    if title ~= "alpha_terminal" and not name:match("onefetch") then
+      return
+    end
+    vim.opt_local.scrollback = 1
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.opt_local.signcolumn = "no"
+    for _, k in ipairs({
+      "<ScrollWheelUp>",
+      "<ScrollWheelDown>",
+      "<PageUp>",
+      "<PageDown>",
+      "<C-y>",
+      "<C-e>",
+    }) do
+      vim.keymap.set({ "n", "t" }, k, "<Nop>", { buffer = ev.buf, silent = true })
+    end
+  end,
 })
 
 -- Clean terminal output in alpha terminal (remove [Process exited X] messages)
 -- Use both TermClose (cleanup) and TermLeave (suppress display)
 vim.api.nvim_create_autocmd("TermClose", {
-	group = alpha_term_group,
-	pattern = "*",
-	callback = function(ev)
-		local title = vim.b[ev.buf].term_title
-		local name = vim.api.nvim_buf_get_name(ev.buf)
-		if title ~= "alpha_terminal" and not name:match("onefetch") then
-			return
-		end
+  group = alpha_term_group,
+  pattern = "*",
+  callback = function(ev)
+    local title = vim.b[ev.buf].term_title
+    local name = vim.api.nvim_buf_get_name(ev.buf)
+    if title ~= "alpha_terminal" and not name:match("onefetch") then
+      return
+    end
 
-		-- Cleanup immediately on TermClose (before redraw)
-		if vim.api.nvim_buf_is_valid(ev.buf) then
-			local was_modifiable = vim.bo[ev.buf].modifiable
-			vim.bo[ev.buf].modifiable = true
+    -- Cleanup immediately on TermClose (before redraw)
+    if vim.api.nvim_buf_is_valid(ev.buf) then
+      local was_modifiable = vim.bo[ev.buf].modifiable
+      vim.bo[ev.buf].modifiable = true
 
-			local lines = vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false)
-			local new_lines = {}
+      local lines = vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false)
+      local new_lines = {}
 
-			-- Filter out [Process exited messages
-			for _, line in ipairs(lines) do
-				if not line:match("%[Process exited") then
-					table.insert(new_lines, line)
-				end
-			end
+      -- Filter out [Process exited messages
+      for _, line in ipairs(lines) do
+        if not line:match("%[Process exited") then
+          table.insert(new_lines, line)
+        end
+      end
 
-			-- Remove trailing empty lines
-			while #new_lines > 0 and vim.trim(new_lines[#new_lines]) == "" do
-				table.remove(new_lines)
-			end
+      -- Remove trailing empty lines
+      while #new_lines > 0 and vim.trim(new_lines[#new_lines]) == "" do
+        table.remove(new_lines)
+      end
 
-			-- Update immediately without defer
-			if #new_lines ~= #lines then
-				pcall(function()
-					vim.api.nvim_buf_set_lines(ev.buf, 0, -1, false, new_lines)
-				end)
-			end
+      -- Update immediately without defer
+      if #new_lines ~= #lines then
+        pcall(function()
+          vim.api.nvim_buf_set_lines(ev.buf, 0, -1, false, new_lines)
+        end)
+      end
 
-			vim.bo[ev.buf].modifiable = was_modifiable
-		end
-	end,
+      vim.bo[ev.buf].modifiable = was_modifiable
+    end
+  end,
 })

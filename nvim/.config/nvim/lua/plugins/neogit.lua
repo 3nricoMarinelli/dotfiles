@@ -3,9 +3,9 @@ if not status then
   return
 end
 
-neogit.setup {
+neogit.setup({
   disable_commit_confirmation = true,
   integrations = {
     diffview = true,
   },
-}
+})

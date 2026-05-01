@@ -40,12 +40,12 @@ km.register("n", "<F8>", ":vertical resize -2<CR>", "decrease width")
 
 -- Vanilla Neovim: Line Numbers
 km.register("n", "<leader>nn", function()
-	if vim.wo.relativenumber then
-		vim.wo.relativenumber = false
-		vim.wo.number = true
-	else
-		vim.wo.relativenumber = true
-	end
+  if vim.wo.relativenumber then
+    vim.wo.relativenumber = false
+    vim.wo.number = true
+  else
+    vim.wo.relativenumber = true
+  end
 end, "toggle relative nums")
 
 -- Vanilla Neovim: Search & Replace
@@ -71,26 +71,84 @@ km.register("n", "<AS-h>", "<Cmd>BufferMovePrevious<CR>", "move buffer left")
 km.register("n", "<AS-l>", "<Cmd>BufferMoveNext<CR>", "move buffer right")
 
 -- Plugins: Telescope
-km.register("n", "<leader>f", ":Telescope find_files<CR>", "telescope files cwd", { group = "telescope" })
-km.register("n", "<leader>Fh", ":lua require('telescope.builtin').find_files({ cwd = '~/' })<CR>", "telescope files home", { group = "telescope" })
-km.register("n", "<leader>Fc", ":lua require('telescope.builtin').find_files({ cwd = '~/.config' })<CR>", "telescope files .config", { group = "telescope" })
-km.register("n", "<leader>Fl", ":lua require('telescope.builtin').find_files({ cwd = '~/.local/src' })<CR>", "telescope files .local/src", { group = "telescope" })
-km.register("n", "<leader>Ff", ":lua require('telescope.builtin').find_files({ cwd = '..' })<CR>", "telescope files parent", { group = "telescope" })
+km.register(
+  "n",
+  "<leader>f",
+  ":Telescope find_files<CR>",
+  "telescope files cwd",
+  { group = "telescope" }
+)
+km.register(
+  "n",
+  "<leader>Fh",
+  ":lua require('telescope.builtin').find_files({ cwd = '~/' })<CR>",
+  "telescope files home",
+  { group = "telescope" }
+)
+km.register(
+  "n",
+  "<leader>Fc",
+  ":lua require('telescope.builtin').find_files({ cwd = '~/.config' })<CR>",
+  "telescope files .config",
+  { group = "telescope" }
+)
+km.register(
+  "n",
+  "<leader>Fl",
+  ":lua require('telescope.builtin').find_files({ cwd = '~/.local/src' })<CR>",
+  "telescope files .local/src",
+  { group = "telescope" }
+)
+km.register(
+  "n",
+  "<leader>Ff",
+  ":lua require('telescope.builtin').find_files({ cwd = '..' })<CR>",
+  "telescope files parent",
+  { group = "telescope" }
+)
 km.register("n", "<leader>Fr", ":Telescope resume<CR>", "telescope resume", { group = "telescope" })
 km.register("n", "<leader>gg", ":Telescope live_grep<CR>", "grep", { group = "grep" })
-km.register("n", "<leader>gw", ":lua require('telescope.builtin').grep_string()<CR>", "grep word under cursor", { group = "grep" })
+km.register(
+  "n",
+  "<leader>gw",
+  ":lua require('telescope.builtin').grep_string()<CR>",
+  "grep word under cursor",
+  { group = "grep" }
+)
 
 -- Plugins: Comment.nvim
-km.register("n", "<leader>/", function() require('Comment.api').toggle.linewise.current() end, "comment line", { group = "comment" })
-km.register("n", "<leader>?", function() require('Comment.api').toggle.blockwise.current() end, "comment block", { group = "comment" })
-km.register("v", "<leader>/", "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", "comment selection")
-km.register("v", "<leader>?", "<ESC><CMD>lua require('Comment.api').toggle.blockwise(vim.fn.visualmode())<CR>", "comment block selection")
+km.register("n", "<leader>/", function()
+  require("Comment.api").toggle.linewise.current()
+end, "comment line", { group = "comment" })
+km.register("n", "<leader>?", function()
+  require("Comment.api").toggle.blockwise.current()
+end, "comment block", { group = "comment" })
+km.register(
+  "v",
+  "<leader>/",
+  "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
+  "comment selection"
+)
+km.register(
+  "v",
+  "<leader>?",
+  "<ESC><CMD>lua require('Comment.api').toggle.blockwise(vim.fn.visualmode())<CR>",
+  "comment block selection"
+)
 
 -- Plugins: Neogit (git interface)
-km.register("n", "<leader>gs", function() require("neogit").open({ kind = "tab" }) end, "git status", { group = "git" })
-km.register("n", "<leader>gc", function() require("neogit").action("Commit", "commit", {})() end, "git commit", { group = "git" })
-km.register("n", "<leader>gu", function() require("neogit").action("Pull", "pull", {})() end, "git pull", { group = "git" })
-km.register("n", "<leader>gp", function() require("neogit").action("Push", "push", {})() end, "git push", { group = "git" })
+km.register("n", "<leader>gs", function()
+  require("neogit").open({ kind = "tab" })
+end, "git status", { group = "git" })
+km.register("n", "<leader>gc", function()
+  require("neogit").action("Commit", "commit", {})()
+end, "git commit", { group = "git" })
+km.register("n", "<leader>gu", function()
+  require("neogit").action("Pull", "pull", {})()
+end, "git pull", { group = "git" })
+km.register("n", "<leader>gp", function()
+  require("neogit").action("Push", "push", {})()
+end, "git push", { group = "git" })
 
 -- Plugins: Diffview (git diff visualization)
 km.register("n", "<leader>gd", ":DiffviewOpen<CR>", "diff open", { group = "git" })
@@ -98,16 +156,36 @@ km.register("n", "<leader>gD", ":DiffviewClose<CR>", "diff close", { group = "gi
 km.register("n", "<leader>gh", ":DiffviewFileHistory<CR>", "file history", { group = "git" })
 
 -- Plugins: Gitsigns (git signs + hunks)
-km.register("n", "<leader>ga", function() require("gitsigns").stage_hunk() end, "stage hunk", { group = "git" })
-km.register("n", "<leader>gU", function() require("gitsigns").undo_stage_hunk() end, "undo stage hunk", { group = "git" })
-km.register("n", "<leader>gr", function() require("gitsigns").reset_hunk() end, "reset hunk", { group = "git" })
-km.register("n", "<leader>gv", function() require("gitsigns").preview_hunk() end, "preview hunk", { group = "git" })
-km.register("n", "<leader>gb", function() require("gitsigns").blame_line({ full = true }) end, "blame line", { group = "git" })
-km.register("n", "<leader>gj", function() require("gitsigns").next_hunk() end, "next hunk", { group = "git" })
-km.register("n", "<leader>gk", function() require("gitsigns").prev_hunk() end, "prev hunk", { group = "git" })
+km.register("n", "<leader>ga", function()
+  require("gitsigns").stage_hunk()
+end, "stage hunk", { group = "git" })
+km.register("n", "<leader>gU", function()
+  require("gitsigns").undo_stage_hunk()
+end, "undo stage hunk", { group = "git" })
+km.register("n", "<leader>gr", function()
+  require("gitsigns").reset_hunk()
+end, "reset hunk", { group = "git" })
+km.register("n", "<leader>gv", function()
+  require("gitsigns").preview_hunk()
+end, "preview hunk", { group = "git" })
+km.register("n", "<leader>gb", function()
+  require("gitsigns").blame_line({ full = true })
+end, "blame line", { group = "git" })
+km.register("n", "<leader>gj", function()
+  require("gitsigns").next_hunk()
+end, "next hunk", { group = "git" })
+km.register("n", "<leader>gk", function()
+  require("gitsigns").prev_hunk()
+end, "prev hunk", { group = "git" })
 
 -- Plugins: Neo-tree (file explorer)
-km.register("n", "<leader>t", ":Neotree filesystem reveal left<CR>", "reveal tree", { group = "tree" })
+km.register(
+  "n",
+  "<leader>t",
+  ":Neotree filesystem reveal left<CR>",
+  "reveal tree",
+  { group = "tree" }
+)
 km.register("n", "T", ":Neotree filesystem toggle<CR>", "toggle tree")
 
 -- Plugins: Miscellaneous UI

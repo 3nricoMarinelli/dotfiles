@@ -13,9 +13,9 @@ sed -i 's/^#HandleLidSwitchDocked=.*/HandleLidSwitchDocked=ignore/' /etc/systemd
 sed -i 's/^HandleLidSwitchDocked=.*/HandleLidSwitchDocked=ignore/' /etc/systemd/logind.conf
 
 # Add lines if they don't exist
-grep -q "^HandleLidSwitch=" /etc/systemd/logind.conf || echo "HandleLidSwitch=ignore" >> /etc/systemd/logind.conf
-grep -q "^HandleLidSwitchExternalPower=" /etc/systemd/logind.conf || echo "HandleLidSwitchExternalPower=ignore" >> /etc/systemd/logind.conf
-grep -q "^HandleLidSwitchDocked=" /etc/systemd/logind.conf || echo "HandleLidSwitchDocked=ignore" >> /etc/systemd/logind.conf
+grep -q "^HandleLidSwitch=" /etc/systemd/logind.conf || echo "HandleLidSwitch=ignore" >>/etc/systemd/logind.conf
+grep -q "^HandleLidSwitchExternalPower=" /etc/systemd/logind.conf || echo "HandleLidSwitchExternalPower=ignore" >>/etc/systemd/logind.conf
+grep -q "^HandleLidSwitchDocked=" /etc/systemd/logind.conf || echo "HandleLidSwitchDocked=ignore" >>/etc/systemd/logind.conf
 
 echo "Disabling automatic suspend and hibernation..."
 
