@@ -10,7 +10,6 @@
 # Homebrew Configuration
 # --------------------------------------------
 export HOMEBREW_NO_AUTO_UPDATE=0
-eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # --------------------------------------------
 # OpenSSL
@@ -42,9 +41,6 @@ brew-arm() {
         echo "ARM Homebrew not installed."
     fi
 }
-
-# SSH into local Ubuntu server
-ubuntu() { ssh -Y "$USER@$UBUNTU_IP" -p "$UBUNTU_PORT" -i "$UBUNTU_PK"}
 
 # Daily upgrade script
 daily_upgrade() {
