@@ -51,10 +51,10 @@ elif [[ "$(uname)" == "Linux" ]]; then
     plugins+=(ubuntu systemd)
 fi
 
-if command -v tmux > /dev/null; then
+if command -v tmux > /dev/null && [[ -z $TMUX && -z $NVIM && $SSH_SESSION == "false" ]]; then
     plugins+=tmux
     ZSH_TMUX_AUTOREFRESH=true
-    ZSH_TMUX_AUTOSTART=true
+    ZSH_TMUX_AUTOSTART=false
 fi
 
 # Source Oh My Zsh

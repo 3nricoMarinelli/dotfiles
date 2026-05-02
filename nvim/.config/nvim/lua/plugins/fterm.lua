@@ -4,7 +4,6 @@ local fterm = require("FTerm")
 fterm.setup({
   env = {
     TERM = vim.env.TERM or "xterm-256color",
-    FLOATING_TERM = 1,
   },
 })
 
