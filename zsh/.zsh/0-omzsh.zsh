@@ -54,7 +54,7 @@ fi
 if command -v tmux > /dev/null && [[ -z $TMUX && -z $NVIM && $SSH_SESSION == "false" ]]; then
     plugins+=tmux
     ZSH_TMUX_AUTOREFRESH=true
-    ZSH_TMUX_AUTOSTART=false
+    ZSH_TMUX_AUTOSTART=true
 fi
 
 # Source Oh My Zsh
