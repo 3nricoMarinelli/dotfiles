@@ -113,7 +113,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "InsertLeave" }, {
     -- and buffers without a file extension (dashboards, explorers, etc.)
     if buftype == "" and ext ~= "" and filetype ~= "fterm" then
       vim.fn.matchadd("Todo", "TODO")
-      vim.fn.matchadd("Todo", [[\vFIX(-?ME)?]])
+      vim.fn.matchadd("Todo", [[\<FIX\(ME\|-ME\)\?\>]])
       -- Add other keywords here
     end
   end,
