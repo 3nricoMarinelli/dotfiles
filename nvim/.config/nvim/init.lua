@@ -6,6 +6,11 @@
 vim.g.start_time = vim.fn.reltime()
 vim.loader.enable() --  SPEEEEEEEEEEED 
 
+-- This prevents Vim from creating a netrw buffer for directory arguments
+-- Netrw is replaced by Neo-tree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Plugin manager backend: lazy.nvim
 require("core.lazy")
 

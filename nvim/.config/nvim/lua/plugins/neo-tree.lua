@@ -84,10 +84,7 @@ require("neo-tree").setup({
       nowait = true,
     },
     mappings = {
-      ["<space>"] = {
-        "toggle_node",
-        nowait = false,
-      },
+      ["<space>"] = false,  -- Disable space to allow <leader> mappings
       ["<2-LeftMouse>"] = "open",
       ["<cr>"] = "open",
       ["<esc>"] = "cancel",
@@ -149,10 +146,11 @@ require("neo-tree").setup({
       leave_dirs_open = false,
     },
     group_empty_dirs = false,
-    hijack_netrw_behavior = "open_default",
+    hijack_netrw_behavior = "disabled",
     use_libuv_file_watcher = false,
     window = {
       mappings = {
+        ["<space>"] = false,  -- Disable space to allow <leader> mappings
         ["<bs>"] = "navigate_up",
         ["."] = "set_root",
         ["H"] = "toggle_hidden",
