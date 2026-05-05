@@ -13,4 +13,4 @@ keybind = command+k=text:\x0c
 font-family = "UbuntuMono Nerd Font"
 font-thicken = true
 font-thicken-strength = 31
-font-size = 19
+font-size = 18
