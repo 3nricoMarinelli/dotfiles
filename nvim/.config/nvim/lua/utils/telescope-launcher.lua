@@ -35,8 +35,11 @@ function M.open_files()
     },
     attach_mappings = function(prompt_bufnr, map)
       map("i", "<Tab>", function()
+        -- Use schedule_wrap to ensure picker closes completely before opening next
         actions.close(prompt_bufnr)
-        M.open_grep()
+        vim.schedule(function()
+          M.open_grep()
+        end)
       end)
       return true
     end,
@@ -68,8 +71,11 @@ function M.open_grep()
     },
     attach_mappings = function(prompt_bufnr, map)
       map("i", "<Tab>", function()
+        -- Use schedule_wrap to ensure picker closes completely before opening next
         actions.close(prompt_bufnr)
-        M.open_files()
+        vim.schedule(function()
+          M.open_files()
+        end)
       end)
       return true
     end,
