@@ -58,8 +58,13 @@ dashboard.section.buttons.val = {
   dashboard.button("t", "󰙅  Tree", ":lua alpha_open_tree_fullscreen()<CR>"),
   dashboard.button(
     "f",
-    "󰱼  Finder",
+    "󰱼  Filename Finder",
     ":lua pcall(require('utils.telescope-launcher').startup)<CR>"
+  ),
+  dashboard.button(
+    "g",
+    "󰱼  Grep Finder",
+    ":lua pcall(require('utils.telescope-launcher').open_grep)<CR>"
   ),
   dashboard.button("q", "󰅙  Quit", ":q!<CR>"),
 }
