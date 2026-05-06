@@ -41,6 +41,11 @@ function M.open_files()
           M.open_grep()
         end)
       end)
+      -- Preview navigation with Shift+arrow keys
+      map("i", "<S-Up>", actions.preview_scrolling_up)
+      map("i", "<S-Down>", actions.preview_scrolling_down)
+      map("i", "<S-Left>", actions.preview_scrolling_left)
+      map("i", "<S-Right>", actions.preview_scrolling_right)
       return true
     end,
   })
@@ -77,6 +82,11 @@ function M.open_grep()
           M.open_files()
         end)
       end)
+      -- Preview navigation with Shift+arrow keys
+      map("i", "<S-Up>", actions.preview_scrolling_up)
+      map("i", "<S-Down>", actions.preview_scrolling_down)
+      map("i", "<S-Left>", actions.preview_scrolling_left)
+      map("i", "<S-Right>", actions.preview_scrolling_right)
       return true
     end,
   })
