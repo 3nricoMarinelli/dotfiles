@@ -5,7 +5,6 @@ wk.add({
   -- ============================================================================
   { "<leader>u", desc = "open url" },
   { "<leader>z", desc = "floating terminal" },
-  { "<leader>w", desc = "write file" },
   { "<leader>W", desc = "toggle wrap" },
   { "<leader>R", desc = "replace all" },
   { "<leader>nn", desc = "toggle relative nums" },
@@ -15,9 +14,9 @@ wk.add({
   -- ============================================================================
   -- BUFFERS (remapped for LSP compatibility)
   -- ============================================================================
-  -- NOTE: <leader>q is now LSP diagnostics (see LSP section)
+  -- NOTE: <leader>q is now buffer close (see BUFFERS section)
   --       <leader>p is now workspace symbols (see LSP section)
-  { "<leader>x", desc = "close buffer" },
+  { "<leader>q", desc = "close buffer" },
   { "<leader>Q", desc = "force quit" },
   { "<leader>U", desc = "close all buffers" },
   { "<leader>v", desc = "vsplit buffer" },
@@ -38,13 +37,12 @@ wk.add({
   { "<leader>Fl", desc = "find .local" },
   { "<leader>Ff", desc = "find parent" },
   { "<leader>Fr", desc = "resume" },
-  { "<leader>gg", desc = "live grep" },
-  { "<leader>gw", desc = "grep word" },
 
   -- ============================================================================
   -- SEARCH / REPLACE
   -- ============================================================================
-  { "<leader>s", group = "search/replace" },
+  { "<leader>s", desc = "live grep" },
+  { "<leader>Sr", desc = "search/replace all" },
 
   -- ============================================================================
   -- COMMENTS
@@ -56,20 +54,20 @@ wk.add({
   -- GIT / VERSION CONTROL
   -- ============================================================================
   { "<leader>g", group = "git" },
-  { "<leader>gs", desc = "git status" },
-  { "<leader>gc", desc = "git commit" },
-  { "<leader>gu", desc = "git pull" },
-  { "<leader>gp", desc = "git push" },
+  { "<leader>gs", desc = "status" },
+  { "<leader>gc", desc = "commit" },
+  { "<leader>gu", desc = "pull" },
+  { "<leader>gp", desc = "push" },
   { "<leader>gd", desc = "diff open" },
   { "<leader>gD", desc = "diff close" },
-  { "<leader>gh", desc = "file history" },
-  { "<leader>ga", desc = "stage hunk" },
-  { "<leader>gU", desc = "unstage hunk" },
-  { "<leader>gr", desc = "reset hunk" },
-  { "<leader>gv", desc = "preview hunk" },
-  { "<leader>gb", desc = "blame line" },
-  { "<leader>gj", desc = "next hunk" },
-  { "<leader>gk", desc = "prev hunk" },
+  { "<leader>gh", desc = "history" },
+  { "<leader>ga", desc = "stage" },
+  { "<leader>gU", desc = "unstage" },
+  { "<leader>gr", desc = "reset" },
+  { "<leader>gv", desc = "preview" },
+  { "<leader>gb", desc = "blame" },
+  { "<leader>gj", desc = "next" },
+  { "<leader>gk", desc = "prev" },
 
   -- ============================================================================
   -- LSP (UNIFIED ACROSS ALL LANGUAGES)
@@ -94,7 +92,7 @@ wk.add({
 
   -- Diagnostics
   { "<leader>lx", desc = "list diagnostics" },
-  { "<leader>q", desc = "list diagnostics" },
+  { "<leader>x", desc = "list diagnostics" },
 
   -- ============================================================================
   -- C/C++ TOOLS

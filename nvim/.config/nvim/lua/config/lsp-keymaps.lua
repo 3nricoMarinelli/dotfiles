@@ -16,7 +16,7 @@
 --   <leader>lt   - Type definitions
 --   <leader>lr   - References
 --   <leader>lx   - Diagnostics (Telescope)
---   <leader>q    - Diagnostics (alias, cacharle style)
+--   <leader>x    - Diagnostics (alias, cacharle style)
 --   <leader>p    - Workspace symbols (Telescope)
 --   [d / ]d      - Navigate diagnostics (prev/next)
 
@@ -90,10 +90,10 @@ function M.apply(bufnr)
   -- List Diagnostics (multiple aliases for consistency)
   if has_telescope then
     vim.keymap.set("n", "<leader>lx", "<cmd>Telescope diagnostics<CR>", opts)
-    vim.keymap.set("n", "<leader>q", "<cmd>Telescope diagnostics<CR>", opts) -- cacharle style
+    vim.keymap.set("n", "<leader>x", "<cmd>Telescope diagnostics<CR>", opts) -- cacharle style
   else
     vim.keymap.set("n", "<leader>lx", vim.diagnostic.setloclist, opts)
-    vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
+    vim.keymap.set("n", "<leader>x", vim.diagnostic.setloclist, opts)
   end
 end
 

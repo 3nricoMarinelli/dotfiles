@@ -19,9 +19,8 @@ km.register("n", "<S-l>", ":bnext<CR>", "next buffer")
 km.register("n", "<S-h>", ":bprevious<CR>", "prev buffer")
 km.register("n", "<C-S-Right>", ":bnext<CR>", "next buffer (alt)")
 km.register("n", "<C-S-Left>", ":bprevious<CR>", "prev buffer (alt)")
-km.register("n", "<leader>x", ":BufferClose<CR>", "close buffer")
-km.register("n", "<leader>Q", ":qa!<CR>", "force quit nvim")
-km.register("n", "<leader>U", ":bufdo bd<CR>", "close ALL buffers")
+km.register("n", "<leader>q", ":qa!<CR>", "force quit nvim")
+km.register("n", "<leader>u", ":bufdo bd<CR>", "close ALL buffers")
 km.register("n", "<leader>v", ":vsplit<CR>:bnext<CR>", "vsplit next buf")
 
 -- Vanilla Neovim: Windows
@@ -49,6 +48,14 @@ km.register("n", "<leader>nn", function()
 end, "toggle relative nums")
 
 -- Vanilla Neovim: Search & Replace
+km.register("n", "<leader>s", ":Telescope live_grep<CR>", "live grep", { group = "search/replace" })
+km.register(
+  "n",
+  "<leader>Sr",
+  ":%s//g<Left><Left>",
+  "search/replace all",
+  { group = "search/replace" }
+)
 km.register("n", "<leader>R", ":%s//g<Left><Left>", "replace all")
 
 -- Vanilla Neovim: Text Formatting
@@ -107,14 +114,6 @@ km.register(
   { group = "telescope" }
 )
 km.register("n", "<leader>Fr", ":Telescope resume<CR>", "telescope resume", { group = "telescope" })
-km.register("n", "<leader>gg", ":Telescope live_grep<CR>", "grep", { group = "grep" })
-km.register(
-  "n",
-  "<leader>gw",
-  ":lua require('telescope.builtin').grep_string()<CR>",
-  "grep word under cursor",
-  { group = "grep" }
-)
 
 -- Plugins: Comment.nvim
 km.register("n", "<leader>/", function()
@@ -139,44 +138,44 @@ km.register(
 -- Plugins: Neogit (git interface)
 km.register("n", "<leader>gs", function()
   require("neogit").open({ kind = "tab" })
-end, "git status", { group = "git" })
+end, "status")
 km.register("n", "<leader>gc", function()
   require("neogit").action("Commit", "commit", {})()
-end, "git commit", { group = "git" })
+end, "commit")
 km.register("n", "<leader>gu", function()
   require("neogit").action("Pull", "pull", {})()
-end, "git pull", { group = "git" })
+end, "pull")
 km.register("n", "<leader>gp", function()
   require("neogit").action("Push", "push", {})()
-end, "git push", { group = "git" })
+end, "push")
 
 -- Plugins: Diffview (git diff visualization)
-km.register("n", "<leader>gd", ":DiffviewOpen<CR>", "diff open", { group = "git" })
-km.register("n", "<leader>gD", ":DiffviewClose<CR>", "diff close", { group = "git" })
-km.register("n", "<leader>gh", ":DiffviewFileHistory<CR>", "file history", { group = "git" })
+km.register("n", "<leader>gd", ":DiffviewOpen<CR>", "diff open")
+km.register("n", "<leader>gD", ":DiffviewClose<CR>", "diff close")
+km.register("n", "<leader>gh", ":DiffviewFileHistory<CR>", "history")
 
 -- Plugins: Gitsigns (git signs + hunks)
 km.register("n", "<leader>ga", function()
   require("gitsigns").stage_hunk()
-end, "stage hunk", { group = "git" })
+end, "stage")
 km.register("n", "<leader>gU", function()
   require("gitsigns").undo_stage_hunk()
-end, "undo stage hunk", { group = "git" })
+end, "unstage")
 km.register("n", "<leader>gr", function()
   require("gitsigns").reset_hunk()
-end, "reset hunk", { group = "git" })
+end, "reset")
 km.register("n", "<leader>gv", function()
   require("gitsigns").preview_hunk()
-end, "preview hunk", { group = "git" })
+end, "preview")
 km.register("n", "<leader>gb", function()
   require("gitsigns").blame_line({ full = true })
-end, "blame line", { group = "git" })
+end, "blame")
 km.register("n", "<leader>gj", function()
   require("gitsigns").next_hunk()
-end, "next hunk", { group = "git" })
+end, "next")
 km.register("n", "<leader>gk", function()
   require("gitsigns").prev_hunk()
-end, "prev hunk", { group = "git" })
+end, "prev")
 
 -- Plugins: Neo-tree (file explorer)
 km.register(
@@ -187,9 +186,6 @@ km.register(
   { group = "tree" }
 )
 km.register("n", "T", ":Neotree filesystem toggle<CR>", "toggle tree")
-
--- Plugins: Miscellaneous UI
-km.register("n", "<leader>w", ":w<CR>", "write file")
 
 -- Plugins: FTerm (floating terminal)
 km.register("n", "<leader>z", ":lua require('FTerm').open()<CR>", "floating terminal")
