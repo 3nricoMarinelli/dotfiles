@@ -30,8 +30,8 @@ if _G.rust_lsp_setup_done then
 end
 
 local on_attach = function(client, bufnr)
-  -- Apply unified LSP keybindings from lsp-keymaps module
-  require("config.lsp-keymaps").apply(bufnr)
+  -- Apply unified LSP setup from centralized config
+  require("lsp").on_attach(client, bufnr)
 end
 
 function M.setup()

@@ -29,6 +29,9 @@ pcall(require, "bufdelete")
 
 -- Lazy load LSP per language (cacharle's approach)
 -- Setup on first FileType event, then start LSP immediately
+-- Centralized LSP configuration hub
+require("lsp").setup()
+
 local c_cpp_lsp_loaded = false
 local cmake_loaded = false
 local gtest_loaded = false
@@ -36,11 +39,11 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "c", "cpp" },
   callback = function(args)
     if not c_cpp_lsp_loaded then
-      require("plugins.c-cpp-lsp").setup()
+      require("lsp.c-cpp").setup()
       c_cpp_lsp_loaded = true
     end
     -- Start LSP for this buffer
-    require("plugins.c-cpp-lsp").start_lsp(args.buf)
+    require("lsp.c-cpp").start_lsp(args.buf)
 
     -- Load CMake and GTest on first C/C++ file
     if not cmake_loaded then
@@ -65,10 +68,10 @@ vim.api.nvim_create_autocmd("FileType", {
     end
 
     if not python_lsp_loaded then
-      require("plugins.python-lsp").setup()
+      require("lsp.python").setup()
       python_lsp_loaded = true
     end
-    require("plugins.python-lsp").start_lsp(args.buf)
+    require("lsp.python").start_lsp(args.buf)
   end,
 })
 
@@ -77,7 +80,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "rust",
   callback = function(args)
     if not rust_lsp_loaded then
-      require("plugins.rust-lsp").setup()
+      require("lsp.rust").setup()
       rust_lsp_loaded = true
     end
     -- rustaceanvim handles LSP automatically
@@ -89,10 +92,10 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "typst",
   callback = function(args)
     if not typst_lsp_loaded then
-      require("plugins.typst-lsp").setup()
+      require("lsp.typst").setup()
       typst_lsp_loaded = true
     end
-    require("plugins.typst-lsp").start_lsp(args.buf)
+    require("lsp.typst").start_lsp(args.buf)
   end,
 })
 

@@ -30,8 +30,8 @@ if _G.typst_lsp_setup_done then
 end
 
 local on_attach = function(client, bufnr)
-  -- Apply unified LSP keybindings from lsp-keymaps module
-  require("config.lsp-keymaps").apply(bufnr)
+  -- Apply unified LSP setup from centralized config
+  require("lsp").on_attach(client, bufnr)
 
   local opts = { buffer = bufnr, noremap = true, silent = true }
 
@@ -43,7 +43,7 @@ end
 function M.setup()
   require("config.diagnostics").apply("lsp_clean_insert")
 
-  local capabilities = require("config.lsp-common").capabilities()
+  local capabilities = require("lsp").capabilities()
 
   -- Store config for later use
   M.lsp_config = {

@@ -55,8 +55,8 @@ end
 
 -- Keybindings attached when pylsp connects to a buffer
 local function on_attach(client, bufnr)
-  -- Apply unified LSP keybindings from lsp-keymaps module
-  require("config.lsp-keymaps").apply(bufnr)
+  -- Apply unified LSP setup from centralized config
+  require("lsp").on_attach(client, bufnr)
 
   local opts = { buffer = bufnr, noremap = true, silent = true }
 
@@ -89,7 +89,7 @@ local pylsp_settings = {
 function M.setup()
   require("config.diagnostics").apply("lsp_clean_insert")
 
-  local capabilities = require("config.lsp-common").capabilities()
+  local capabilities = require("lsp").capabilities()
 
   -- Register keybindings via LspAttach (fires for pylsp only)
   vim.api.nvim_create_autocmd("LspAttach", {
@@ -141,7 +141,7 @@ function M.start_lsp(bufnr)
         bufnr,
         { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" }
       ),
-      capabilities = require("config.lsp-common").capabilities(),
+      capabilities = require("lsp").capabilities(),
       settings = settings,
     }, { bufnr = bufnr })
   end

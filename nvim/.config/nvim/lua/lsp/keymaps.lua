@@ -18,6 +18,7 @@
 --   <leader>lx   - Diagnostics (Telescope)
 --   <leader>x    - Diagnostics (alias, cacharle style)
 --   <leader>p    - Workspace symbols (Telescope)
+--   <leader>lh   - Toggle inlay hints (Neovim 0.12+)
 --   [d / ]d      - Navigate diagnostics (prev/next)
 
 local M = {}
@@ -95,6 +96,15 @@ function M.apply(bufnr)
     vim.keymap.set("n", "<leader>lx", vim.diagnostic.setloclist, opts)
     vim.keymap.set("n", "<leader>x", vim.diagnostic.setloclist, opts)
   end
+
+  -- ============================================================================
+  -- ADVANCED FEATURES (Neovim 0.12+)
+  -- ============================================================================
+
+  -- Hints Toggle (Neovim 0.12+)
+  vim.keymap.set("n", "<leader>lh", function()
+    require("lsp.hints").toggle_inlay_hints()
+  end, opts)
 end
 
 return M

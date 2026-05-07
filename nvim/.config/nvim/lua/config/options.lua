@@ -57,7 +57,7 @@ vim.cmd([[highlight SpecialKeyword term=bold cterm=reverse gui=reverse]])
 require("config.diagnostics").apply("default")
 
 -- Set up LSP handlers for split view (before any LSP server starts)
-require("config.lsp-common").setup_handlers()
+require("lsp.common").setup_handlers()
 
 -- Clipboard through SSH handling
 if vim.env.SSH_TTY ~= nil then
