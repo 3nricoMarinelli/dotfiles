@@ -19,7 +19,14 @@ if [[ -d /opt/homebrew/opt/openssl@3 ]]; then
 fi
 
 # --------------------------------------------
-# macOS-specific functions
+# alias
+# --------------------------------------------
+
+# use Apple Intelligence as a basic local llm model chat
+alias llm="apfel --chat"
+
+# --------------------------------------------
+# functions
 # --------------------------------------------
 
 # Switch to x86 Homebrew (Rosetta)
