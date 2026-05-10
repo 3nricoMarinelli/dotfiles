@@ -34,7 +34,6 @@ plugins=(
     pylint
     ssh
     sudo
-    timer
     universalarchive
     virtualenv
     wd
