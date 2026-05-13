@@ -63,6 +63,8 @@ brew "gstreamer"
 brew "hf", link: false
 brew "hub-tool"
 brew "jless"
+brew "lazydocker"
+brew "lazygit"
 brew "libzzip"
 brew "llvm"
 brew "log4cxx"
