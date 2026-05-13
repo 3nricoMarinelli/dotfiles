@@ -1,2 +1,3 @@
 .zshenv
 tmux/.tmux/plugins/*
+lazy-lock.json
