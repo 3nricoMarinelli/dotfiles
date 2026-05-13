@@ -66,6 +66,7 @@ dashboard.section.buttons.val = {
     "󰱼  Grep Finder",
     ":lua pcall(require('utils.telescope-launcher').open_grep)<CR>"
   ),
+  dashboard.button("d", "󰊢  Git Status", ":Neogit<CR>"),
   dashboard.button("q", "󰅙  Quit", ":q!<CR>"),
 }
 

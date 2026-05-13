@@ -148,13 +148,9 @@ return {
     end,
   },
   {
-    "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
-  },
-  {
     "NeogitOrg/neogit",
     cmd = "Neogit",
-    dependencies = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim" },
+    dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       require("plugins.neogit")
     end,
