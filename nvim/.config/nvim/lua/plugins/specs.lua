@@ -88,6 +88,10 @@ return {
       require("plugins.render-markdown")
     end,
   },
+  {
+    "vimpostor/vim-tpipeline",
+    event = { "VimEnter" },
+  },
 
   -- Navigation / files / terminal
   { "MunifTanjim/nui.nvim" },
