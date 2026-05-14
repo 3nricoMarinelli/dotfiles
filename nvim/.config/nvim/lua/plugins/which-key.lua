@@ -137,17 +137,6 @@ wk.add({
   { "<leader>md", desc = "delete output" },
 
   -- ============================================================================
-  -- OPENCODE (AI ASSISTANT)
-  -- ============================================================================
-  { "<leader>o", group = "opencode" },
-  { "<leader>ot", desc = "toggle embedded" },
-  { "<leader>oa", desc = "ask about" },
-  { "<leader>o+", desc = "add prompt" },
-  { "<leader>oe", desc = "explain code" },
-  { "<leader>on", desc = "new session" },
-  { "<leader>os", desc = "select prompt" },
-
-  -- ============================================================================
   -- NORMAL MODE KEYBINDINGS (non-<leader> prefix)
   -- ============================================================================
   { "[d", desc = "prev diagnostic" },

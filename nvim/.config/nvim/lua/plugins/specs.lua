@@ -245,23 +245,6 @@ return {
       require("plugins.ipynb")
     end,
   },
-  {
-    "NickvanDyke/opencode.nvim",
-    cmd = { "OpenCode" },
-    keys = {
-      { "<leader>ot", mode = { "n", "v" }, desc = "Toggle embedded" },
-      { "<leader>oa", mode = { "n", "v" }, desc = "Ask about this" },
-      { "<leader>o+", mode = { "n", "v" }, desc = "Add to prompt" },
-      { "<leader>oe", mode = { "n", "v" }, desc = "Explain code" },
-      { "<leader>on", mode = { "n", "v" }, desc = "New session" },
-      { "<S-C-u>", mode = { "n" }, desc = "Messages up" },
-      { "<S-C-d>", mode = { "n" }, desc = "Messages down" },
-      { "<leader>os", mode = { "n", "v" }, desc = "Select prompt" },
-    },
-    config = function()
-      require("plugins.opencode")
-    end,
-  },
 
   -- Shared deps / language extras
   { "nvim-lua/plenary.nvim" },
