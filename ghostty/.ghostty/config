@@ -1,4 +1,4 @@
-background-opacity = 0.84
+background-opacity = 0.9
 theme = Espresso
 
 clipboard-read = allow
@@ -12,5 +12,5 @@ keybind = command+k=text:\x0c
 
 font-family = "UbuntuMono Nerd Font"
 font-thicken = true
-font-thicken-strength = 31
+font-thicken-strength = 35
 font-size = 18
