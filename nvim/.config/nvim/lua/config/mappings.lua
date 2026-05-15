@@ -69,43 +69,31 @@ km.register("n", "<A-p>", "<Cmd>BufferPin<CR>", "pin/unpin buffer")
 km.register("n", "<AS-h>", "<Cmd>BufferMovePrevious<CR>", "move buffer left")
 km.register("n", "<AS-l>", "<Cmd>BufferMoveNext<CR>", "move buffer right")
 
--- Plugins: Telescope
+-- Plugins: Telescope (git-root aware with Tab toggle)
+-- <leader>f - Files in git root (or cwd), Tab toggles to grep
+-- <leader>s - Grep in git root (or cwd), Tab toggles to files
+-- Git root detection: finds first .git in parent dirs, falls back to cwd
 km.register(
   "n",
   "<leader>f",
-  ":Telescope find_files<CR>",
-  "telescope files cwd",
+  ":lua require('utils.git-root-search').open_files()<CR>",
+  "files (git root)",
   { group = "telescope" }
 )
 km.register(
   "n",
-  "<leader>Fh",
-  ":lua require('telescope.builtin').find_files({ cwd = '~/' })<CR>",
-  "telescope files home",
-  { group = "telescope" }
+  "<leader>s",
+  ":lua require('utils.git-root-search').open_grep()<CR>",
+  "grep (git root)",
+  { group = "search" }
 )
 km.register(
   "n",
-  "<leader>Fc",
-  ":lua require('telescope.builtin').find_files({ cwd = '~/.config' })<CR>",
-  "telescope files .config",
-  { group = "telescope" }
+  "<leader>G",
+  ":lua require('utils.git-root-search').open_grep()<CR>",
+  "grep (git root)",
+  { group = "search" }
 )
-km.register(
-  "n",
-  "<leader>Fl",
-  ":lua require('telescope.builtin').find_files({ cwd = '~/.local/src' })<CR>",
-  "telescope files .local/src",
-  { group = "telescope" }
-)
-km.register(
-  "n",
-  "<leader>Ff",
-  ":lua require('telescope.builtin').find_files({ cwd = '..' })<CR>",
-  "telescope files parent",
-  { group = "telescope" }
-)
-km.register("n", "<leader>Fr", ":Telescope resume<CR>", "telescope resume", { group = "telescope" })
 
 -- Plugins: Comment.nvim
 km.register("n", "<leader>/", function()

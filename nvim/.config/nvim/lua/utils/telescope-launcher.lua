@@ -1,95 +1,28 @@
 -- telescope-launcher: Wrapper around telescope for startup picker with Tab toggle
--- Lazy-loads Telescope on first use
--- Tab toggles between file name search and file content search
--- Preview pane takes 50% of screen horizontally
+-- DEPRECATED: Use git-root-search.lua instead for consistent git-root behavior
+-- Kept for backward compatibility, but new code should use git-root-search.lua
+--
+-- This file is maintained for reference and can be removed after full migration
+-- to git-root-search.lua across all entry points (mappings, dashboard, commands)
+
+local git_root_search = require("utils.git-root-search")
 
 local M = {}
 
 -- Main launcher: Start with Files picker
 function M.startup()
-  M.open_files()
+  git_root_search.startup()
 end
 
 -- Open Files picker with Tab toggle to Grep
 function M.open_files()
-  local ok, builtin = pcall(require, "telescope.builtin")
-  if not ok then
-    vim.notify("telescope not yet loaded", vim.log.levels.WARN)
-    return
-  end
-
-  local ok_actions, actions = pcall(require, "telescope.actions")
-  if not ok_actions then
-    vim.notify("telescope.actions not available", vim.log.levels.WARN)
-    return
-  end
-
-  builtin.find_files({
-    layout_strategy = "horizontal",
-    layout_config = {
-      horizontal = {
-        width = 0.99,
-        height = 0.99,
-        preview_width = 0.5,
-      },
-    },
-    attach_mappings = function(prompt_bufnr, map)
-      map("i", "<Tab>", function()
-        -- Use schedule_wrap to ensure picker closes completely before opening next
-        actions.close(prompt_bufnr)
-        vim.schedule(function()
-          M.open_grep()
-        end)
-      end)
-      -- Preview navigation with Shift+arrow keys
-      map("i", "<S-Up>", actions.preview_scrolling_up)
-      map("i", "<S-Down>", actions.preview_scrolling_down)
-      map("i", "<S-Left>", actions.preview_scrolling_left)
-      map("i", "<S-Right>", actions.preview_scrolling_right)
-      return true
-    end,
-  })
+  git_root_search.open_files()
 end
 
 -- Open Live Grep picker with Tab toggle back to Files
 function M.open_grep()
-  local ok, builtin = pcall(require, "telescope.builtin")
-  if not ok then
-    vim.notify("telescope not yet loaded", vim.log.levels.WARN)
-    return
-  end
-
-  local ok_actions, actions = pcall(require, "telescope.actions")
-  if not ok_actions then
-    vim.notify("telescope.actions not available", vim.log.levels.WARN)
-    return
-  end
-
-  builtin.live_grep({
-    layout_strategy = "horizontal",
-    layout_config = {
-      horizontal = {
-        width = 0.99,
-        height = 0.99,
-        preview_width = 0.5,
-      },
-    },
-    attach_mappings = function(prompt_bufnr, map)
-      map("i", "<Tab>", function()
-        -- Use schedule_wrap to ensure picker closes completely before opening next
-        actions.close(prompt_bufnr)
-        vim.schedule(function()
-          M.open_files()
-        end)
-      end)
-      -- Preview navigation with Shift+arrow keys
-      map("i", "<S-Up>", actions.preview_scrolling_up)
-      map("i", "<S-Down>", actions.preview_scrolling_down)
-      map("i", "<S-Left>", actions.preview_scrolling_left)
-      map("i", "<S-Right>", actions.preview_scrolling_right)
-      return true
-    end,
-  })
+  git_root_search.open_grep()
 end
 
 return M
+

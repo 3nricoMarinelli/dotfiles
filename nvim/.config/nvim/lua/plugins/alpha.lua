@@ -59,14 +59,14 @@ dashboard.section.buttons.val = {
   dashboard.button(
     "f",
     "󰱼  Filename Finder",
-    ":lua pcall(require('utils.telescope-launcher').startup)<CR>"
+    ":lua pcall(require('utils.git-root-search').startup)<CR>"
   ),
   dashboard.button(
-    "g",
+    "G",
     "󰱼  Grep Finder",
-    ":lua pcall(require('utils.telescope-launcher').open_grep)<CR>"
+    ":lua pcall(require('utils.git-root-search').open_grep)<CR>"
   ),
-  dashboard.button("d", "󰊢  Git Status", ":Neogit<CR>"),
+  dashboard.button("g", "󰊢  Git Status", ":Neogit<CR>"),
   dashboard.button("q", "󰅙  Quit", ":q!<CR>"),
 }
 
