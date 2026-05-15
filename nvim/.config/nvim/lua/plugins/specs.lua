@@ -142,6 +142,31 @@ return {
       require("plugins.comment")
     end,
   },
+  {
+    "kkoomen/vim-doge",
+    ft = {
+      -- C/C++
+      "c",
+      "cpp",
+      "h",
+      "hpp",
+      "cc",
+      "cxx",
+      -- Python
+      "python",
+      -- Lua
+      "lua",
+      -- Rust
+      "rust",
+      -- Bash/Shell
+      "bash",
+      "sh",
+      "zsh",
+    },
+    config = function()
+      require("plugins.vim-doge")
+    end,
+  },
 
   -- Git
   {
