@@ -38,7 +38,7 @@ km.register("n", "<F7>", ":vertical resize +2<CR>", "increase width")
 km.register("n", "<F8>", ":vertical resize -2<CR>", "decrease width")
 
 -- Vanilla Neovim: Line Numbers
-km.register("n", "<leader>nn", function()
+km.register("n", "<leader>n", function()
   if vim.wo.relativenumber then
     vim.wo.relativenumber = false
     vim.wo.number = true
@@ -48,14 +48,6 @@ km.register("n", "<leader>nn", function()
 end, "toggle relative nums")
 
 -- Vanilla Neovim: Search & Replace
-km.register("n", "<leader>s", ":Telescope live_grep<CR>", "live grep", { group = "search/replace" })
-km.register(
-  "n",
-  "<leader>Sr",
-  ":%s//g<Left><Left>",
-  "search/replace all",
-  { group = "search/replace" }
-)
 km.register("n", "<leader>R", ":%s//g<Left><Left>", "replace all")
 
 -- Vanilla Neovim: Text Formatting
@@ -118,21 +110,23 @@ km.register("n", "<leader>Fr", ":Telescope resume<CR>", "telescope resume", { gr
 -- Plugins: Comment.nvim
 km.register("n", "<leader>/", function()
   require("Comment.api").toggle.linewise.current()
-end, "comment line", { group = "comment" })
+end, "comment line", { group = "docs" })
 km.register("n", "<leader>?", function()
   require("Comment.api").toggle.blockwise.current()
-end, "comment block", { group = "comment" })
+end, "comment block", { group = "docs" })
 km.register(
   "v",
   "<leader>/",
   "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
-  "comment selection"
+  "comment selection",
+  { group = "docs" }
 )
 km.register(
   "v",
   "<leader>?",
   "<ESC><CMD>lua require('Comment.api').toggle.blockwise(vim.fn.visualmode())<CR>",
-  "comment block selection"
+  "comment block selection",
+  { group = "docs" }
 )
 
 -- Plugins: Neogit (git interface)
@@ -174,21 +168,16 @@ km.register("n", "T", ":Neotree filesystem toggle<CR>", "toggle tree")
 km.register("n", "<leader>z", ":lua require('FTerm').open()<CR>", "floating terminal")
 km.register("t", "<Esc>", "<C-\\><C-n><CMD>lua require('FTerm').close()<CR>", "close terminal")
 
--- Plugins: File operations
-km.register("n", "<leader>m", ":!mv % ", "move file")
-
 -- Plugins: lazy.nvim
 km.register("n", "<leader>P", ":Lazy sync<CR>", "plugins sync")
 
--- Plugins: CMake (C/C++)
-km.register("n", "<leader>cg", ":CMakeGenerate<CR>", "cmake generate", { group = "cmake" })
-km.register("n", "<leader>cb", ":CMakeBuild<CR>", "cmake build", { group = "cmake" })
+-- Plugins: vim-doge (documentation generation)
+km.register("n", "<leader>d", function()
+  vim.fn["doge#generate"]()
+end, "generate doc comment", { group = "docs" })
 
 -- Plugins: Python (breakpoint management, namespaced to <leader>p*)
 -- <leader>pb and <leader>pB are set dynamically in python-lsp.lua on attach
-
--- Plugins: GoogleTest (C/C++)
-km.register("n", "<leader>ct", ":GTestRunUnderCursor<CR>", "gtest run", { group = "cmake" })
 
 -- Plugins: Typst (compilation, namespaced to <leader>t*)
 -- <leader>tc and <leader>tw are set dynamically in typst-lsp.lua on attach

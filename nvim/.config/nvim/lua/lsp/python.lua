@@ -12,23 +12,27 @@
 --   isort         - import sorting (requires python-lsp-isort)
 --   pylint        - disabled (use ruff via nvim-lint instead)
 --
--- LSP Keybindings (unified, see lsp-keymaps.lua):
---   <leader>ld / <leader>]  - Go to definition
---   K                        - Hover documentation
---   <leader>lk / gk         - Signature help
---   <leader>r / <leader>rn  - Rename symbol
---   <leader>la              - Code actions
---   <leader>li              - Implementations
---   <leader>lt              - Type definitions
---   <leader>lD / <leader>[  - Declarations
---   <leader>lr              - References
---   <leader>lx / <leader>q  - Diagnostics (Telescope)
---   <leader>p               - Workspace symbols (Telescope)
---   [d / ]d                 - Navigate diagnostics
+-- LSP Keybindings (unified, see lsp/keymaps.lua):
+--   <leader>ld   - Go to definition
+--   <leader>lD   - Declarations
+--   <leader>ln   - Rename symbol
+--   <leader>la   - Code actions
+--   <leader>li   - Implementations
+--   <leader>lt   - Type definitions
+--   <leader>lk   - Signature help
+--   <leader>lr   - References
+--   <leader>lx   - Diagnostics (Telescope)
+--   K            - Hover documentation
+--   [d / ]d      - Navigate diagnostics
 --
--- Python-specific (breakpoint management):
---   <leader>pb  - Add breakpoint() at current line
---   <leader>pB  - Delete all breakpoint() lines
+-- DAP Keybindings (debugging, see dap/keymaps.lua):
+--   <leader>Db   - Toggle breakpoint
+--   <leader>Dc   - Continue / Start debugging
+--   <leader>Do   - Step over
+--   <leader>Di   - Step into
+--   <leader>DO   - Step out
+--   <leader>Dq   - Terminate session
+--   <leader>Du   - Toggle DAP UI
 
 local M = {}
 
@@ -58,13 +62,40 @@ local function on_attach(client, bufnr)
   -- Apply unified LSP setup from centralized config
   require("lsp").on_attach(client, bufnr)
 
-  local opts = { buffer = bufnr, noremap = true, silent = true }
+  -- Apply DAP keybindings (debugging)
+  require("dap.keymaps").apply(bufnr)
 
-  -- Python-specific: breakpoint management (namespaced to <leader>p*)
-  -- Note: <leader>p is already mapped to workspace symbols via lsp-keymaps
-  -- Using <leader>pb / <leader>pB for breakpoint operations
-  vim.keymap.set("n", "<leader>pb", "obreakpoint()<esc>", opts)
-  vim.keymap.set("n", "<leader>pB", ":g/^\\s*breakpoint()$/d<cr>", opts)
+  -- Setup DAP Python adapter (deferred to ensure dap.adapters exists)
+  -- Defer by 200ms to let DAP core fully initialize
+  -- Wrap in pcall to gracefully handle if dap.adapters isn't ready yet
+  vim.defer_fn(function()
+    if _G.dap_python_setup_done then
+      return  -- Already set up
+    end
+    
+    local dap_python_ok, dap_python = pcall(require, "dap-python")
+    if not dap_python_ok then
+      return  -- dap-python not available
+    end
+    
+    -- Try to set up Python adapter; gracefully handle if dap.adapters isn't ready
+    local ok, err = pcall(function()
+      local mason_debugpy = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+      if vim.fn.executable(mason_debugpy) == 1 then
+        dap_python.setup(mason_debugpy)
+      else
+        dap_python.setup("python3")
+      end
+    end)
+    
+    if ok then
+      _G.dap_python_setup_done = true
+    else
+      -- Setup failed (likely dap.adapters not ready), but don't crash
+      -- User can manually run: :lua require("dap-python").setup("python3")
+      -- when they're ready to debug
+    end
+  end, 200)
 end
 
 -- Shared pylsp settings (NeuralNine-style: more plugins enabled)

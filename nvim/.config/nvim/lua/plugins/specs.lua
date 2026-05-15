@@ -271,7 +271,7 @@ return {
     "GCBallesteros/jupytext.nvim",
     ft = { "python", "ipynb", "quarto" },
     config = function()
-      require("plugins.ipynb")
+      require("plugins.python")
     end,
   },
 

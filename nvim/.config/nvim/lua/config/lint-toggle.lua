@@ -1,13 +1,27 @@
--- Linting Toggle Configuration
--- Keeps current behavior: lint always runs on write (see autocmd.lua).
--- This toggle controls *extra* lint triggers on text-change/insert-leave.
+-- Linting Configuration
+-- Linting is available in supported languages: python, c, cpp
+-- Use ruff for Python, clang-tidy + cppcheck for C/C++
+--
+-- Linting keybindings:
+--   <leader>ll  - Show lint diagnostics (buffer-scoped, only in supported filetypes)
+-- 
+-- This file configures:
+--   - Linting on save (always enabled for supported filetypes)
+--   - Extra linting on text-change/insert-leave (toggle via :ToggleLint)
 
-vim.g.lint_enabled = false -- disabled by default
+-- Supported languages for linting
+local LINTER_LANGS = {
+  python = true,
+  c = true,
+  cpp = true,
+}
+
+vim.g.lint_enabled = false -- disabled by default (only lint on save)
 
 local function toggle_lint()
   if vim.g.lint_enabled then
     vim.g.lint_enabled = false
-    vim.notify("Extra lint-on-change disabled (write lint stays on)", vim.log.levels.INFO)
+    vim.notify("Extra lint-on-change disabled (save lint stays on)", vim.log.levels.INFO)
   else
     vim.g.lint_enabled = true
     vim.notify("Extra lint-on-change enabled", vim.log.levels.INFO)
@@ -15,14 +29,13 @@ local function toggle_lint()
 end
 
 vim.api.nvim_create_user_command("ToggleLint", toggle_lint, {})
--- Use <leader>ll to avoid overlap with tree prefix (<leader>t)
-vim.keymap.set("n", "<leader>ll", toggle_lint, { desc = "Toggle linting" })
 
--- Extra linting autocmd - only runs if explicitly enabled.
+-- Extra linting autocmd - only runs if explicitly enabled, and only in supported filetypes.
 vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
-  group = vim.api.nvim_create_augroup("LintOnSave", { clear = false }),
+  group = vim.api.nvim_create_augroup("LintOnChange", { clear = true }),
   callback = function()
-    if vim.g.lint_enabled then
+    local filetype = vim.bo.filetype
+    if vim.g.lint_enabled and LINTER_LANGS[filetype] then
       require("lint").try_lint()
     end
   end,
