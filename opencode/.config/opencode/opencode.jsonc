@@ -137,7 +137,28 @@
         "swarmmail_*": "allow",
         "hivemind_*": "allow",
         "cass_*": "allow",
-        "ubs_*": "allow"
+        "ubs_*": "allow",
+        "bash": {
+          "git*": "ask",
+          "git *": "ask",
+          "hub*": "ask",
+          "gh*": "ask",
+          "*": "allow"
+        },
+        "write": {
+          "**/*.md": "ask",
+          "**/*.mdx": "ask",
+          "**/*.rst": "ask",
+          "**/*.txt": "ask",
+          "*": "allow"
+        },
+        "edit": {
+          "**/*.md": "ask",
+          "**/*.mdx": "ask",
+          "**/*.rst": "ask",
+          "**/*.txt": "ask",
+          "*": "allow"
+        }
       }
     },
 
@@ -165,7 +186,28 @@
       "permission": {
         "task": { "*": "allow" },
         "hive_*": "allow",
-        "swarm_*": "allow"
+        "swarm_*": "allow",
+        "bash": {
+          "git*": "ask",
+          "git *": "ask",
+          "hub*": "ask",
+          "gh*": "ask",
+          "*": "allow"
+        },
+        "write": {
+          "**/*.md": "ask",
+          "**/*.mdx": "ask",
+          "**/*.rst": "ask",
+          "**/*.txt": "ask",
+          "*": "allow"
+        },
+        "edit": {
+          "**/*.md": "ask",
+          "**/*.mdx": "ask",
+          "**/*.rst": "ask",
+          "**/*.txt": "ask",
+          "*": "allow"
+        }
       }
     },
 
@@ -175,13 +217,66 @@
       "description": "Documentation writer - README, API docs, changelogs",
       "permission": {
         "write": {
-          "**/*.md": "allow",
-          "**/*.mdx": "allow",
-          "**/*.rst": "allow",
+          "**/*.md": "ask",
+          "**/*.mdx": "ask",
+          "**/*.rst": "ask",
           "*": "deny"
         },
         "task": { "*": "allow" },
-        "swarm_*": "allow"
+        "swarm_*": "allow",
+        "bash": {
+          "git*": "ask",
+          "git *": "ask",
+          "hub*": "ask",
+          "gh*": "ask",
+          "*": "allow"
+        },
+        "edit": {
+          "**/*.md": "ask",
+          "**/*.mdx": "ask",
+          "**/*.rst": "ask",
+          "**/*.txt": "ask",
+          "*": "allow"
+        }
+      }
+    },
+
+    // ─── PRIMARY: Efficient ────────────────────────────────────────────────────
+    "efficient": {
+      "description": "Lightweight agent for simple, quick tasks without swarm overhead",
+      "mode": "primary",
+      "prompt": "{file:./agents/efficient.md}",
+      "tools": {
+        "write": false,
+        "edit": true,
+        "bash": false,
+        "glob": true,
+        "grep": true,
+        "read": true,
+        "question": true
+      },
+      "permission": {
+        "bash": {
+          "git*": "ask",
+          "git *": "ask",
+          "hub*": "ask",
+          "gh*": "ask",
+          "*": "allow"
+        },
+        "write": {
+          "**/*.md": "ask",
+          "**/*.mdx": "ask",
+          "**/*.rst": "ask",
+          "**/*.txt": "ask",
+          "*": "allow"
+        },
+        "edit": {
+          "**/*.md": "ask",
+          "**/*.mdx": "ask",
+          "**/*.rst": "ask",
+          "**/*.txt": "ask",
+          "*": "allow"
+        }
       }
     }
   }
