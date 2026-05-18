@@ -1,13 +1,154 @@
-build-essential
-cmake
-git
-curl
-wget
-tmux
-neovim
-python3
-tree
-stow
-fzf
-shellcheck
-ripgrep
+sudo apt install -y \
+    ant \
+    autoconf \
+    astyle \
+    bear \
+    binutils \
+    binutils-arm-none-eabi \
+    bison \
+    build-essential \
+    can-utils \
+    ccache \
+    clang \
+    clang-format \
+    clang-tidy \
+    cmake \
+    console-bridge-dev \
+    coreutils \
+    cpio \
+    cppcheck \
+    debianutils \
+    device-tree-compiler \
+    dfu-util \
+    docker-buildx \
+    docker-compose \
+    docker.io \
+    dotnet-sdk-8.0 \
+    dpkg-dev \
+    exiftool \
+    fd-find \
+    findutils \
+    flex \
+    freeglut3-dev \
+    fswatch \
+    fzf \
+    g++ \
+    gawk \
+    gcc \
+    gcc-arm-none-eabi \
+    gcc-multilib \
+    gdb-arm-none-eabi \
+    gdb-multiarch \
+    geany \
+    git \
+    git-lfs \
+    golang \
+    graphviz \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-tools \
+    gtkterm \
+    htop \
+    i2c-tools \
+    iproute2 \
+    iputils-ping \
+    jq \
+    libabsl-dev \
+    libasio-dev \
+    libassimp-dev \
+    libboost-all-dev \
+    libbullet-dev \
+    libcunit1-dev \
+    libegl1-mesa \
+    libegl1-mesa-dev \
+    libeigen3-dev \
+    libftgl-dev \
+    libfreetype6-dev \
+    libglew-dev \
+    libglfw3-dev \
+    liblog4cxx-dev \
+    libncurses-dev \
+    libncurses5-dev \
+    libnewlib-arm-none-eabi \
+    libopenal-dev \
+    libopencv-dev \
+    liborocos-kdl-dev \
+    libpcre3-dev \
+    libpoco-dev \
+    libqwt-qt5-dev \
+    libsdl1.2-dev \
+    libselinux1 \
+    libspdlog-dev \
+    libssl-dev \
+    libtinyxml2-dev \
+    libtool \
+    libusb-1.0-0-dev \
+    libxml2-dev \
+    libqt5quickwidgets5 \
+    libqt5serialport5-dev \
+    libqt5svg5-dev \
+    libqt5webkit5-dev \ # or qtwebengine5-dev
+    libqt5websockets5-dev \
+    libqt5x11extras5-dev \
+    libx11-dev \
+    lldb \
+    llvm \
+    minicom \
+    mold \
+    ncdu \
+    net-tools \
+    neovim \
+    ninja-build \
+    nmap \
+    nodejs \
+    npm \
+    nvtop \
+    ollama \
+    openjdk-17-jdk \
+    openocd \
+    openssh-server \
+    opencv-data \
+    pax \
+    picocom \
+    pipx \
+    pkg-config \
+    python3 \
+    python3-git \
+    python3-jinja2 \
+    python3-numpy \
+    python3-pexpect \
+    python3-pip \
+    python3-pylint-common \
+    pyenv \
+    qemu-system \
+    qt5-qmake \
+    qtbase5-dev \
+    qtbase5-dev-tools \
+    qtchooser \
+    qtcreator \
+    qtdeclarative5-dev \
+    qtmultimedia5-dev \
+    ripgrep \
+    ruby \
+    screen \
+    shellcheck \
+    socat \
+    spi-tools \
+    stow \
+    texinfo \
+    tmux \
+    tree \
+    u-boot-tools \
+    unzip \
+    usbutils \
+    valgrind \
+    vim \
+    wakeonlan \
+    watch \
+    wget \
+    wireshark \
+    xauth \
+    xterm \
+    xz-utils \
+    zbar-tools \
+    zlib1g-dev

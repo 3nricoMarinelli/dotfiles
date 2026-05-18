@@ -1,35 +1,59 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ###############################################################################
-# Fresh Terminal Setup Script
-# Sets up: zsh, oh-my-zsh, powerlevel10k, fzf, ncdu, python, tmux, lazyvim
+# Embedded / Robotics Workstation Setup
 #
-# Installation Order:
-# 1. System packages (git, curl, wget, cmake, ripgrep)
-# 2. Zsh (shell)
-# 3. Oh-My-Zsh (zsh framework)
-# 4. Zsh plugins (autosuggestions, syntax-highlighting)
-# 5. Powerlevel10k theme
-# 6. Utilities (fzf, ncdu, python3)
-# 7. Tmux + TPM (terminal multiplexer)
-# 8. Neovim (latest from tarball for LazyVim compatibility)
-# 9. Move custom dotfiles and robotics directory to home
-# 10. Change default shell to zsh
-# 11. Clean up: Remove dotfiles directory
+# Features:
+# - Ubuntu/Debian & macOS support
+# - zsh + oh-my-zsh + powerlevel10k
+# - tmux + TPM
+# - latest Neovim + LazyVim
+# - Ghostty terminal
+# - Ollama
+# - Embedded ARM toolchain
+# - Embedded Linux / Yocto tooling
+# - Robotics/dev tooling
+# - Dotfiles via GNU stow
+#
+# Usage:
+#   chmod +x setup.sh
+#   ./setup.sh
+#
 ###############################################################################
 
-set -e # Exit on any error
+set -Eeuo pipefail
 
-# Colors for output
+###############################################################################
+# Globals
+###############################################################################
+
+LOG_FILE="$HOME/setup.log"
+
+exec > >(tee -a "$LOG_FILE")
+exec 2>&1
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-SCRIPT_DIR="$(find $HOME -type d -name dotfiles)"
+NC='\033[0m'
+
+###############################################################################
+# Package Manager Configuration
+###############################################################################
+
+# Paths will be set relative to script directory
+APT_PACKAGES_FILE=""
+BREWFILE=""
+
+###############################################################################
+# Helpers
+###############################################################################
 
 print_step() {
-    echo -e "${BLUE}==>${NC} $1"
+    echo -e "\n${BLUE}==>${NC} $1"
 }
 
 print_success() {
@@ -44,373 +68,458 @@ print_error() {
     echo -e "${RED}✗${NC} $1"
 }
 
-# Check if running as root (should not)
-check_not_root() {
-    if [ "$EUID" -eq 0 ]; then
-        print_error "Please run this script as a normal user (not root)"
-        print_error "The script will prompt for sudo password when needed"
-        exit 1
-    fi
-}
-
-# Prompt for sudo password upfront to enable unattended installation
-acquire_sudo() {
-    print_step "This script requires sudo privileges for package installation."
-    print_step "You will be prompted for your password once."
-    echo ""
-
-    # Request sudo and keep it alive
-    if ! sudo -v; then
-        print_error "Failed to acquire sudo privileges. Exiting."
-        exit 1
-    fi
-
-    # Keep sudo alive in the background
-    (while true; do
-        sudo -n true
-        sleep 50
-        kill -0 "$$" || exit
-    done 2>/dev/null) &
-    SUDO_KEEPER_PID=$!
-
-    print_success "Sudo privileges acquired"
-}
-
-# Cleanup function to kill sudo keeper
 cleanup() {
-    if [ -n "$SUDO_KEEPER_PID" ]; then
+    if [[ -n "${SUDO_KEEPER_PID:-}" ]]; then
         kill "$SUDO_KEEPER_PID" 2>/dev/null || true
     fi
 }
+
 trap cleanup EXIT
 
-# Support only Ubuntu/Debian and macOS
-detect_package_manager() {
-    if command -v apt-get &>/dev/null; then
-        PKG_MANAGER="apt"
-        INSTALL_CMD="sudo apt-get install -y"
-        UPDATE_CMD="sudo apt-get update"
-    elif command -v brew &>/dev/null; then
-        PKG_MANAGER="brew"
-        INSTALL_CMD="brew install"
-        UPDATE_CMD="brew update"
-    else
-        print_error "No supported package manager found (apt or brew required)"
+###############################################################################
+# Checks
+###############################################################################
+
+check_not_root() {
+    if [[ "$EUID" -eq 0 ]]; then
+        print_error "Run this script as a normal user."
         exit 1
     fi
-    print_success "Detected package manager: $PKG_MANAGER"
 }
+
+detect_package_manager() {
+     if command -v apt-get &>/dev/null; then
+         PKG_MANAGER="apt"
+         print_success "Detected package manager: apt (Ubuntu/Debian)"
+     elif command -v brew &>/dev/null; then
+         PKG_MANAGER="brew"
+         print_success "Detected package manager: brew (macOS)"
+     else
+         print_error "Unsupported OS. Requires Ubuntu, Debian, or macOS with Homebrew."
+         exit 1
+     fi
+ }
+
+acquire_sudo() {
+    print_step "Acquiring sudo privileges..."
+
+    sudo -v
+
+    (
+        while true; do
+            sudo -n true
+            sleep 60
+            kill -0 "$$" || exit
+        done
+    ) &
+
+    SUDO_KEEPER_PID=$!
+
+    print_success "Sudo ready"
+}
+
+###############################################################################
+# System
+###############################################################################
 
 update_system() {
-    print_step "Updating system package lists..."
-    $UPDATE_CMD
-    print_success "System packages updated"
-}
+     print_step "Updating system..."
 
-install_git() {
-    print_step "Checking git..."
-    if command -v git &>/dev/null; then
-        print_success "git already installed"
-    else
-        $INSTALL_CMD git
-        print_success "git installed"
-    fi
-}
+     if [[ "$PKG_MANAGER" == "apt" ]]; then
+         sudo apt-get update || { print_error "Failed to update apt"; exit 1; }
+         sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y || { print_error "Failed to upgrade system"; exit 1; }
+     elif [[ "$PKG_MANAGER" == "brew" ]]; then
+         brew update || { print_error "Failed to update brew"; exit 1; }
+     fi
 
-install_curl_wget() {
-    print_step "Checking curl and wget..."
+     print_success "System updated"
+ }
 
-    if ! command -v curl &>/dev/null; then
-        $INSTALL_CMD curl
-        print_success "curl installed"
-    else
-        print_success "curl already installed"
-    fi
+install_packages_apt() {
+     print_step "Installing packages from apt/packages.txt..."
 
-    if ! command -v wget &>/dev/null; then
-        $INSTALL_CMD wget
-        print_success "wget installed"
-    else
-        print_success "wget already installed"
-    fi
-}
+     if [[ ! -f "$APT_PACKAGES_FILE" ]]; then
+         print_error "apt/packages.txt not found at $APT_PACKAGES_FILE"
+         exit 1
+     fi
 
-install_cmake() {
-    print_step "Checking cmake..."
-    if command -v cmake &>/dev/null; then
-        print_success "cmake already installed"
-    else
-        $INSTALL_CMD cmake
-        print_success "cmake installed"
-    fi
-}
+     # Execute the packages.txt file directly (it contains: sudo apt install -y ...)
+     # If any single package fails, apt will try to install the rest
+     bash "$APT_PACKAGES_FILE" || { print_warning "Some packages may have failed to install (continuing...)"; }
 
-install_ripgrep() {
-    print_step "Checking ripgrep (required for telescope)..."
-    if command -v rg &>/dev/null; then
-        print_success "ripgrep already installed"
-    else
-        $INSTALL_CMD ripgrep
-        print_success "ripgrep installed"
-    fi
-}
+     print_success "Packages installed (apt)"
+ }
 
-install_zsh() {
-    print_step "Checking zsh..."
-    if command -v zsh &>/dev/null; then
-        print_success "zsh already installed"
+install_packages_brew() {
+     print_step "Installing packages from brew/Brewfile..."
+
+     if [[ ! -f "$BREWFILE" ]]; then
+         print_error "brew/Brewfile not found at $BREWFILE"
+         exit 1
+     fi
+
+     # Use brew bundle to install from Brewfile
+     brew bundle install --file="$BREWFILE" || { print_error "Failed to install some packages (but continuing)"; }
+
+     print_success "Packages installed (brew)"
+ }
+
+install_all_packages() {
+     if [[ "$PKG_MANAGER" == "apt" ]]; then
+         install_packages_apt
+     elif [[ "$PKG_MANAGER" == "brew" ]]; then
+         install_packages_brew
+     fi
+ }
+
+
+
+###############################################################################
+# ZSH
+###############################################################################
+
+install_oh_my_zsh() {
+    if [[ -d "$HOME/.oh-my-zsh" ]]; then
+        print_success "oh-my-zsh already installed"
         return
     fi
 
-    $INSTALL_CMD zsh
-    hash -r 2>/dev/null || true
-
-    if command -v zsh &>/dev/null; then
-        print_success "zsh installed"
-    else
-        print_error "zsh installation failed"
-        exit 1
-    fi
-}
-
-install_oh_my_zsh() {
     print_step "Installing oh-my-zsh..."
-    if [ -d "$HOME/.oh-my-zsh" ]; then
-        print_warning "oh-my-zsh already installed, skipping..."
-    else
-        # Install oh-my-zsh unattended (won't change shell or start zsh)
-        RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-        print_success "oh-my-zsh installed"
-    fi
+
+    RUNZSH=no CHSH=no sh -c \
+        "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" \
+        "" --unattended
+
+    print_success "oh-my-zsh installed"
 }
 
 install_zsh_plugins() {
     print_step "Installing zsh plugins..."
 
-    ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+    local ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
-    # zsh-autosuggestions
-    if [ -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-        print_success "zsh-autosuggestions already installed"
-    else
-        git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-        print_success "zsh-autosuggestions installed"
+    if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]]; then
+        git clone \
+            https://github.com/zsh-users/zsh-autosuggestions \
+            "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
     fi
 
-    # zsh-syntax-highlighting
-    if [ -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-        print_success "zsh-syntax-highlighting already installed"
-    else
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-        print_success "zsh-syntax-highlighting installed"
+    if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]]; then
+        git clone \
+            https://github.com/zsh-users/zsh-syntax-highlighting \
+            "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
     fi
+
+    if [[ ! -d "$ZSH_CUSTOM/themes/powerlevel10k" ]]; then
+        git clone --depth=1 \
+            https://github.com/romkatv/powerlevel10k.git \
+            "$ZSH_CUSTOM/themes/powerlevel10k"
+    fi
+
+    print_success "zsh plugins installed"
 }
 
-install_powerlevel10k() {
-    print_step "Installing Powerlevel10k theme..."
+###############################################################################
+# Fonts
+###############################################################################
 
-    ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+install_fonts() {
+    print_step "Installing Meslo Nerd Fonts..."
 
-    if [ -d "$ZSH_CUSTOM/themes/powerlevel10k" ]; then
-        print_success "Powerlevel10k already installed"
-    else
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k"
-        print_success "Powerlevel10k installed"
-    fi
+    mkdir -p ~/.local/share/fonts
+
+    cd /tmp
+
+    wget -q \
+        https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
+
+    wget -q \
+        https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
+
+    wget -q \
+        https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
+
+    wget -q \
+        https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
+
+    mv ./*.ttf ~/.local/share/fonts/
+
+    fc-cache -fv
+
+    print_success "Fonts installed"
 }
 
-install_fzf() {
-    print_step "Checking fzf..."
-    hash -r 2>/dev/null || true
+###############################################################################
+# Ghostty
+###############################################################################
 
-    if command -v fzf &>/dev/null; then
-        print_success "fzf already installed"
-        return
-    fi
+ install_ghostty() {
+     if command -v ghostty &>/dev/null; then
+         print_success "Ghostty already installed"
+         return
+     fi
 
-    if [ "$PKG_MANAGER" = "apt" ] || [ "$PKG_MANAGER" = "brew" ]; then
-        $INSTALL_CMD fzf
-    else
-        # Fallback: install from git
-        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-        ~/.fzf/install --all --no-bash --no-fish
-    fi
+     print_step "Installing Ghostty..."
 
-    hash -r 2>/dev/null || true
-    print_success "fzf installed"
-}
+     TMP_DIR=$(mktemp -d)
+     cd "$TMP_DIR" || exit 1
 
-install_ncdu() {
-    print_step "Checking ncdu..."
-    if command -v ncdu &>/dev/null; then
-        print_success "ncdu already installed"
-    else
-        $INSTALL_CMD ncdu
-        print_success "ncdu installed"
-    fi
-}
+     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+         ARCH=$(dpkg --print-architecture)
+         if [[ "$ARCH" == "amd64" ]]; then
+             GHOSTTY_URL="https://release.files.ghostty.org/latest/ghostty-linux-x86_64.tar.gz"
+         else
+             GHOSTTY_URL="https://release.files.ghostty.org/latest/ghostty-linux-aarch64.tar.gz"
+         fi
 
-install_python() {
-    print_step "Checking Python..."
-    if command -v python3 &>/dev/null; then
-        print_success "Python already installed ($(python3 --version))"
-    else
-        if [ "$PKG_MANAGER" = "apt" ]; then
-            $INSTALL_CMD python3 python3-pip python3-venv
-        else
-            $INSTALL_CMD python3
-        fi
-        print_success "Python installed"
-    fi
-}
+         curl -LO "$GHOSTTY_URL" || { print_error "Failed to download Ghostty"; exit 1; }
+         tar -xzf ghostty-*.tar.gz || { print_error "Failed to extract Ghostty"; exit 1; }
+         sudo mv ghostty /opt/ghostty || { print_error "Failed to install Ghostty"; exit 1; }
+         sudo ln -sf /opt/ghostty/bin/ghostty /usr/local/bin/ghostty || exit 1
 
-install_tmux() {
-    print_step "Checking tmux..."
-    if command -v tmux &>/dev/null; then
-        print_success "tmux already installed ($(tmux -V))"
-    else
-        $INSTALL_CMD tmux
-        print_success "tmux installed"
-    fi
-}
+     elif [[ "$OSTYPE" == "darwin"* ]]; then
+         print_step "Installing Ghostty via Homebrew..."
+         brew install ghostty || { print_error "Failed to install Ghostty"; exit 1; }
+     fi
+
+     cd "$HOME" || exit 1
+     rm -rf "$TMP_DIR"
+
+     print_success "Ghostty installed"
+ }
+
+###############################################################################
+# Ollama
+###############################################################################
+
+ install_ollama() {
+     if command -v ollama &>/dev/null; then
+         print_success "Ollama already installed"
+         return
+     fi
+
+     print_step "Installing Ollama..."
+
+     curl -fsSL https://ollama.com/install.sh | sh || { print_error "Failed to install Ollama"; exit 1; }
+
+     if [[ "$PKG_MANAGER" == "apt" ]]; then
+         sudo systemctl enable ollama || { print_error "Failed to enable ollama service"; exit 1; }
+         sudo systemctl start ollama || { print_error "Failed to start ollama service"; exit 1; }
+     elif [[ "$PKG_MANAGER" == "brew" ]]; then
+         brew services start ollama || { print_error "Failed to start ollama service"; exit 1; }
+     fi
+
+     print_success "Ollama installed"
+ }
+
+###############################################################################
+# Neovim
+###############################################################################
+
+ install_neovim() {
+     if command -v nvim &>/dev/null; then
+         print_success "Neovim already installed"
+         return
+     fi
+
+     print_step "Installing latest Neovim..."
+
+     if [[ "$PKG_MANAGER" == "apt" ]]; then
+         TMP_DIR=$(mktemp -d)
+         cd "$TMP_DIR" || exit 1
+
+         curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz || { print_error "Failed to download Neovim"; exit 1; }
+
+         sudo rm -rf /opt/nvim
+         sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz || { print_error "Failed to extract Neovim"; exit 1; }
+         sudo mv /opt/nvim-linux-x86_64 /opt/nvim || { print_error "Failed to move Neovim"; exit 1; }
+         sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim || exit 1
+
+         rm -f nvim-linux-x86_64.tar.gz
+         cd "$HOME" || exit 1
+         rm -rf "$TMP_DIR"
+
+     elif [[ "$PKG_MANAGER" == "brew" ]]; then
+         brew install neovim || { print_error "Failed to install Neovim"; exit 1; }
+     fi
+
+     print_success "Neovim installed"
+ }
+
+ install_lazyvim() {
+     if [[ -d "$HOME/.config/nvim" ]]; then
+         print_warning "nvim config already exists"
+         return
+     fi
+
+     print_step "Installing LazyVim..."
+
+     git clone https://github.com/LazyVim/starter ~/.config/nvim || { print_error "Failed to clone LazyVim"; exit 1; }
+     rm -rf ~/.config/nvim/.git
+
+     print_success "LazyVim installed"
+ }
+
+###############################################################################
+# TPM
+###############################################################################
 
 install_tpm() {
-    print_step "Installing Tmux Plugin Manager (TPM)..."
-    if [ -d "$HOME/.tmux/plugins/tpm" ]; then
-        print_warning "TPM already installed, updating..."
-        cd "$HOME/.tmux/plugins/tpm" && git pull -q
-        cd "$HOME"
-    else
-        git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+    print_step "Installing TPM..."
+
+    if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
+        git clone \
+            https://github.com/tmux-plugins/tpm \
+            "$HOME/.tmux/plugins/tpm"
     fi
+
     print_success "TPM installed"
 }
 
-change_shell() {
-    print_step "Setting zsh as default shell..."
+###############################################################################
+# Dotfiles
+###############################################################################
 
-    ZSH_PATH=$(command -v zsh 2>/dev/null || echo "")
-
-    if [ -z "$ZSH_PATH" ]; then
-        for path in /usr/bin/zsh /bin/zsh /usr/local/bin/zsh; do
-            if [ -x "$path" ]; then
-                ZSH_PATH="$path"
-                break
-            fi
-        done
-    fi
-
-    if [ -z "$ZSH_PATH" ]; then
-        print_error "Cannot find zsh executable"
-        return 1
-    fi
-
-    print_success "Found zsh at: $ZSH_PATH"
-
-    if [ "$SHELL" = "$ZSH_PATH" ]; then
-        print_success "Default shell is already zsh"
+setup_dotfiles() {
+    if [[ ! -d "$SCRIPT_DIR" ]]; then
+        print_warning "No dotfiles directory found"
         return
     fi
 
-    # Ensure zsh is in /etc/shells
-    if ! grep -q "^${ZSH_PATH}$" /etc/shells 2>/dev/null; then
-        print_step "Adding zsh to /etc/shells..."
-        echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
-    fi
+    print_step "Applying dotfiles..."
 
-    # Change shell (may prompt for password on some systems)
-    if chsh -s "$ZSH_PATH"; then
-        print_success "Default shell changed to zsh"
-    else
-        print_warning "Could not change default shell automatically"
-        print_warning "Run manually: chsh -s $ZSH_PATH"
-    fi
-    zsh
-}
+    cd "$SCRIPT_DIR"
 
-install_stow() {
-    print_step "Checking stow..."
-    if command -v stow &>/dev/null; then
-        print_success "stow already installed"
-    else
-        $INSTALL_CMD stow
-        print_success "stow installed"
-    fi
-}
+    local packages=(
+        zsh
+        tmux
+        nvim
+        ghostty
+        git
+    )
 
-dotfiles_manager() {
-    print_step "Setting up dotfiles with stow..."
-    cd "${SCRIPT_DIR}"
-    local packages=(nvim tmux vim vscode zsh)
     for pkg in "${packages[@]}"; do
-        if [ -d "$pkg" ]; then
-            print_step "Stowing $pkg..."
-            stow -v --adopt --restow "$pkg"
+        if [[ -d "$pkg" ]]; then
+            print_step "Stowing $pkg"
+            stow --adopt --restow "$pkg"
         fi
     done
-    print_success "Dotfiles stowed successfully"
+
     cd "$HOME"
+
+    print_success "Dotfiles applied"
 }
 
-install_other_packages() {
-    if command -v brew &>/dev/null; then
-        cd "${SCRIPT_DIR}/brew"
-        brew bundle install
-    elif command -v apt &>/dev/null; then
-        cd "${SCRIPT_DIR}/apt"
-        xargs -a "packages.txt" sudo apt-get install -y
-    fi
-    cd "$HOME"
+###############################################################################
+# Shell
+###############################################################################
+
+ change_shell() {
+     local ZSH_PATH
+
+     ZSH_PATH=$(command -v zsh) || { print_error "zsh not found in PATH"; exit 1; }
+
+     if [[ "$SHELL" == "$ZSH_PATH" ]]; then
+         print_success "zsh already default shell"
+         return
+     fi
+
+     print_step "Changing default shell to zsh..."
+
+     if [[ "$PKG_MANAGER" == "apt" ]]; then
+         if ! grep -q "^${ZSH_PATH}$" /etc/shells; then
+             echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null || { print_error "Failed to add zsh to /etc/shells"; exit 1; }
+         fi
+         chsh -s "$ZSH_PATH" || { print_error "Failed to change shell"; exit 1; }
+
+     elif [[ "$PKG_MANAGER" == "brew" ]]; then
+         # macOS: chsh with brew zsh
+         chsh -s "$ZSH_PATH" || { print_error "Failed to change shell"; exit 1; }
+     fi
+
+     print_success "Default shell changed to zsh"
+ }
+
+###############################################################################
+# Summary
+###############################################################################
+
+summary() {
+    echo ""
+    echo "╔══════════════════════════════════════════════════════╗"
+    echo "║            Workstation Setup Complete               ║"
+    echo "╚══════════════════════════════════════════════════════╝"
+    echo ""
+
+    print_success "Embedded toolchain installed"
+    print_success "Robotics packages installed"
+    print_success "Ghostty installed"
+    print_success "Ollama installed"
+    print_success "LazyVim installed"
+    print_success "tmux + TPM installed"
+    print_success "zsh + p10k installed"
+
+    echo ""
+    echo "Reboot recommended."
+    echo ""
 }
 
-main() {
-    echo ""
-    echo "╔═══════════════════════════════════════════════════════════╗"
-    echo "║               Terminal Setup Script                       ║"
-    echo "║    	     zsh + oh-my-zsh + p10k + tmux	    	    ║"
-    echo "╚═══════════════════════════════════════════════════════════╝"
-    echo ""
+###############################################################################
+# Main
+###############################################################################
 
-    check_not_root
-    acquire_sudo
-    detect_package_manager
+ main() {
+     echo ""
+     echo "═══════════════════════════════════════════════════════"
+     echo " Embedded / Robotics Workstation Setup"
+     echo "═══════════════════════════════════════════════════════"
+     echo ""
 
-    echo ""
-    print_step "Starting installation..."
-    echo ""
+     # Initialize package file paths relative to this script
+     APT_PACKAGES_FILE="$(cd "$(dirname "$SCRIPT_DIR")" && pwd)/apt/packages.txt"
+     BREWFILE="$(cd "$(dirname "$SCRIPT_DIR")" && pwd)/brew/Brewfile"
 
-    update_system
-    install_git
-    install_curl_wget
-    install_cmake
-    install_ripgrep
-    install_stow
+     check_not_root
 
-    install_zsh
-    install_oh_my_zsh
-    install_zsh_plugins
-    install_powerlevel10k
+     detect_package_manager
 
-    install_fzf
-    install_ncdu
-    install_python
+     acquire_sudo
 
-    install_tmux
-    install_tpm
+     # =========================================================================
+     # SUDO BATCH (all privileged operations run back-to-back)
+     # =========================================================================
+     print_step "Phase 1: System & Package Installation (sudo)"
 
-    dotfiles_manager
-    install_other_packages
+     update_system
 
-    change_shell
+     install_all_packages
 
-    echo ""
-    echo "╔═══════════════════════════════════════════════════════════╗"
-    echo "║         Developer Environment Complete!                   ║"
-    echo "╚═══════════════════════════════════════════════════════════╝"
-    echo ""
-    print_success "All developer tools installed successfully!"
+     install_neovim
 
-}
+     install_ghostty
 
-main "$@"
-#reset
+     install_ollama
+
+     change_shell
+
+     # =========================================================================
+     # NON-SUDO BATCH (all user-level operations after sudo operations)
+     # =========================================================================
+     print_step "Phase 2: User Configuration (no sudo)"
+
+     install_oh_my_zsh
+
+     install_zsh_plugins
+
+     install_fonts
+
+     install_lazyvim
+
+     install_tpm
+
+     setup_dotfiles
+
+     summary
+ }
+
+ main "$@"
