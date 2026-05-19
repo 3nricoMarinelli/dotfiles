@@ -51,12 +51,12 @@ alias -g L='| less -R'         # Pipe to less with color support
 alias -g G='| grep --color=always'  # Pipe to grep with color preserved
 
 # macOS-specific global alias
-if [[ "$OS_FLAG" == "macos" ]]; then
+if [[ "$(uname)" == "Darwin" ]]; then
     export ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
     alias -g C='| pbcopy' # Copy output to clipboard
 fi
 
 # Linux-specific aliases
-if [[ "$OS_FLAG" == "linux" ]]; then
+if [[ "$(uname)" == "Linux" ]]; then
     alias bat="batcat"
 fi
