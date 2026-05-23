@@ -47,8 +47,8 @@ km.register("n", "<leader>n", function()
   end
 end, "toggle relative nums")
 
--- Vanilla Neovim: Search & Replace
-km.register("n", "<leader>R", ":%s//g<Left><Left>", "replace all")
+-- Vanilla Neovim: Search & Replace Everywhere Word under cursor
+km.register("n", "<leader>R", ":%s/<C-r><C-w>//g<Left><Left>", "replace word")
 
 -- Vanilla Neovim: Text Formatting
 km.register("v", "<leader>i", "=gv", "auto indent selection")
