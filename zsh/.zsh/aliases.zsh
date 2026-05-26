@@ -53,10 +53,11 @@ alias -g G='| grep --color=always'  # Pipe to grep with color preserved
 # macOS-specific global alias
 if [[ "$(uname)" == "Darwin" ]]; then
     export ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
-    alias -g C='| pbcopy' # Copy output to clipboard
+    alias -g C='| pbcopy'
 fi
 
 # Linux-specific aliases
 if [[ "$(uname)" == "Linux" ]]; then
     alias bat="batcat"
+    alias -g C='| xclip -selection clipboard'
 fi
