@@ -16,10 +16,7 @@
           },
           "models": {
               "{env:OLLAMA_LOADED_MODEL}": {
-                  "name": "Active: {env:OLLAMA_LOADED_MODEL}",
-                  "agent_settings": {
-                      "system_prompt_prefix": "CRITICAL INSTRUCTION: You are a local engineering agent running directly on the user's machine via OpenCode. YOU HAVE FULL, AUTHORIZED ACCESS TO THE LOCAL FILE SYSTEM. You MUST use the provided tools (like `write` and `bash`) to modify files directly. DO NOT tell the user to do it themselves. DO NOT claim you lack access."
-                  }
+                  "name": "Active: {env:OLLAMA_LOADED_MODEL}"
               }
           }
       },
