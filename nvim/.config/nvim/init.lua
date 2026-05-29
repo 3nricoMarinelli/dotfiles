@@ -99,4 +99,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+local matlab_lsp_loaded = false
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "matlab",
+  callback = function(args)
+    if not matlab_lsp_loaded then
+      require("lsp.matlab").setup()
+      matlab_lsp_loaded = true
+    end
+    require("lsp.matlab").start_lsp(args.buf)
+  end,
+})
+
 load_theme()
