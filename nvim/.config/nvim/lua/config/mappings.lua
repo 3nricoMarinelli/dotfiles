@@ -141,6 +141,9 @@ end, "next")
 km.register("n", "<leader>gk", function()
   require("gitsigns").prev_hunk()
 end, "prev")
+km.register("n", "<leader>gr", function()
+  require("gitsigns").reset_hunk()
+end, "reset")
 
 -- Plugins: Neo-tree (file explorer)
 km.register(
