@@ -22,6 +22,17 @@ alias tn='tmux new-session -s'
 alias tl='tmux list-session'
 alias ta='tmux attach-session'
 
+# NVIM
+alias s='v -c "SessionLoadLast"'
+alias f='v -c "lua require(\"utils.git-root-search\").open_files()"'
+alias F='v -c "lua require(\"utils.git-root-search\").open_grep()"'
+alias g='v -c "Neogit"'
+
+alias vs='s'
+alias vf='f'
+alias vF='F'
+alias vg='g'
+
 # --------------------------------------------
 # Suffix Aliases (Open files by extension)
 # --------------------------------------------

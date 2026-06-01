@@ -62,7 +62,7 @@ dashboard.section.buttons.val = {
     ":lua pcall(require('utils.git-root-search').startup)<CR>"
   ),
   dashboard.button(
-    "G",
+    "F",
     "󰱼  Grep Finder",
     ":lua pcall(require('utils.git-root-search').open_grep)<CR>"
   ),

@@ -82,14 +82,7 @@ km.register(
 )
 km.register(
   "n",
-  "<leader>s",
-  ":lua require('utils.git-root-search').open_grep()<CR>",
-  "grep (git root)",
-  { group = "search" }
-)
-km.register(
-  "n",
-  "<leader>G",
+  "<leader>F",
   ":lua require('utils.git-root-search').open_grep()<CR>",
   "grep (git root)",
   { group = "search" }
