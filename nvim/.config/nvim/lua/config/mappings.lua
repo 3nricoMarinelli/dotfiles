@@ -21,7 +21,7 @@ km.register("n", "<C-S-Right>", ":bnext<CR>", "next buffer (alt)")
 km.register("n", "<C-S-Left>", ":bprevious<CR>", "prev buffer (alt)")
 km.register("n", "<leader>q", ":qa!<CR>", "force quit nvim")
 km.register("n", "<leader>u", ":bufdo bd<CR>", "close ALL buffers")
-km.register("n", "<leader>v", ":vsplit<CR>:bnext<CR>", "vsplit next buf")
+km.register("n", "<leader>v", ":vsplit<CR>:bp<CR>", "vsplit next buf")
 
 -- Vanilla Neovim: Windows
 km.register("n", "<C-h>", "<C-w>h", "window left")

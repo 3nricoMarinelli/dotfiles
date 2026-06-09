@@ -14,7 +14,7 @@ alias storage='ncdu'
 alias v='nvim'
 alias gs='git status'
 alias gds='git diff --stat'
-alias o='opencode'
+alias o='cd /tmp/ && opencode'
 alias ol='ollama launch opencode'
 
 # TMUX
