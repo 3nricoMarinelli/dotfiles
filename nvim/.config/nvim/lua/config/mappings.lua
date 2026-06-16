@@ -20,6 +20,7 @@ km.register("n", "<S-h>", ":bprevious<CR>", "prev buffer")
 km.register("n", "<C-S-Right>", ":bnext<CR>", "next buffer (alt)")
 km.register("n", "<C-S-Left>", ":bprevious<CR>", "prev buffer (alt)")
 km.register("n", "<leader>q", ":qa!<CR>", "force quit nvim")
+km.register("n", "<leader>x", ":bd<CR>", "quit buffer")
 km.register("n", "<leader>u", ":bufdo bd<CR>", "close ALL buffers")
 km.register("n", "<leader>v", ":vsplit<CR>:bp<CR>", "vsplit next buf")
 
@@ -48,7 +49,10 @@ km.register("n", "<leader>n", function()
 end, "toggle relative nums")
 
 -- Vanilla Neovim: Search & Replace Everywhere Word under cursor
-km.register("n", "<leader>R", ":%s/<C-r><C-w>//g<Left><Left>", "replace word")
+km.register("n", "<leader>R", ":%s/<C-r><C-w>//g<Left><Left>", "search and replace")
+
+-- Vanilla Neovim: Replace Word
+km.register("n", "<leader>r", "ve\"_dP", "replace")
 
 -- Vanilla Neovim: Text Formatting
 km.register("v", "<leader>i", "=gv", "auto indent selection")
