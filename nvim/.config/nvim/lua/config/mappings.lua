@@ -49,7 +49,7 @@ km.register("n", "<leader>n", function()
 end, "toggle relative nums")
 
 -- Vanilla Neovim: Search & Replace Everywhere Word under cursor
-km.register("n", "<leader>R", ":%s/<C-r><C-w>//g<Left><Left>", "search and replace")
+km.register("n", "<leader>R", ":%s/<C-r><C-w>/<C-r><C-w>/g<Left><Left>", "search and replace")
 
 -- Vanilla Neovim: Replace Word
 km.register("n", "<leader>r", "ve\"_dP", "replace")
