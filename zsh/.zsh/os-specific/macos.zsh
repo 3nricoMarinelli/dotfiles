@@ -22,9 +22,6 @@ fi
 # alias
 # --------------------------------------------
 
-# use Apple Intelligence as a basic local llm model chat
-alias llm="apfel --chat"
-
 # --------------------------------------------
 # functions
 # --------------------------------------------
@@ -47,16 +44,6 @@ brew-arm() {
     else
         echo "ARM Homebrew not installed."
     fi
-}
-
-# Daily upgrade script
-daily_upgrade() {
-    brew update && brew upgrade
-    echo "\033[0;34m==>\033[0;1m Updating Neovim Plugins...\033[0m"
-    v --headless +PlugUpgrade +PlugUpdate > /dev/null 2>&1 < /dev/null &
-    nvimpid=$!
-    sleep 10
-    kill $nvimpid
 }
 
 brew() {
