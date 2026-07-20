@@ -65,6 +65,8 @@ function M.open_files()
         cwd = cwd,
         layout_strategy = "dynamic_orientation",
         layout_config = {},
+        no_ignore = true,
+        hidden = true,
         attach_mappings = function(prompt_bufnr, map)
             map("i", "<Tab>", function()
                 actions.close(prompt_bufnr)
