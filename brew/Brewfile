@@ -1,138 +1,269 @@
 tap "anomalyco/tap"
+tap "areofyl/fetch"
+tap "nikitabobko/tap", trusted: { casks: ["aerospace"] }
 tap "osx-cross/arm"
 tap "stripe/stripe-cli"
 tap "supabase/tap"
-tap "theboredteam/boring-notch"
+tap "theboredteam/boring-notch", "https://github.com/TheBoredTeam/homebrew-boring-notch"
+# C++ Common Libraries
 brew "abseil"
+# Software library to render fonts
 brew "freetype"
+# TIFF library and utilities
+brew "libtiff"
+# Java build tool
 brew "ant"
+# Apple Intelligence from the command-line, with OpenAi-compatible API server
 brew "apfel"
+# Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
+# Cross-platform C++ Library for asynchronous programming
 brew "asio"
+# Portable library for importing many well-known 3D model formats
 brew "assimp"
+# Source code beautifier for C, C++, C#, and Java
 brew "astyle"
+# Programmable completion for Bash 3.2
 brew "bash-completion"
+# Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Generate compilation database for clang tooling
 brew "bear"
+# GNU binary tools for native development
 brew "binutils"
+# Parser generator
 brew "bison"
+# Collection of portable C++ source libraries
 brew "boost@1.85"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
+# Physics SDK
 brew "bullet"
+# Object-file caching compiler wrapper
 brew "ccache"
+# C++ template library for linear algebra
 brew "eigen"
+# Package compiler and linker metadata toolkit
 brew "pkgconf"
+# Cross-platform make
 brew "cmake"
+# Documentation for CMake
 brew "cmake-docs"
+# Powerful, clean, object-oriented scripting language
 brew "ruby"
+# Dependency manager for Cocoa projects
 brew "cocoapods"
-brew "colima", restart_service: :changed
+# Container runtimes on MacOS (and Linux) with minimal setup
+brew "colima"
+# Robot Operating System-independent package for logging
 brew "console_bridge"
+# GNU File, Shell, and Text utilities
 brew "coreutils"
+# Improved tinyxml (in memory efficiency and size)
 brew "tinyxml2"
+# Static analysis of C and C++ code
 brew "cppcheck"
+# Shell script to build fancy DMGs
 brew "create-dmg"
+# Lightweight unit testing framework for C
 brew "cunit"
+# DDC monitor controls (brightness) for Mac OSX command-line
 brew "ddcctl"
+# Good-lookin' diffs with diff-highlight and more
 brew "diff-so-fancy"
+# Pack, ship and run any application as a lightweight container
 brew "docker"
+# Docker CLI plugin for extended build capabilities with BuildKit
 brew "docker-buildx"
+# Isolated development environments using Docker
 brew "docker-compose"
+# .NET Core
 brew "dotnet"
+# Debian package management system
 brew "dpkg"
+# Perl lib for reading and writing EXIF metadata
 brew "exiftool"
+# Simple, fast and user-friendly alternative to find
 brew "fd"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
+# Collection of GNU find, xargs, and locate
 brew "findutils"
+# Command-line tools for fly.io services
 brew "flyctl"
+# Monitor a directory for changes and run a shell command
 brew "fswatch"
+# C++ Functional Terminal User Interface
 brew "ftxui"
+# Command-line fuzzy finder written in Go
 brew "fzf"
+# Text-based UI library
 brew "ncurses"
+# Interpreted, interactive, object-oriented programming language
 brew "python@3.14"
+# GNU debugger
 brew "gdb", link: false
+# Open-source, cross-platform JavaScript runtime environment
 brew "node"
+# Interact with Google Gemini AI models from the command-line
 brew "gemini-cli"
+# GitHub command-line tool
 brew "gh"
+# Distributed revision control system
 brew "git"
+# Git extension for versioning large files
 brew "git-lfs"
+# OpenGL Extension Wrangler Library
 brew "glew"
+# Multi-platform library for OpenGL applications
 brew "glfw"
+# Open source programming language to build simple/reliable/efficient software
 brew "go"
+# Fast linters runner for Go
 brew "golangci-lint"
+# Graph visualization software from AT&T and Bell Labs
 brew "graphviz"
+# Development framework for multimedia applications
 brew "gstreamer"
-brew "hf", link: false
+# Client library for huggingface.co hub
+brew "hf"
+# Docker Hub experimental CLI tool
 brew "hub-tool"
+# Command-line pager for JSON data
 brew "jless"
+# Lazier way to manage everything docker
 brew "lazydocker"
+# Simple terminal UI for git commands
 brew "lazygit"
+# Library providing read access on ZIP-archives
 brew "libzzip"
+# Next-gen compiler infrastructure
 brew "llvm"
+# Library of C++ classes for flexible logging
 brew "log4cxx"
+# Man-page inspired Markdown viewer
 brew "mandown"
+# Menu-driven communications program
 brew "minicom"
+# Modern Linker
 brew "mold"
+# Deep clean and optimize your Mac
 brew "mole"
+# NCurses Disk Usage
 brew "ncdu"
-brew "neofetch"
+# Incremental parsing library
 brew "tree-sitter"
+# Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Small build system for use with gyp or CMake
 brew "ninja"
+# Port scanning utility for large networks
 brew "nmap"
+# Package for scientific computing with Python
 brew "numpy"
+# Prompt theme engine for any shell
 brew "oh-my-posh"
-brew "ollama"
-brew "onefetch"
+# Open source computer vision library
 brew "opencv"
+# Development kit for the Java programming language
 brew "openjdk@17"
+# Orocos Kinematics and Dynamics C++ library
 brew "orocos-kdl"
+# Perl compatible regular expressions library
 brew "pcre"
+# Execute binaries from Python packages in isolated environments
 brew "pipx"
+# C++ class libraries for building network and internet-based applications
 brew "poco"
+# Python version management
 brew "pyenv"
+# Generic syntax highlighter
 brew "pygments", link: false
+# Cross-platform application and UI framework
 brew "qt@5"
+# Python bindings for v5 of Qt
 brew "pyqt@5"
+# Python interface to Tcl/Tk
 brew "python-tk@3.14"
+# Generic machine emulator and virtualizer
 brew "qemu"
+# Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Experimental Rust compiler front-end for IDEs
 brew "rust-analyzer"
+# Terminal multiplexer with VT100/ANSI terminal emulation
 brew "screen"
+# Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
+# Tool to create Python bindings for C and C++ libraries
 brew "sip"
+# SOcket CAT: netcat on steroids
 brew "socat"
+# Super fast C++ logging library
 brew "spdlog"
+# Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
+# Free software distribution for the TeX typesetting system
 brew "texlive"
+# Terminal multiplexer
 brew "tmux"
+# Command-line translator using Google Translate and more
 brew "translate-shell"
+# Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Parser generator tool
 brew "tree-sitter-cli"
+# Markup-based typesetting system
 brew "typst"
+# Universal boot loader
 brew "u-boot-tools"
+# Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
+# Vi 'workalike' with many additional features
 brew "vim"
+# Simple terminal image viewer written in Rust
 brew "viu"
+# Sends magic packets to wake up network-devices
 brew "wakeonlan"
+# Executes a program periodically, showing output fullscreen
 brew "watch"
+# Internet file retriever
 brew "wget"
+# GNU compiler collection for x86_64-elf
 brew "x86_64-elf-gcc"
+# X.Org Applications: xauth
 brew "xauth"
+# Feature-rich command-line audio/video downloader
+brew "yt-dlp"
+# Suite of barcodes-reading tools
 brew "zbar"
-brew "anomalyco/tap/opencode"
-brew "osx-cross/arm/arm-gcc-bin@13", link: true
-brew "stripe/stripe-cli/stripe"
-brew "supabase/tap/supabase"
+# Command-line tools for building and debugging Android apps
 cask "android-commandlinetools"
-cask "theboredteam/boring-notch/boring-notch"
+cask "boring-notch"
+# Brings the power of Copilot coding agent directly to your terminal
+cask "copilot-cli"
+# App to build and share containerised applications and microservices
 cask "docker-desktop"
+# Online diagram software
+cask "drawio"
+# UI toolkit for building applications for mobile, web and desktop
 cask "flutter"
+# Pre-built GNU bare-metal toolchain for 64-bit Arm processors
 cask "gcc-aarch64-embedded"
+# Pre-built GNU bare-metal toolchain for 32-bit Arm processors
 cask "gcc-arm-embedded"
+# Window manager
+cask "loop"
+# Virtual machines UI using QEMU
 cask "utm"
+# Open-source version of the X.Org X Window System
 cask "xquartz"
-go "github.com/golangci/golangci-lint/cmd/golangci-lint"
-go "golang.org/x/tools/gopls"
-go "github.com/securego/gosec/v2/cmd/gosec"
-go "github.com/lemonade-command/lemonade"
-go "mvdan.cc/sh/v3/cmd/shfmt"
-go "honnef.co/go/tools/cmd/staticcheck"
+uv "mlx-lm"
+npm "@anthropic-ai/claude-code"
+npm "@earendil-works/pi-coding-agent"
+npm "@embedder/embedder"
+npm "firebase-tools"
+npm "opencode-swarm-plugin"
+npm "pnpm"
+npm "ts-node"
+npm "typescript"

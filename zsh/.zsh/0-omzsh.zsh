@@ -11,6 +11,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
     battery
     branch
+    colored-man-pages
     common-aliases
     command-not-found
     colorize
