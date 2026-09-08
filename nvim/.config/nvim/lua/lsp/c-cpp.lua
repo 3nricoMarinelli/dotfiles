@@ -32,69 +32,69 @@
 
 local M = {}
 
--- Guard to prevent multiple setups
-if _G.c_cpp_lsp_setup_done then
-  return M
+function M.project_root(bufnr)
+  return vim.fs.root(bufnr or 0, {
+    "CMakeLists.txt",
+    "CMakeUserPresets.json",
+    "vcpkg.json",
+    ".git",
+  }) or vim.fn.getcwd()
 end
 
-local on_attach = function(client, bufnr)
-  -- Apply unified LSP setup from centralized config
-  require("lsp").on_attach(client, bufnr)
-
-  -- Apply DAP keybindings (debugging)
-  require("dap.keymaps").apply(bufnr)
-
-  -- Apply build system keybindings (CMake)
-  require("build.keymaps").apply(bufnr)
-end
-
-function M.setup()
-  -- Use clean-insert profile: verbose in normal mode, clean while typing
-  require("config.diagnostics").apply("lsp_clean_insert")
-
-  -- Get capabilities for autocompletion
-  local capabilities = require("lsp").capabilities()
-
-  -- Store config for later use
-  M.lsp_config = {
-    name = "clangd",
-    cmd = {
-      "clangd",
-      "--background-index", -- index in background
-      "--clang-tidy", -- Enable clang-tidy checks!
-      "--header-insertion=iwyu", -- Include what you use
-      "--completion-style=detailed",
-      "--function-arg-placeholders",
-      "--fallback-style=llvm",
-      "--pch-storage=memory", -- store precompiled headers in memory
-    },
-    root_dir = vim.fs.root(0, { ".clangd", "compile_commands.json", ".git" }),
-    capabilities = capabilities,
+function M.build_dir(root)
+  local candidates = {
+    root .. "/build-local",
+    root .. "/build",
   }
 
-  -- Set up LspAttach autocmd for keybindings
-  vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(attach_args)
-      local client = vim.lsp.get_client_by_id(attach_args.data.client_id)
-      if client and client.name == "clangd" then
-        on_attach(client, attach_args.buf)
-      end
-    end,
-  })
-
-  _G.c_cpp_lsp_setup_done = true
-end
-
-function M.start_lsp(bufnr)
-  if not M.lsp_config then
-    vim.notify("C/C++ LSP not configured, run setup() first", vim.log.levels.ERROR)
-    return
+  for _, dir in ipairs(candidates) do
+    if vim.uv.fs_stat(dir .. "/compile_commands.json") then
+      return dir
+    end
   end
 
-  -- Use vim.lsp.start for reliable LSP starting
-  local config = vim.deepcopy(M.lsp_config)
-  config.root_dir = vim.fs.root(bufnr, { ".clangd", "compile_commands.json", ".git" })
-  vim.lsp.start(config, { bufnr = bufnr })
+  -- Default for a project that has not been configured yet.
+  return root .. "/build-local"
 end
+
+function M.clangd_cmd(root)
+  return {
+    "clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--header-insertion=iwyu",
+    "--completion-style=detailed",
+    "--function-arg-placeholders",
+    "--fallback-style=llvm",
+    "--pch-storage=memory",
+    "--compile-commands-dir=" .. M.build_dir(root),
+  }
+end
+
+function M.cmake_configure(root)
+  local build_dir = root .. "/build-local"
+
+  return {
+    "cmake",
+    "-S", root,
+    "-B", build_dir,
+    "-G", "Ninja",
+    "-DCMAKE_BUILD_TYPE=Debug",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+  }
+end
+
+function M.cmake_build(root)
+  return {
+    "cmake",
+    "--build",
+    root .. "/build-local",
+  }
+end
+
+M.clangd = "clangd"
+M.cmake_generator = "Ninja"
+M.vcpkg_root = os.getenv("VCPKG_ROOT")
+M.vcpkg_triplet = os.getenv("VCPKG_TRIPLET")
 
 return M

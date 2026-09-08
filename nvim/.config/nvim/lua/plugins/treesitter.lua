@@ -17,7 +17,7 @@ local parsers = {
   "typst",
 }
 
-require("nvim-treesitter.configs").setup({
+require("nvim-treesitter").setup({
   ensure_installed = parsers,
   auto_install = true,
   highlight = { enable = true },

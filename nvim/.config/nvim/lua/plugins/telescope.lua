@@ -14,7 +14,6 @@ require("telescope").setup({
         "fd",
         "--type",
         "f",
-        "--hidden",
         "--follow",
         "--exclude",
         ".git",
