@@ -20,5 +20,12 @@ fi
 # Tmux nesting
 if [[ -n "$TMUX" ]]; then
     unalias tmux 2>/dev/null
-    eval 'tmux() { _disabled; }'
+    # If already inside tmux, check if the command is safe (e.g., attaching or listing).
+    eval 'tmux() {
+        if [[ "$#" -gt 0 ]]; then
+            command tmux "$@"
+        else
+            _disabled
+        fi
+    }'
 fi
