@@ -19,6 +19,38 @@ local function find_git_root()
   end
 end
 
+local function get_ignore_files(cwd)
+  local ignore_files = {}
+  local global_ignore = vim.fn.stdpath("config") .. "/.telescopeignore"
+  local local_ignore = cwd .. "/.telescopeignore"
+
+  if vim.fn.filereadable(global_ignore) == 1 then
+    table.insert(ignore_files, global_ignore)
+  end
+  if vim.fn.filereadable(local_ignore) == 1 then
+    table.insert(ignore_files, local_ignore)
+  end
+  return ignore_files
+end
+
+local function get_fd_command(cwd)
+  local cmd = { "fd", "--type", "f", "--follow", "--hidden" }
+  for _, file in ipairs(get_ignore_files(cwd)) do
+    table.insert(cmd, "--ignore-file")
+    table.insert(cmd, file)
+  end
+  return cmd
+end
+
+local function get_rg_args(cwd)
+  local args = { "--hidden", "--follow" }
+  for _, file in ipairs(get_ignore_files(cwd)) do
+    table.insert(args, "--ignore-file")
+    table.insert(args, file)
+  end
+  return args
+end
+
 -- Open Files picker with Tab toggle to Grep
 -- Searches in git root or current directory
 function M.open_files()
@@ -63,10 +95,9 @@ function M.open_files()
 
     builtin.find_files({
         cwd = cwd,
+        find_command = get_fd_command(cwd),
         layout_strategy = "dynamic_orientation",
         layout_config = {},
-        no_ignore = true,
-        hidden = true,
         attach_mappings = function(prompt_bufnr, map)
             map("i", "<Tab>", function()
                 actions.close(prompt_bufnr)
@@ -129,6 +160,7 @@ function M.open_grep()
 
   builtin.live_grep({
       cwd = cwd,
+      additional_args = get_rg_args(cwd),
       layout_strategy = "dynamic_orientation",
       layout_config = {},
     attach_mappings = function(prompt_bufnr, map)
@@ -146,6 +178,22 @@ function M.open_grep()
       map("i", "<S-Right>", actions.preview_scrolling_right)
       return true
     end,
+  })
+end
+
+-- Open Grep String picker
+function M.open_grep_string()
+  local ok, builtin = pcall(require, "telescope.builtin")
+  if not ok then
+    vim.notify("telescope not yet loaded", vim.log.levels.WARN)
+    return
+  end
+
+  local cwd = find_git_root()
+
+  builtin.grep_string({
+    cwd = cwd,
+    additional_args = get_rg_args(cwd),
   })
 end
 

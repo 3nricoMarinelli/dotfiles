@@ -10,18 +10,9 @@ require("telescope").setup({
   pickers = {
     find_files = {
       theme = "dropdown",
-      find_command = {
-        "fd",
-        "--type",
-        "f",
-        "--follow",
-        "--exclude",
-        ".git",
-      },
     },
     live_grep = {
       theme = "dropdown",
-      additional_args = { "--hidden", "--follow", "--glob", "!.git" },
     },
     grep_string = {
       theme = "dropdown",
