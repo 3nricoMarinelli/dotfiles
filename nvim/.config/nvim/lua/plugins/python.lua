@@ -12,8 +12,47 @@ if not jupytext_ok then
   return
 end
 
+-- Ensure newly created or empty .ipynb files have minimal valid notebook JSON
+-- so Jupytext can initialize them without crashing.
+vim.api.nvim_create_autocmd("BufReadCmd", {
+  pattern = "*.ipynb",
+  callback = function(ev)
+    local path = vim.fn.resolve(vim.fn.expand(ev.match))
+    local f = io.open(path, "r")
+    local is_empty = true
+    if f then
+      local c = f:read("*a")
+      f:close()
+      if c and #vim.trim(c) > 0 then
+        is_empty = false
+      end
+    end
+    if is_empty then
+      local out = io.open(path, "w")
+      if out then
+        out:write(vim.json.encode({
+          cells = {},
+          metadata = {
+            kernelspec = {
+              display_name = "Python 3",
+              language = "python",
+              name = "python3",
+            },
+            language_info = {
+              name = "python",
+            },
+          },
+          nbformat = 4,
+          nbformat_minor = 2,
+        }))
+        out:close()
+      end
+    end
+  end,
+})
+
 jupytext.setup({
-  style = "light", -- minimal cell markers (# %%)
+  style = "percent", -- use # %% cell markers (Jupyter percent format)
   output_extension = "auto", -- keep original extension on save
   force_ft = "python", -- always treat as Python for LSP
 
@@ -93,16 +132,7 @@ local function run_current_cell()
     return
   end
 
-  vim.api.nvim_feedkeys(
-    vim.api.nvim_replace_termcodes(
-      string.format("%dggV%dgg:<C-u>MoltenEvaluateVisual<CR>", start_line, end_line),
-      true,
-      false,
-      true
-    ),
-    "n",
-    false
-  )
+  vim.fn.MoltenEvaluateRange(start_line, end_line)
 end
 
 -- ============================================================================
@@ -112,8 +142,8 @@ end
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "python", "quarto" },
-  callback = function()
-    local opts = { noremap = true, silent = true }
+  callback = function(ev)
+    local opts = { noremap = true, silent = true, buffer = ev.buf }
 
     -- Kernel initialization (Python-specific)
     vim.keymap.set(
@@ -231,6 +261,7 @@ vim.api.nvim_create_autocmd("FileType", {
       { "<leader>px", desc = "interrupt kernel" },
       { "<leader>pq", desc = "deinit kernel" },
       { "<leader>pd", desc = "delete output" },
+      { "<leader>pv", desc = "view image in Preview" },
     })
   end,
 })
