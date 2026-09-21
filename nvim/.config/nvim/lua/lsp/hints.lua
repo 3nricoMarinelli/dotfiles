@@ -57,7 +57,18 @@ function M.setup()
     group = vim.api.nvim_create_augroup("InlayHints", { clear = true }),
     callback = function(args)
       local bufnr = args.buf
-      enable_inlay_hints(bufnr)
+      local ft = vim.bo[bufnr].filetype
+      local path = vim.api.nvim_buf_get_name(bufnr)
+      local is_c_cpp = vim.tbl_contains({ "c", "cpp", "objc", "objcpp" }, ft)
+        or path:match("%.h$")
+        or path:match("%.hh$")
+        or path:match("%.hpp$")
+        or path:match("%.hxx$")
+        or path:match("%.inl$")
+
+      if not is_c_cpp then
+        enable_inlay_hints(bufnr)
+      end
     end,
   })
 end

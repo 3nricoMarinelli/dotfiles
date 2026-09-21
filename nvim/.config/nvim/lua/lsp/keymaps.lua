@@ -1,24 +1,3 @@
--- Unified LSP keybindings applied to all languages
--- Ensures consistent UX across C/C++, Python, Rust, Typst, etc.
---
--- Core LSP Keybindings (all languages, <leader>l* namespace):
---   <leader>ld   - Go to definition
---   <leader>lD   - Declarations
---   <leader>ln   - Rename symbol
---   <leader>lr   - References
---   <leader>li   - Implementations
---   <leader>lt   - Type definitions
---   <leader>lk   - Signature help
---   <leader>la   - Code actions
---   <leader>lx   - Diagnostics (Telescope)
---   <leader>lh   - Toggle inlay hints (Neovim 0.12+)
---   <leader>ll   - Lint list (only in Python, C/C++ - where linters are available)
---   <leader>lf   - Format toggle (only in supported formatters)
---
--- Universal LSP commands (language-agnostic):
---   K            - Hover documentation
---   [d / ]d      - Navigate diagnostics (prev/next)
-
 local M = {}
 
 function M.apply(bufnr)

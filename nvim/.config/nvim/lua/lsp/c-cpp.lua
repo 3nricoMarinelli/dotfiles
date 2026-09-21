@@ -1,35 +1,3 @@
--- C/C++ LSP Configuration (using vim.lsp.config API - Neovim 0.11+)
--- Superior clangd setup with clang-tidy for real-time linting
---
--- Required: clangd (brew install llvm)
--- Optional: .clang-tidy file in project root for custom rules
---
--- Linting:
---   - clang-tidy (via clangd) - real-time as you type
---   - cppcheck (via nvim-lint) - on save (see nvim-lint.lua)
---
--- LSP Keybindings (unified across all languages, see lsp/keymaps.lua):
---   <leader>ld   - Go to definition
---   <leader>lD   - Declarations
---   <leader>ln   - Rename symbol
---   <leader>la   - Code actions
---   <leader>li   - Implementations
---   <leader>lt   - Type definitions
---   <leader>lk   - Signature help
---   <leader>lr   - References
---   <leader>lx   - Diagnostics (Telescope)
---   K            - Hover documentation
---   [d / ]d      - Navigate diagnostics
---
--- DAP Keybindings (debugging, see dap/keymaps.lua):
---   <leader>Db   - Toggle breakpoint
---   <leader>Dc   - Continue / Start debugging
---   <leader>Do   - Step over
---   <leader>Di   - Step into
---   <leader>DO   - Step out
---   <leader>Dq   - Terminate session
---   <leader>Du   - Toggle DAP UI
-
 local M = {}
 
 function M.project_root(bufnr)
@@ -67,8 +35,60 @@ function M.clangd_cmd(root)
     "--function-arg-placeholders",
     "--fallback-style=llvm",
     "--pch-storage=memory",
+    "--query-driver=/usr/bin/c++,/usr/bin/g++,/usr/bin/clang++,/usr/bin/gcc,/opt/homebrew/opt/llvm/bin/clang++",
     "--compile-commands-dir=" .. M.build_dir(root),
   }
+end
+
+-- Filter known Qt/clangd unsupported flag warning
+local qt_clangd_flag_pattern = "^Unknown argument:%s*['\"]?%-mno%-direct%-extern%-access['\"]?"
+local default_publish_diagnostics = vim.lsp.handlers["textDocument/publishDiagnostics"]
+vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+  local client = ctx and vim.lsp.get_client_by_id(ctx.client_id)
+  if client and client.name == "clangd" and result and result.diagnostics then
+    result = vim.deepcopy(result)
+    result.diagnostics = vim.tbl_filter(function(diagnostic)
+      local message = diagnostic.message or ""
+      return not message:match(qt_clangd_flag_pattern)
+    end, result.diagnostics)
+  end
+
+  return default_publish_diagnostics(err, result, ctx, config)
+end
+
+local function on_attach(client, bufnr)
+  require("lsp").on_attach(client, bufnr)
+  require("dap.keymaps").apply(bufnr)
+  require("build.keymaps").apply(bufnr)
+end
+
+function M.setup()
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("ClangdLspAttach", { clear = true }),
+    callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
+      if client and client.name == "clangd" then
+        on_attach(client, args.buf)
+      end
+    end,
+  })
+end
+
+function M.start_lsp(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  local root = M.project_root(bufnr)
+  local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "clangd" })
+  if #clients > 0 then
+    return
+  end
+
+  local capabilities = require("lsp").capabilities()
+  vim.lsp.start({
+    name = "clangd",
+    cmd = M.clangd_cmd(root),
+    root_dir = root,
+    capabilities = capabilities,
+  }, { bufnr = bufnr })
 end
 
 function M.cmake_configure(root)

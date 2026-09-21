@@ -18,9 +18,25 @@ function M.setup()
   local lspkind_ok, lspkind = pcall(require, "lspkind")
 
   cmp.setup({
+    completion = {
+      completeopt = "menu,menuone,noinsert",
+    },
+    preselect = cmp.PreselectMode.Item,
+    snippet = {
+      expand = function(args)
+        local luasnip_ok, luasnip = pcall(require, "luasnip")
+        if luasnip_ok then
+          luasnip.lsp_expand(args.body)
+        end
+      end,
+    },
     mapping = cmp.mapping.preset.insert({
       ["<C-b>"] = cmp.mapping.scroll_docs(-4),
       ["<C-f>"] = cmp.mapping.scroll_docs(4),
+      ["<C-Space>"] = cmp.mapping.complete(),
+      ["<C-j>"] = cmp.mapping.select_next_item(),
+      ["<C-k>"] = cmp.mapping.select_prev_item(),
+      ["<CR>"] = cmp.mapping.confirm({ select = true }),
       ["<Tab>"] = cmp.mapping.confirm({ select = true }),
       ["<C-n>"] = cmp.mapping(function(fallback)
         local has_words_before = function()
@@ -47,9 +63,10 @@ function M.setup()
       end, { "i", "s" }),
     }),
 
-    -- Sources priority (LSP first, then buffer)
+    -- Sources priority (LSP first, snippets, then path & buffer)
     sources = {
-      { name = "nvim_lsp", max_item_count = 5 },
+      { name = "nvim_lsp", max_item_count = 10 },
+      { name = "luasnip", max_item_count = 5 },
       { name = "nvim_lsp_signature_help", max_item_count = 5 },
       { name = "path", max_item_count = 5 },
       { name = "buffer", keyword_length = 3, max_item_count = 5 },
@@ -61,6 +78,7 @@ function M.setup()
         with_text = true,
         menu = {
           nvim_lsp = "[LSP]",
+          luasnip = "[snip]",
           path = "[path]",
           buffer = "[buf]",
         },

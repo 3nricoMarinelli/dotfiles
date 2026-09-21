@@ -38,7 +38,7 @@ mason.setup({
 local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
 if mason_lspconfig_ok then
   mason_lspconfig.setup({
-    ensure_installed = { "pylsp" },
+    ensure_installed = { "pylsp", "lua_ls" },
     automatic_installation = true,
   })
 end
