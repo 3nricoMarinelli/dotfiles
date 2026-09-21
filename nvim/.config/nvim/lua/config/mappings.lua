@@ -100,19 +100,22 @@ km.register("n", "<leader>?", function()
   require("Comment.api").toggle.blockwise.current()
 end, "comment block", { group = "docs" })
 km.register(
-  "v",
+  "x",
   "<leader>/",
-  "<ESC><CMD>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
+  "<Plug>(comment_toggle_linewise_visual)",
   "comment selection",
   { group = "docs" }
 )
 km.register(
-  "v",
+  "x",
   "<leader>?",
-  "<ESC><CMD>lua require('Comment.api').toggle.blockwise(vim.fn.visualmode())<CR>",
+  "<Plug>(comment_toggle_blockwise_visual)",
   "comment block selection",
   { group = "docs" }
 )
+km.register("n", "<leader>cl", function()
+  require("tools.license").insert_header()
+end, "insert license header", { group = "docs" })
 
 -- Plugins: Neogit (git interface)
 km.register("n", "<leader>gs", function()
