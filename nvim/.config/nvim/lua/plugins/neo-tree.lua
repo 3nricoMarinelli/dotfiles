@@ -12,6 +12,24 @@ require("neo-tree").setup({
   open_files_do_not_replace_types = { "terminal", "trouble", "qf" },
   open_files_using_relative_paths = false,
   sort_case_insensitive = false,
+  event_handlers = {
+    {
+      event = "file_renamed",
+      handler = function(args)
+        pcall(function()
+          require("tools.include_rename").on_node_renamed(args)
+        end)
+      end,
+    },
+    {
+      event = "file_moved",
+      handler = function(args)
+        pcall(function()
+          require("tools.include_rename").on_node_renamed(args)
+        end)
+      end,
+    },
+  },
 
   -- Component configuration
   default_component_configs = {

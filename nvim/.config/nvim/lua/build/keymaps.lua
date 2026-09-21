@@ -25,15 +25,27 @@ function M.apply(bufnr)
   local wk_ok, wk = pcall(require, "which-key")
   if wk_ok then
     wk.add({
-      { "<leader>c", group = "build", buffer = bufnr },
+      { "<leader>c", group = "build/C++", buffer = bufnr },
       { "<leader>cc", desc = "build target", buffer = bufnr },
       { "<leader>cC", desc = "clean build", buffer = bufnr },
       { "<leader>ct", desc = "build & test", buffer = bufnr },
       { "<leader>cT", desc = "gtest run", buffer = bufnr },
       { "<leader>cr", desc = "run executable", buffer = bufnr },
       { "<leader>cq", desc = "cancel build", buffer = bufnr },
+      { "<leader>cs", desc = "insert skeleton (:Skel)", buffer = bufnr },
+      { "<leader>cm", desc = "memberwise constructor (:CppTrvCtr)", buffer = bufnr },
+      { "<leader>ce", desc = "extract function def", buffer = bufnr },
+      { "<leader>cE", desc = "extract all class defs", buffer = bufnr },
     })
   end
+
+  -- ============================================================================
+  -- C++ CODE GENERATION & REFACTORING COMMANDS
+  -- ============================================================================
+  vim.keymap.set("n", "<leader>cs", "<cmd>Skel<CR>", vim.tbl_extend("force", opts, { desc = "Insert C++ skeleton" }))
+  vim.keymap.set("n", "<leader>cm", "<cmd>CppTrvCtr<CR>", vim.tbl_extend("force", opts, { desc = "Generate constructor" }))
+  vim.keymap.set("n", "<leader>ce", "<cmd>CppExtractFunctionDefinition<CR>", vim.tbl_extend("force", opts, { desc = "Extract function definition" }))
+  vim.keymap.set("n", "<leader>cE", "<cmd>CppExtractDefinitions<CR>", vim.tbl_extend("force", opts, { desc = "Extract class definitions" }))
 
   -- ============================================================================
   -- CMAKE BUILD COMMANDS

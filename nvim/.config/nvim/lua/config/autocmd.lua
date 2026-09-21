@@ -72,6 +72,9 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
   callback = function()
+    if not vim.bo.modifiable then
+      return
+    end
     -- Save cursor position to avoid jumping
     vim.cmd("normal! mA")
     vim.cmd([[ %s/\s\+$//e ]])
