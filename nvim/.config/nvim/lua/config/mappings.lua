@@ -13,6 +13,7 @@ vim.g.maplocalleader = " "
 vim.keymap.del("n", "gc")
 vim.keymap.del("n", "gcc")
 vim.keymap.del("x", "gc")
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search highlight' })
 
 -- Vanilla Neovim: Buffers
 km.register("n", "<S-l>", ":bnext<CR>", "next buffer")
