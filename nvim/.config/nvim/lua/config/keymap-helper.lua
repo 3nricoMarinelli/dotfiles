@@ -43,16 +43,13 @@ function M.register(mode, key, action, desc, opts)
   -- Register with vim.keymap
   vim.keymap.set(mode, key, action, keymap_opts)
 
-  -- Register with which-key if in normal mode (queue if not loaded yet)
-  if mode == "n" then
-    local spec = { key, desc = desc }
-    if opts.group then
-      spec.group = opts.group
-    end
-
-    if not try_register_with_which_key(spec) then
-      table.insert(pending_specs, spec)
-    end
+  -- Register with which-key (queue if not loaded yet)
+  local spec = { key, desc = desc }
+  if mode ~= "n" then
+    spec.mode = mode
+  end
+  if not try_register_with_which_key(spec) then
+    table.insert(pending_specs, spec)
   end
 end
 

@@ -26,7 +26,6 @@ return {
     end,
   },
   { "nvim-tree/nvim-web-devicons" },
-  { "echasnovski/mini.icons" },
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
@@ -125,7 +124,6 @@ return {
     end,
   },
   { "famiu/bufdelete.nvim" },
-  { "emmanueltouzery/decisive.nvim" },
 
   -- Editing helpers
   {
@@ -230,6 +228,8 @@ return {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-nvim-lsp-signature-help",
+      "saadparwaiz1/cmp_luasnip",
+      "L3MON4D3/LuaSnip",
       "onsails/lspkind.nvim",
     },
     config = function()
@@ -240,12 +240,28 @@ return {
   { "hrsh7th/cmp-buffer" },
   { "hrsh7th/cmp-path" },
   { "hrsh7th/cmp-nvim-lsp-signature-help" },
+  {
+    "L3MON4D3/LuaSnip",
+    version = "v2.*",
+    build = "make install_jsregexp",
+    dependencies = { "rafamadriz/friendly-snippets" },
+    config = function()
+      require("luasnip.loaders.from_vscode").lazy_load()
+    end,
+  },
+  { "saadparwaiz1/cmp_luasnip" },
+  { "rafamadriz/friendly-snippets" },
   { "onsails/lspkind.nvim" },
+  {
+    "antosha417/nvim-lsp-file-operations",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = true,
+  },
 
   -- DAP / notebooks / AI helper
   {
     "mfussenegger/nvim-dap",
-    ft = { "python" },
+    ft = { "python", "c", "cpp", "rust" },
     dependencies = {
       "nvim-neotest/nvim-nio",
       "rcarriga/nvim-dap-ui",
@@ -262,14 +278,15 @@ return {
   { "theHamsta/nvim-dap-virtual-text" },
   {
     "benlubas/molten-nvim",
-    ft = { "python", "ipynb", "quarto" },
-    config = function()
+    version = "^1.0.0",
+    build = ":UpdateRemotePlugins",
+    init = function()
       require("plugins.molten")
     end,
   },
   {
     "GCBallesteros/jupytext.nvim",
-    ft = { "python", "ipynb", "quarto" },
+    lazy = false,
     config = function()
       require("plugins.python")
     end,
@@ -278,8 +295,4 @@ return {
   -- Shared deps / language extras
   { "nvim-lua/plenary.nvim" },
   { "mrcjkb/rustaceanvim", ft = { "rust" } },
-  { "kaarmu/typst.vim", ft = { "typst" } },
-  { "cdelledonne/vim-cmake", ft = { "c", "cpp", "cmake" } },
-  { "antoinemadec/FixCursorHold.nvim" },
-  { "alepez/vim-gtest", ft = { "c", "cpp" } },
 }

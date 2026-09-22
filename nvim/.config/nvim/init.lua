@@ -11,12 +11,21 @@ vim.loader.enable() --  SPEEEEEEEEEEED 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- Ensure Homebrew binaries are accessible on macOS
+if vim.fn.has("mac") == 1 then
+  if not vim.env.PATH:find("/opt/homebrew/bin", 1, true) then
+    vim.env.PATH = "/opt/homebrew/bin:/opt/homebrew/sbin:" .. vim.env.PATH
+  end
+end
+-- Compatibility shims for older plugin APIs (must load before plugins)
+require("config.health-compat")
+
 -- Plugin manager backend: lazy.nvim
 require("core.lazy")
 
 -- move config and plugin config to alternate files
 require("config.theme")
-require("config.health-compat")
+
 require("config.keymap-helper") -- helper for vim.keymap + which-key registration
 require("config.mappings")
 require("config.options")
@@ -27,9 +36,11 @@ require("config.lint-toggle")
 -- bufdelete: smart buffer deletion
 pcall(require, "bufdelete")
 
--- Lazy load LSP per language (cacharle's approach)
--- Setup on first FileType event, then start LSP immediately
 -- Centralized LSP configuration hub
 require("lsp").setup()
+require("lsp.hooks").setup()
+
+-- C/C++ development tools (skeleton, trivial constructor, extract, include formatter/rename)
+require("tools").setup()
 
 load_theme()

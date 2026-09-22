@@ -62,7 +62,32 @@ local function on_attach(client, bufnr)
   require("build.keymaps").apply(bufnr)
 end
 
+function M.switch_source_header(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  local client = vim.lsp.get_clients({ bufnr = bufnr, name = "clangd" })[1]
+  if not client then
+    vim.notify("clangd LSP is not attached to this buffer", vim.log.levels.WARN)
+    return
+  end
+  local params = { uri = vim.uri_from_bufnr(bufnr) }
+  client.request("textDocument/switchSourceHeader", params, function(err, result)
+    if err then
+      vim.notify("clangd error: " .. tostring(err), vim.log.levels.ERROR)
+      return
+    end
+    if not result or result == "" then
+      vim.notify("No corresponding header/source file found", vim.log.levels.WARN)
+      return
+    end
+    vim.api.nvim_command("edit " .. vim.uri_to_fname(result))
+  end, bufnr)
+end
+
 function M.setup()
+  vim.api.nvim_create_user_command("ClangdSwitchSourceHeader", function()
+    M.switch_source_header()
+  end, { desc = "Switch between C/C++ header and source" })
+
   vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("ClangdLspAttach", { clear = true }),
     callback = function(args)

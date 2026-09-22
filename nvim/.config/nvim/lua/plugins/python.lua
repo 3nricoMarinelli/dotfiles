@@ -135,137 +135,6 @@ local function run_current_cell()
   vim.fn.MoltenEvaluateRange(start_line, end_line)
 end
 
--- ============================================================================
--- MOLTEN & JUPYTER KEYBINDINGS (Buffer-local, <leader>p* namespace)
--- Activated on FileType python/quarto for .py, .ipynb, and Quarto files
--- ============================================================================
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "python", "quarto" },
-  callback = function(ev)
-    local opts = { noremap = true, silent = true, buffer = ev.buf }
-
-    -- Kernel initialization (Python-specific)
-    vim.keymap.set(
-      "n",
-      "<leader>pi",
-      init_venv_kernel,
-      vim.tbl_extend("force", opts, { desc = "Molten: Init .venv kernel" })
-    )
-
-    -- Cell execution (Python-specific)
-    vim.keymap.set(
-      "n",
-      "<leader>pc",
-      run_current_cell,
-      vim.tbl_extend("force", opts, { desc = "Molten: Run current cell" })
-    )
-
-    -- Evaluate operator (works in Python and notebook cells)
-    vim.keymap.set(
-      "n",
-      "<leader>pe",
-      ":MoltenEvaluateOperator<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Evaluate operator" })
-    )
-
-    -- Evaluate visual selection (works in Python and notebook cells)
-    vim.keymap.set(
-      "v",
-      "<leader>pe",
-      ":<C-u>MoltenEvaluateVisual<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Evaluate visual selection" })
-    )
-
-    -- Evaluate line (works in Python and notebook cells)
-    vim.keymap.set(
-      "n",
-      "<leader>pl",
-      ":MoltenEvaluateLine<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Evaluate line" })
-    )
-
-    -- Re-evaluate cell (works in Python and notebook cells)
-    vim.keymap.set(
-      "n",
-      "<leader>pr",
-      ":MoltenReevaluateCell<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Re-evaluate cell" })
-    )
-
-    -- Output window (works in Python and notebook cells)
-    vim.keymap.set(
-      "n",
-      "<leader>po",
-      ":noautocmd MoltenEnterOutput<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Enter output window" })
-    )
-
-    -- Interrupt kernel (works in Python and notebook cells)
-    vim.keymap.set(
-      "n",
-      "<leader>px",
-      ":MoltenInterrupt<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Interrupt kernel" })
-    )
-
-    -- Deinit kernel (works in Python and notebook cells)
-    vim.keymap.set(
-      "n",
-      "<leader>pq",
-      ":MoltenDeinit<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Deinit kernel" })
-    )
-
-    -- Delete cell output (works in Python and notebook cells)
-    vim.keymap.set(
-      "n",
-      "<leader>pd",
-      ":MoltenDelete<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Delete cell output" })
-    )
-
-    -- Cell navigation
-    vim.keymap.set(
-      "n",
-      "]p",
-      ":MoltenNext<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Next cell" })
-    )
-    vim.keymap.set(
-      "n",
-      "[p",
-      ":MoltenPrev<CR>",
-      vim.tbl_extend("force", opts, { desc = "Molten: Previous cell" })
-    )
-  end,
-})
-
--- ============================================================================
--- WHICH-KEY DOCUMENTATION (Buffer-local, <leader>p* namespace)
--- Only register group when FileType is python or quarto
--- ============================================================================
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "python", "quarto" },
-  once = false,
-  callback = function()
-    local wk = require("which-key")
-    wk.add({
-      { "<leader>p", group = "python" },
-      { "<leader>pi", desc = "init kernel" },
-      { "<leader>pc", desc = "run cell" },
-      { "<leader>pe", desc = "evaluate" },
-      { "<leader>pl", desc = "eval line" },
-      { "<leader>pr", desc = "re-evaluate" },
-      { "<leader>po", desc = "output window" },
-      { "<leader>px", desc = "interrupt kernel" },
-      { "<leader>pq", desc = "deinit kernel" },
-      { "<leader>pd", desc = "delete output" },
-      { "<leader>pv", desc = "view image in Preview" },
-    })
-  end,
-})
-
 -- Visually distinguish code / markdown / raw cell delimiters
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "python", "quarto" },
@@ -275,3 +144,8 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.fn.matchadd("Title", [[^# %%\( \[markdown\]\| \[raw\]\)\@!.*]])
   end,
 })
+
+return {
+  init_venv_kernel = init_venv_kernel,
+  run_current_cell = run_current_cell,
+}

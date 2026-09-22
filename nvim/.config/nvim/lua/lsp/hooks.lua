@@ -3,8 +3,6 @@ local M = {}
 local function setup_lsp_autocmds()
   -- C / C++
   local c_cpp_lsp_loaded = false
-  local cmake_loaded = false
-  local gtest_loaded = false
   vim.api.nvim_create_autocmd("FileType", {
     pattern = { "c", "cpp" },
     callback = function(args)
@@ -14,22 +12,18 @@ local function setup_lsp_autocmds()
       end
       require("lsp.c-cpp").start_lsp(args.buf)
 
-      if not cmake_loaded then
-        require("plugins.cmake").setup()
-        cmake_loaded = true
-      end
-      if not gtest_loaded then
-        require("plugins.gtest").setup()
-        gtest_loaded = true
-      end
+      require("build.keymaps").apply(args.buf)
+      require("dap.keymaps").apply(args.buf)
     end,
   })
 
-  -- Python
+  -- Python & Quarto / Jupyter
   local python_lsp_loaded = false
   vim.api.nvim_create_autocmd("FileType", {
-    pattern = "python",
+    pattern = { "python", "quarto" },
     callback = function(args)
+      require("config.mappings.python").apply(args.buf)
+
       local ext = vim.fn.expand("%:e")
       if ext ~= "py" and ext ~= "" and ext ~= "ipynb" then
         return
