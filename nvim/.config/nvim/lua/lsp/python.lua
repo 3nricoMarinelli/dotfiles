@@ -1,145 +1,82 @@
 local M = {}
 
--- Guard to prevent multiple setups
-if _G.python_lsp_setup_done then
-  return M
-end
-
 -- Detect the active Python interpreter (respects venvs and conda envs)
 local function get_python_path()
-  local venv = os.getenv("VIRTUAL_ENV") or os.getenv("CONDA_PREFIX")
-  if venv then
-    return venv .. "/bin/python"
-  end
+    local venv = os.getenv("VIRTUAL_ENV") or os.getenv("CONDA_PREFIX")
+    if venv then
+        return venv .. "/bin/python"
+    end
 
-  -- project-local .venv
-  local local_venv = vim.fn.getcwd() .. "/.venv/bin/python"
-  if vim.fn.executable(local_venv) == 1 then
-    return local_venv
-  end
+    -- project-local .venv
+    local local_venv = vim.fn.getcwd() .. "/.venv/bin/python"
+    if vim.fn.executable(local_venv) == 1 then
+        return local_venv
+    end
 
-  return vim.fn.exepath("python3") or "python3"
+    return vim.fn.exepath("python3") or "python3"
 end
 
--- Keybindings attached when pylsp connects to a buffer
-local function on_attach(client, bufnr)
-  -- Apply unified LSP setup from centralized config
-  require("lsp").on_attach(client, bufnr)
-
-  -- Apply DAP keybindings (debugging)
-  require("dap.keymaps").apply(bufnr)
-
-  -- Setup DAP Python adapter (deferred to ensure dap.adapters exists)
-  -- Defer by 200ms to let DAP core fully initialize
-  -- Wrap in pcall to gracefully handle if dap.adapters isn't ready yet
-  vim.defer_fn(function()
-    if _G.dap_python_setup_done then
-      return  -- Already set up
-    end
-    
-    local dap_python_ok, dap_python = pcall(require, "dap-python")
-    if not dap_python_ok then
-      return  -- dap-python not available
-    end
-    
-    -- Try to set up Python adapter; gracefully handle if dap.adapters isn't ready
-    local ok, err = pcall(function()
-      local mason_debugpy = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
-      if vim.fn.executable(mason_debugpy) == 1 then
-        dap_python.setup(mason_debugpy)
-      else
-        dap_python.setup("python3")
-      end
-    end)
-    
+-- Setup Python-specific tools (keymaps, DAP)
+local function apply_python_tools(bufnr)
+    -- Apply Python keymaps (includes Jupyter/Molten)
+    local ok, mappings = pcall(require, "config.mappings.python")
     if ok then
-      _G.dap_python_setup_done = true
-    else
-      -- Setup failed (likely dap.adapters not ready), but don't crash
-      -- User can manually run: :lua require("dap-python").setup("python3")
-      -- when they're ready to debug
+        mappings.apply(bufnr)
     end
-  end, 200)
+
+    -- Setup DAP Python adapter (deferred to ensure dap.adapters exists)
+    vim.defer_fn(function()
+        if _G.dap_python_setup_done then
+            return -- Already set up
+        end
+
+        local dap_python_ok, dap_python = pcall(require, "dap-python")
+        if not dap_python_ok then
+            return -- dap-python not available
+        end
+
+        -- Try to set up Python adapter; gracefully handle if dap.adapters isn't ready
+        local ok, err = pcall(function()
+            local mason_debugpy = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+            if vim.fn.executable(mason_debugpy) == 1 then
+                dap_python.setup(mason_debugpy)
+            else
+                dap_python.setup("python3")
+            end
+        end)
+
+        if ok then
+            _G.dap_python_setup_done = true
+        end
+    end, 200)
 end
 
--- Shared pylsp settings (NeuralNine-style: more plugins enabled)
-local pylsp_settings = {
-  pylsp = {
-    plugins = {
-      pyflakes = { enabled = true },
-      pycodestyle = { enabled = true, maxLineLength = 100, ignore = { "E501", "W503" } },
-      mccabe = { enabled = true, threshold = 15 },
-      rope_completion = { enabled = true },
-      rope_autoimport = { enabled = true },
-      -- isort via python-lsp-isort plugin
-      isort = { enabled = true },
-      -- disable: we use ruff via nvim-lint instead
-      pylint = { enabled = false },
-      flake8 = { enabled = false },
-      ruff = { enabled = false },
-    },
-  },
-}
+-- Configure pyrefly as the Python LSP
+function M.setup(bufnr)
+    -- Configure pyrefly
+    local pyrefly_cmd = "pyrefly"
+    local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+    if vim.fn.executable(mason_bin .. "/pyrefly") == 1 then
+        pyrefly_cmd = mason_bin .. "/pyrefly"
+    end
 
-function M.setup()
-  require("config.diagnostics").apply("lsp_clean_insert")
+    vim.lsp.config("pyrefly", {
+        cmd = { pyrefly_cmd, "lsp" },
+        filetypes = { "python" },
+        root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
+        capabilities = require("lsp").capabilities(),
+    })
+    vim.lsp.enable("pyrefly")
+    _G.python_lsp_setup_done = true
 
-  local capabilities = require("lsp").capabilities()
-
-  -- Register keybindings via LspAttach (fires for pylsp only)
-  vim.api.nvim_create_autocmd("LspAttach", {
-    group = vim.api.nvim_create_augroup("PythonLspAttach", { clear = false }),
-    callback = function(ev)
-      local client = vim.lsp.get_client_by_id(ev.data.client_id)
-      if client and client.name == "pylsp" then
-        on_attach(client, ev.buf)
-      end
-    end,
-  })
-
-  -- Path to use: prefer the virtualenv's pylsp if present
-  local pylsp_cmd = "pylsp"
-  local venv_pylsp = vim.fn.getcwd() .. "/.venv/bin/pylsp"
-  if vim.fn.executable(venv_pylsp) == 1 then
-    pylsp_cmd = venv_pylsp
-  end
-
-  -- Inject jedi environment into a copy of pylsp_settings
-  local settings = vim.deepcopy(pylsp_settings)
-  settings.pylsp.plugins.jedi = { environment = get_python_path() }
-
-  -- Native vim.lsp.config (Neovim 0.11+ API)
-  vim.lsp.config("pylsp", {
-    cmd = { pylsp_cmd },
-    filetypes = { "python" },
-    root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
-    capabilities = capabilities,
-    settings = settings,
-  })
-  vim.lsp.enable("pylsp")
-
-  _G.python_lsp_setup_done = true
+    -- If a buffer is provided, apply tools immediately
+    if bufnr then
+        apply_python_tools(bufnr)
+    end
 end
 
+-- Dummy function to prevent errors in hooks.lua
 function M.start_lsp(bufnr)
-  -- vim.lsp.enable registers an autocmd that fires on FileType, but since setup()
-  -- is called lazily (on first FileType python), the current buffer may have been
-  -- missed. Manually start if no client is attached yet.
-  local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "pylsp" })
-  if #clients == 0 then
-    local settings = vim.deepcopy(pylsp_settings)
-    settings.pylsp.plugins.jedi = { environment = get_python_path() }
-    vim.lsp.start({
-      name = "pylsp",
-      cmd = { "pylsp" },
-      root_dir = vim.fs.root(
-        bufnr,
-        { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" }
-      ),
-      capabilities = require("lsp").capabilities(),
-      settings = settings,
-    }, { bufnr = bufnr })
-  end
 end
 
 return M

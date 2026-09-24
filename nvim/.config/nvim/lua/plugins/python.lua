@@ -4,7 +4,6 @@
 --
 -- Requires: pip install jupytext pynvim jupyter_client
 -- Usage: Open any .py, .ipynb, or .qmd file with # %% cells
---        All LSP/treesitter/lint/DAP/Molten keybindings available via <leader>p*
 
 -- Jupytext: transparent .ipynb ↔ Python conversion
 local jupytext_ok, jupytext = pcall(require, "jupytext")
@@ -83,24 +82,29 @@ local function init_venv_kernel()
   local root = find_venv_root()
   if not root then
     vim.notify("molten: no .venv found, opening kernel picker", vim.log.levels.WARN)
-    vim.cmd("MoltenInit")
+    local ok, err = pcall(vim.cmd, "MoltenInit")
+    if not ok then
+      vim.notify("MoltenInit command not found. Try running :UpdateRemotePlugins and restarting.", vim.log.levels.ERROR)
+    end
     return
   end
 
   local name = vim.fn.fnamemodify(root, ":t")
-  -- --with ipykernel: no need to add ipykernel to the project deps
-  local ok = vim.fn.system(
-    string.format(
-      "cd %s && uv run --with ipykernel python -m ipykernel install --user --name %s 2>&1",
-      vim.fn.shellescape(root),
-      vim.fn.shellescape(name)
-    )
-  )
+  -- Uses uv to ensure ipykernel is installed and the kernel is registered
+  local cmd = string.format("cd %s && uv run --with ipykernel python -m ipykernel install --user --name %s", 
+                               vim.fn.shellescape(root), 
+                               vim.fn.shellescape(name))
+  
+  local ok = vim.fn.system(cmd)
   if vim.v.shell_error ~= 0 then
     vim.notify("molten: kernel registration failed:\n" .. ok, vim.log.levels.ERROR)
     return
   end
-  vim.cmd("MoltenInit " .. name)
+
+  local ok_init, err_init = pcall(vim.cmd, "MoltenInit " .. name)
+  if not ok_init then
+    vim.notify("MoltenInit command not found. Try running :UpdateRemotePlugins and restarting.", vim.log.levels.ERROR)
+  end
 end
 
 -- Run the cell under the cursor (bounded by # %% markers)

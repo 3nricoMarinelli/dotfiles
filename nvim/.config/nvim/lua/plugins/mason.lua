@@ -2,10 +2,9 @@
 -- :Mason to open the interactive UI
 --
 -- Manages Python tools automatically:
---   pylsp    - Python Language Server
 --   ruff     - Python linter/formatter (also used by nvim-lint)
 --   isort    - Python import sorter
---   debugpy  - Python debug adapter (for nvim-dap)
+--   debugpy  - Python debug adapter (nvim-dap-python)
 --
 -- Mason installs tools to: ~/.local/share/nvim/mason/bin/
 -- We add this to PATH so vim.lsp.start and external tools find them.
@@ -38,7 +37,7 @@ mason.setup({
 local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
 if mason_lspconfig_ok then
   mason_lspconfig.setup({
-    ensure_installed = { "pylsp", "lua_ls" },
+    ensure_installed = { "ruff", "pyrefly", "lua_ls" },
     automatic_installation = true,
   })
 end

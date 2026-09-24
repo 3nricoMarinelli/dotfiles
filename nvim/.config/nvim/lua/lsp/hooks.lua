@@ -30,8 +30,11 @@ local function setup_lsp_autocmds()
       end
 
       if not python_lsp_loaded then
-        pcall(require, "lsp.python")
-        python_lsp_loaded = true
+        local ok, python_module = pcall(require, "lsp.python")
+        if ok then
+          python_module.setup(args.buf)
+          python_lsp_loaded = true
+        end
       end
       pcall(require("lsp.python").start_lsp, args.buf)
     end,
