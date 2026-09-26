@@ -21,7 +21,6 @@ function M.get_git_root(bufnr)
 end
 
 function M.get_repo_name(git_root)
-  -- Try git remote origin url
   local handle = io.popen("git -C " .. vim.fn.shellescape(git_root) .. " config --get remote.origin.url 2>/dev/null")
   if handle then
     local url = handle:read("*a")
@@ -34,7 +33,6 @@ function M.get_repo_name(git_root)
       end
     end
   end
-
   return vim.fs.basename(git_root) or "project"
 end
 
@@ -55,7 +53,6 @@ function M.get_author(git_root)
   elseif name ~= "" then
     return name
   end
-
   return os.getenv("USER") or "Author"
 end
 
@@ -72,38 +69,39 @@ function M.find_license_file(git_root)
     end
   end
 
-  -- Fallback: check subdirectories or case-insensitive search in root
   local found = vim.fs.find(function(name)
     local lower = name:lower()
     return lower == "license" or lower:match("^license%.") or lower == "copying"
   end, { path = git_root, type = "file", limit = 1 })
 
-  if #found > 0 then
-    return found[1]
-  end
-
-  return nil
+  return #found > 0 and found[1] or nil
 end
 
-function M.read_license_lines(license_path)
+function M.detect_license_name(git_root)
+  local license_path = M.find_license_file(git_root)
   if not license_path then
-    return nil
+    return "SPDX-License-Identifier: MIT"
   end
 
   local ok, lines = pcall(vim.fn.readfile, license_path)
-  if not ok or not lines or #lines == 0 then
-    return nil
+  if ok and lines and #lines > 0 then
+    for i = 1, math.min(15, #lines) do
+      local line = lines[i]
+      if line:match("MIT License") or line:match("The MIT License") then
+        return "MIT License (SPDX-License-Identifier: MIT)"
+      elseif line:match("Apache License") or line:match("Version 2%.0") then
+        return "Apache 2.0 (SPDX-License-Identifier: Apache-2.0)"
+      elseif line:match("GNU GENERAL PUBLIC LICENSE") or line:match("GPL") then
+        return "GPL License"
+      elseif line:match("BSD %d%-Clause") then
+        return line:match("BSD %d%-Clause")
+      elseif line:match("Mozilla Public License") then
+        return "MPL 2.0"
+      end
+    end
+    return vim.fs.basename(license_path)
   end
-
-  -- Trim leading and trailing blank lines
-  while #lines > 0 and lines[1]:match("^%s*$") do
-    table.remove(lines, 1)
-  end
-  while #lines > 0 and lines[#lines]:match("^%s*$") do
-    table.remove(lines, #lines)
-  end
-
-  return lines
+  return "SPDX-License-Identifier: MIT"
 end
 
 function M.get_comment_prefix(bufnr)
@@ -116,18 +114,13 @@ function M.get_comment_prefix(bufnr)
     return "// "
   end
 
-  -- Derive from commentstring
   local cs = vim.bo[bufnr or 0].commentstring
   if cs and cs ~= "" then
     local p = cs:match("^(.-)%%s")
     if p and p ~= "" then
-      if not p:match("%s$") then
-        p = p .. " "
-      end
-      return p
+      return p:match("%s$") and p or (p .. " ")
     end
   end
-
   return "// "
 end
 
@@ -137,35 +130,24 @@ function M.get_license_header_lines(bufnr)
   local repo_name = M.get_repo_name(git_root)
   local author = M.get_author(git_root)
   local date = M.get_date()
-  local license_path = M.find_license_file(git_root)
-  local license_lines = M.read_license_lines(license_path)
+  local license = M.detect_license_name(git_root)
+  local buf_name = vim.api.nvim_buf_get_name(bufnr)
+  local filename = buf_name ~= "" and vim.fs.basename(buf_name) or nil
 
   local prefix = M.get_comment_prefix(bufnr)
   local divider = prefix .. string.rep("=", 76)
 
-  local result = {}
-  table.insert(result, divider)
-  table.insert(result, prefix .. "Repository:   " .. repo_name)
+  local result = { divider }
+  if filename and filename ~= "" then
+    table.insert(result, prefix .. "File:         " .. filename)
+  end
+  table.insert(result, prefix .. "Project:      " .. repo_name)
   table.insert(result, prefix .. "Author:       " .. author)
   table.insert(result, prefix .. "Created:      " .. date)
-
-  if license_lines and #license_lines > 0 then
-    table.insert(result, prefix)
-    table.insert(result, prefix .. "License (" .. vim.fs.basename(license_path) .. "):")
-    for _, line in ipairs(license_lines) do
-      if line:match("^%s*$") then
-        local empty_prefix = (prefix:gsub("%s+$", ""))
-        table.insert(result, empty_prefix)
-      else
-        table.insert(result, prefix .. "  " .. line)
-      end
-    end
-  else
-    table.insert(result, prefix)
-    table.insert(result, prefix .. "License:")
-    table.insert(result, prefix .. "  SPDX-License-Identifier: MIT")
+  table.insert(result, prefix .. "Notice:       Handcrafted by a human")
+  if license and license ~= "" then
+    table.insert(result, prefix .. "License:      " .. license)
   end
-
   table.insert(result, divider)
   return result
 end
@@ -173,35 +155,24 @@ end
 function M.insert_header(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   local header = M.get_license_header_lines(bufnr)
-  table.insert(header, "") -- trailing blank line
+  table.insert(header, "")
 
   vim.api.nvim_buf_set_lines(bufnr, 0, 0, false, header)
-  vim.notify("License header generated", vim.log.levels.INFO)
+  vim.notify("Human author & project header inserted", vim.log.levels.INFO)
 end
 
 function M.setup()
-  -- Register user command
   vim.api.nvim_create_user_command("LicenseHeader", function()
     M.insert_header()
-  end, { desc = "Generate license header with author, repo, and date" })
+  end, { desc = "Generate author, project, and human creation header" })
 
-  -- Register LuaSnip snippet for all languages
   local ok, ls = pcall(require, "luasnip")
   if ok then
     local s = ls.snippet
     local f = ls.function_node
-
     ls.add_snippets("all", {
-      s("license", {
-        f(function()
-          return M.get_license_header_lines()
-        end, {}),
-      }),
-      s("header", {
-        f(function()
-          return M.get_license_header_lines()
-        end, {}),
-      }),
+      s("license", { f(function() return M.get_license_header_lines() end, {}) }),
+      s("header", { f(function() return M.get_license_header_lines() end, {}) }),
     })
   end
 end
