@@ -1,5 +1,4 @@
--- keymap-helper: Unified registration for vim.keymap + which-key
--- Single function to register keymaps and auto-document them in which-key
+-- Helper for vim.keymap registration and which-key documentation
 
 local M = {}
 local pending_specs = {}
