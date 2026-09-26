@@ -1,18 +1,11 @@
--- python.lua: Python & Jupyter notebook support
--- Handles: .py files, .ipynb files (via Jupytext), and Quarto notebooks
--- Features: LSP, DAP, Molten REPL, cell execution, which-key docs
---
--- Requires: pip install jupytext pynvim jupyter_client
--- Usage: Open any .py, .ipynb, or .qmd file with # %% cells
+-- Python & Jupyter notebook (.ipynb) support via Jupytext and Molten
 
--- Jupytext: transparent .ipynb ↔ Python conversion
 local jupytext_ok, jupytext = pcall(require, "jupytext")
 if not jupytext_ok then
-  return
+  return {}
 end
 
--- Ensure newly created or empty .ipynb files have minimal valid notebook JSON
--- so Jupytext can initialize them without crashing.
+-- Initialize empty .ipynb files with valid JSON structure for Jupytext
 vim.api.nvim_create_autocmd("BufReadCmd", {
   pattern = "*.ipynb",
   callback = function(ev)
@@ -55,67 +48,81 @@ jupytext.setup({
   output_extension = "auto", -- keep original extension on save
   force_ft = "python", -- always treat as Python for LSP
 
-  -- Per-format overrides
   custom_language_formatting = {
     python = {
       extension = "py",
-      style = "percent", -- use # %% cell markers (Jupyter percent format)
+      style = "percent",
       force_ft = "python",
     },
   },
 })
 
--- Walk parent directories to find the nearest uv project root (.venv)
+-- Walk parent directories to find the nearest virtualenv root (.venv)
 local function find_venv_root()
+  local venv = os.getenv("VIRTUAL_ENV") or os.getenv("CONDA_PREFIX")
+  if venv then
+    return venv
+  end
+
   local path = vim.fn.expand("%:p:h")
-  while path ~= "/" do
+  while path ~= "/" and path ~= "" do
     if vim.fn.isdirectory(path .. "/.venv") == 1 then
-      return path
+      return path .. "/.venv"
     end
     path = vim.fn.fnamemodify(path, ":h")
   end
+  return nil
 end
 
--- Register the .venv as a Jupyter kernel via uv, then init Molten with it.
--- Falls back to the interactive picker if no .venv is found.
+-- Register or attach the Jupyter kernel (background ipykernel)
 local function init_venv_kernel()
   local root = find_venv_root()
   if not root then
-    vim.notify("molten: no .venv found, opening kernel picker", vim.log.levels.WARN)
-    local ok, err = pcall(vim.cmd, "MoltenInit")
+    vim.notify("Molten: No virtual environment detected, opening kernel picker...", vim.log.levels.INFO)
+    local ok, _ = pcall(vim.cmd, "MoltenInit")
     if not ok then
-      vim.notify("MoltenInit command not found. Try running :UpdateRemotePlugins and restarting.", vim.log.levels.ERROR)
+      vim.notify("MoltenInit command not available. Run :UpdateRemotePlugins and restart Neovim.", vim.log.levels.ERROR)
     end
     return
   end
 
-  local name = vim.fn.fnamemodify(root, ":t")
-  -- Uses uv to ensure ipykernel is installed and the kernel is registered
-  local cmd = string.format("cd %s && uv run --with ipykernel python -m ipykernel install --user --name %s", 
-                               vim.fn.shellescape(root), 
-                               vim.fn.shellescape(name))
-  
-  local ok = vim.fn.system(cmd)
-  if vim.v.shell_error ~= 0 then
-    vim.notify("molten: kernel registration failed:\n" .. ok, vim.log.levels.ERROR)
-    return
+  local kernel_name = vim.fn.fnamemodify(root == os.getenv("VIRTUAL_ENV") and root or vim.fn.fnamemodify(root, ":h"), ":t")
+  local python_bin = root .. "/bin/python"
+  if vim.fn.executable(python_bin) ~= 1 then
+    python_bin = root .. "/python"
   end
 
-  local ok_init, err_init = pcall(vim.cmd, "MoltenInit " .. name)
+  -- Attempt to register ipykernel for this environment
+  if vim.fn.executable(python_bin) == 1 then
+    local register_cmd = string.format("%s -m ipykernel install --user --name %s --display-name %s",
+      vim.fn.shellescape(python_bin),
+      vim.fn.shellescape(kernel_name),
+      vim.fn.shellescape(kernel_name)
+    )
+    vim.fn.system(register_cmd)
+  end
+
+  local ok_init, _ = pcall(vim.cmd, "MoltenInit " .. kernel_name)
   if not ok_init then
-    vim.notify("MoltenInit command not found. Try running :UpdateRemotePlugins and restarting.", vim.log.levels.ERROR)
+    -- Try fallback to default MoltenInit
+    local ok_fallback, _ = pcall(vim.cmd, "MoltenInit")
+    if not ok_fallback then
+      vim.notify("MoltenInit failed. Ensure pynvim & jupyter_client are installed.", vim.log.levels.ERROR)
+    end
+  else
+    vim.notify("Attached background kernel: " .. kernel_name, vim.log.levels.INFO)
   end
 end
 
--- Run the cell under the cursor (bounded by # %% markers)
-local function run_current_cell()
+-- Get start and end lines for the cell under cursor
+local function get_cell_range()
   local line = vim.fn.line(".")
   local total = vim.fn.line("$")
 
   local start_line = 1
   for i = line, 1, -1 do
     if vim.fn.getline(i):match("^# %%") then
-      start_line = i + 1
+      start_line = (i == line) and line or (i + 1)
       break
     end
   end
@@ -132,14 +139,45 @@ local function run_current_cell()
     end_line = end_line - 1
   end
 
+  return start_line, end_line
+end
+
+-- Run the cell under cursor
+local function run_current_cell()
+  local start_line, end_line = get_cell_range()
   if start_line > end_line then
     return
   end
-
   vim.fn.MoltenEvaluateRange(start_line, end_line)
 end
 
--- Visually distinguish code / markdown / raw cell delimiters
+-- Run cell and advance cursor to next cell (Shift-Enter behavior in Zed & Jupyter)
+local function run_current_cell_and_advance()
+  run_current_cell()
+
+  local line = vim.fn.line(".")
+  local total = vim.fn.line("$")
+
+  for i = line + 1, total do
+    if vim.fn.getline(i):match("^# %%") then
+      -- Jump to the first non-empty line of the next cell
+      local next_line = i + 1
+      while next_line <= total and vim.fn.getline(next_line):match("^%s*$") do
+        next_line = next_line + 1
+      end
+      vim.api.nvim_win_set_cursor(0, { math.min(next_line, total), 0 })
+      return
+    end
+  end
+end
+
+-- Run all cells in current buffer
+local function run_all_cells()
+  local total = vim.fn.line("$")
+  vim.fn.MoltenEvaluateRange(1, total)
+end
+
+-- Visually distinguish cell markers in Python / Quarto
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "python", "quarto" },
   callback = function()
@@ -152,4 +190,6 @@ vim.api.nvim_create_autocmd("FileType", {
 return {
   init_venv_kernel = init_venv_kernel,
   run_current_cell = run_current_cell,
+  run_current_cell_and_advance = run_current_cell_and_advance,
+  run_all_cells = run_all_cells,
 }
