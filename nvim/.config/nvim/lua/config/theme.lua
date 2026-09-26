@@ -162,16 +162,6 @@ function M.set(name, opts)
   return apply(name, opts)
 end
 
-function M.cycle(step)
-  step = step or 1
-
-  local current = M.current()
-  local current_index = index_of(current) or index_of(config.default) or 1
-  local next_index = ((current_index - 1 + step) % #config.themes) + 1
-
-  return apply(config.themes[next_index], { notify = true })
-end
-
 function M.select()
   local ok_telescope, _ = pcall(require, "telescope")
   if not ok_telescope then
@@ -323,14 +313,6 @@ function M.setup(opts)
     end,
     desc = "Select or set the active theme",
   })
-
-  vim.api.nvim_create_user_command("ThemeNext", function()
-    M.cycle(1)
-  end, { desc = "Cycle to the next theme" })
-
-  vim.api.nvim_create_user_command("ThemePrev", function()
-    M.cycle(-1)
-  end, { desc = "Cycle to the previous theme" })
 
   vim.api.nvim_create_autocmd("ColorScheme", {
     callback = function(args)

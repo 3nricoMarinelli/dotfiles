@@ -33,9 +33,7 @@ km.register("n", "<C-n>", ":Neotree filesystem toggle left<CR>", "toggle tree")
 km.register("n", "<leader>gs", function() require("neogit").open({ kind = "tab" }) end, "status")
 
 -- Theme picker
-km.register("n", "<leader>ts", "<cmd>Theme<CR>", "select theme")
-km.register("n", "<leader>tn", "<cmd>ThemeNext<CR>", "next theme")
-km.register("n", "<leader>tp", "<cmd>ThemePrev<CR>", "prev theme")
+km.register("n", "<leader>t", "<cmd>Theme<CR>", "select theme")
 
 -- Terminal
 km.register("n", "<leader>z", ":lua require('FTerm').open()<CR>", "floating terminal")

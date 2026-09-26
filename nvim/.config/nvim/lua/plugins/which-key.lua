@@ -8,7 +8,6 @@ wk.add({
   { "<leader>c", group = "code / tools" },
   { "<leader>g", group = "git" },
   { "<leader>l", group = "lsp" },
-  { "<leader>t", group = "theme" },
   { "<leader>p", group = "python / jupyter" },
   { "<leader>D", group = "debugger" },
 
@@ -18,9 +17,7 @@ wk.add({
   { "<leader>cf", desc = "create file in dir" },
   { "<leader>e", desc = "toggle tree" },
   { "<leader>gs", desc = "git status" },
-  { "<leader>ts", desc = "select theme" },
-  { "<leader>tn", desc = "next theme" },
-  { "<leader>tp", desc = "prev theme" },
+  { "<leader>t", desc = "select theme" },
   { "<leader>z", desc = "floating terminal" },
   { "<leader>P", desc = "plugins sync" },
 
