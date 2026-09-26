@@ -173,19 +173,116 @@ function M.cycle(step)
 end
 
 function M.select()
-  vim.ui.select(config.themes, {
-    prompt = "Select Zed Theme",
-    format_item = function(item)
-      if item == M.current() then
-        return item .. " (current)"
+  local ok_telescope, _ = pcall(require, "telescope")
+  if not ok_telescope then
+    vim.ui.select(config.themes, {
+      prompt = "Select Zed Theme",
+      format_item = function(item)
+        return item == M.current() and (item .. " (current)") or item
+      end,
+    }, function(choice)
+      if choice then
+        apply(choice, { notify = true })
       end
-      return item
+    end)
+    return
+  end
+
+  local pickers = require("telescope.pickers")
+  local finders = require("telescope.finders")
+  local conf = require("telescope.config").values
+  local actions = require("telescope.actions")
+  local action_state = require("telescope.actions.state")
+  local previewers = require("telescope.previewers")
+
+  local initial_theme = M.current() or config.default
+  local confirmed = false
+  local bufnr = vim.api.nvim_get_current_buf()
+  local file_path = vim.api.nvim_buf_get_name(bufnr)
+
+  -- Preview current buffer content under active theme
+  local previewer = previewers.new_buffer_previewer({
+    title = "Theme Live Preview",
+    get_buffer_by_name = function()
+      return file_path ~= "" and file_path or "sample"
     end,
-  }, function(choice)
-    if choice then
-      apply(choice, { notify = true })
+    define_preview = function(self)
+      if file_path ~= "" and vim.uv.fs_stat(file_path) then
+        conf.buffer_previewer_maker(file_path, self.state.bufnr, { bufname = self.state.bufname })
+      else
+        local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+        if #lines == 0 or (#lines == 1 and lines[1] == "") then
+          lines = {
+            "-- Theme Live Preview",
+            "local function sample()",
+            '  print("Theme: " .. vim.g.colors_name)',
+            "end",
+            "sample()",
+          }
+          vim.bo[self.state.bufnr].filetype = "lua"
+        end
+        vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
+      end
+    end,
+  })
+
+  local picker = pickers.new({}, {
+    prompt_title = "Select Theme (Live Preview)",
+    finder = finders.new_table({
+      results = config.themes,
+      entry_maker = function(entry)
+        return {
+          value = entry,
+          display = entry == initial_theme and (entry .. " (current)") or entry,
+          ordinal = entry,
+        }
+      end,
+    }),
+    sorter = conf.generic_sorter({}),
+    previewer = previewer,
+    default_selection_index = index_of(initial_theme) or 1,
+    attach_mappings = function(prompt_bufnr)
+      actions.select_default:replace(function()
+        local selection = action_state.get_selected_entry()
+        if not selection then
+          return
+        end
+        confirmed = true
+        actions.close(prompt_bufnr)
+        apply(selection.value, { persist = true, notify = true })
+      end)
+      return true
+    end,
+    on_complete = {
+      function()
+        local selection = action_state.get_selected_entry()
+        if selection and selection.value then
+          apply(selection.value, { persist = false, silent = true })
+        end
+      end,
+    },
+  })
+
+  -- Apply theme in real time as cursor moves
+  local orig_set_selection = picker.set_selection
+  picker.set_selection = function(self, row)
+    orig_set_selection(self, row)
+    local selection = action_state.get_selected_entry()
+    if selection and selection.value then
+      apply(selection.value, { persist = false, silent = true })
     end
-  end)
+  end
+
+  -- Revert to original theme if cancelled
+  local orig_close_windows = picker.close_windows
+  picker.close_windows = function(status)
+    orig_close_windows(status)
+    if not confirmed then
+      apply(initial_theme, { persist = false, silent = true })
+    end
+  end
+
+  picker:find()
 end
 
 function M.load()
