@@ -1,4 +1,4 @@
--- which-key configuration synchronized with global and buffer keymaps
+-- which-key configuration with contextual groups and global keymaps
 local wk = require("which-key")
 
 wk.setup()
@@ -12,39 +12,17 @@ wk.add({
   { "<leader>p", group = "python / jupyter" },
   { "<leader>D", group = "debugger" },
 
-  -- Top-level leader keymaps
+  -- Global leader keymaps
   { "<leader>f", desc = "files (git root)" },
   { "<leader>F", desc = "grep (git root)" },
-  { "<leader>e", desc = "toggle tree" },
-  { "<leader>x", desc = "close buffer" },
-  { "<leader>z", desc = "floating terminal" },
-  { "<leader>n", desc = "toggle relative nums" },
-  { "<leader>R", desc = "search & replace word" },
-  { "<leader>r", desc = "replace selection" },
-  { "<leader>W", desc = "toggle wrap" },
-  { "<leader>P", desc = "plugins sync" },
-  { "<leader>/", desc = "comment line" },
-  { "<leader>?", desc = "comment block" },
-  { "<leader>d", desc = "generate doc comment" },
-
-  -- Code / tools
   { "<leader>cf", desc = "create file in dir" },
-  { "<leader>cl", desc = "insert file header" },
-
-  -- Theme
+  { "<leader>e", desc = "toggle tree" },
+  { "<leader>gs", desc = "git status" },
   { "<leader>ts", desc = "select theme" },
   { "<leader>tn", desc = "next theme" },
   { "<leader>tp", desc = "prev theme" },
-
-  -- Git
-  { "<leader>gs", desc = "git status" },
-  { "<leader>ga", desc = "stage hunk" },
-  { "<leader>gu", desc = "unstage hunk" },
-  { "<leader>gv", desc = "preview hunk" },
-  { "<leader>gb", desc = "blame line" },
-  { "<leader>gj", desc = "next hunk" },
-  { "<leader>gk", desc = "prev hunk" },
-  { "<leader>gr", desc = "reset hunk" },
+  { "<leader>z", desc = "floating terminal" },
+  { "<leader>P", desc = "plugins sync" },
 
   -- Universal motions & buffers
   { "[d", desc = "prev diagnostic" },

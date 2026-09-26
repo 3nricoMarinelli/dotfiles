@@ -30,6 +30,20 @@ gitsigns.setup({
   },
   auto_attach = true,
   attach_to_untracked = false,
+  on_attach = function(bufnr)
+    local gs = package.loaded.gitsigns
+    local function map(mode, l, r, desc)
+      vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc, noremap = true, silent = true })
+    end
+
+    map("n", "<leader>ga", gs.stage_hunk, "stage hunk")
+    map("n", "<leader>gu", gs.undo_stage_hunk, "unstage hunk")
+    map("n", "<leader>gv", gs.preview_hunk, "preview hunk")
+    map("n", "<leader>gb", function() gs.blame_line({ full = true }) end, "blame line")
+    map("n", "<leader>gj", gs.next_hunk, "next hunk")
+    map("n", "<leader>gk", gs.prev_hunk, "prev hunk")
+    map("n", "<leader>gr", gs.reset_hunk, "reset hunk")
+  end,
   current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
   current_line_blame_opts = {
     virt_text = true,
