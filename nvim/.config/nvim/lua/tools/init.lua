@@ -31,6 +31,9 @@ function M.setup()
 	pcall(function()
 		require("tools.license").setup()
 	end)
+	pcall(function()
+		require("tools.file_creator").setup()
+	end)
 end
 
 return M
