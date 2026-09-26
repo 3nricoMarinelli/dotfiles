@@ -43,4 +43,4 @@ require("lsp.hooks").setup()
 -- C/C++ development tools (skeleton, trivial constructor, extract, include formatter/rename)
 require("tools").setup()
 
-load_theme()
+require("config.theme").setup()

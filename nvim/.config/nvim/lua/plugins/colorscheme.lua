@@ -1,47 +1,24 @@
--- Colorscheme setup helpers
+-- Plugin specifications for lazy.nvim dynamically generated from config/colorschemes
+local colorschemes = require("config.colorschemes")
 
-local M = {}
+local specs = {}
 
-function M.setup_catppuccin()
-  require("catppuccin").setup({
-    flavour = "frappe",
-    transparent_background = true,
-    styles = {
-      sidebars = "transparent",
-      floats = "transparent",
-    },
-  })
-end
+for _, item in ipairs(colorschemes.items) do
+  local spec = {
+    item.repo,
+    lazy = true,
+    priority = 1000,
+  }
 
-function M.setup_gruvbox()
-  local ok, gruvbox = pcall(require, "gruvbox")
-  if not ok then
-    return
+  if item.name then
+    spec.name = item.name
   end
 
-  gruvbox.setup({
-    terminal_colors = true,
-    undercurl = true,
-    underline = true,
-    bold = true,
-    italic = {
-      strings = true,
-      emphasis = true,
-      comments = true,
-      operators = false,
-      folds = true,
-    },
-    strikethrough = true,
-    invert_selection = false,
-    invert_signs = false,
-    invert_tabline = false,
-    inverse = true,
-    contrast = "",
-    palette_overrides = {},
-    overrides = {},
-    dim_inactive = false,
-    transparent_mode = true,
-  })
+  if item.repo == "ellisonleao/gruvbox.nvim" then
+    spec.dependencies = { "rktjmp/lush.nvim" }
+  end
+
+  table.insert(specs, spec)
 end
 
-return M
+return specs

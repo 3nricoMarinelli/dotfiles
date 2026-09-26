@@ -1,20 +1,10 @@
 -- Central lazy.nvim plugin specs.
--- Batch 1: backend migration from vim-plug to lazy.nvim with behavior parity.
 
-return {
-  -- Colors / theme
+local specs = {
+  -- UI modal enhancements (for Theme picker & vim.ui.select / vim.ui.input)
   {
-    "ellisonleao/gruvbox.nvim",
-    dependencies = { "rktjmp/lush.nvim" },
-    config = function()
-      vim.opt.termguicolors = true
-      vim.opt.background = "dark"
-      require("gruvbox").setup({
-        italic = { strings = false },
-        invert_selection = false,
-      })
-      vim.cmd([[ colorscheme gruvbox ]])
-    end,
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
   },
   -- UI
   {
@@ -296,3 +286,13 @@ return {
   { "nvim-lua/plenary.nvim" },
   { "mrcjkb/rustaceanvim", ft = { "rust" } },
 }
+
+-- Add Zed editor themes & colorschemes dynamically
+local ok_cs, theme_specs = pcall(require, "plugins.colorscheme")
+if ok_cs and type(theme_specs) == "table" then
+  for _, spec in ipairs(theme_specs) do
+    table.insert(specs, spec)
+  end
+end
+
+return specs
