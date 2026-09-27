@@ -3,3 +3,4 @@ tmux/.tmux/plugins/*
 lazy-lock.json
 **/node_modules/*
 pi/.pi/package-lock.json
+**/.netrwhist
