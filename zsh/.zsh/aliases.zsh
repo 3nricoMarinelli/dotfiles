@@ -20,11 +20,13 @@ alias ta='tmux attach-session'
 
 # NVIM
 alias s='v -c "SessionLoadLast"'
+alias t='v -c "Neotree filesystem reveal current"'
 alias f='v -c "lua require(\"utils.git-root-search\").open_files()"'
 alias F='v -c "lua require(\"utils.git-root-search\").open_grep()"'
 alias g='v -c "Neogit"'
 
 alias vs='s'
+alias vt='t'
 alias vf='f'
 alias vF='F'
 alias vg='g'

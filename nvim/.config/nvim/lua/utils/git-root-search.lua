@@ -1,6 +1,9 @@
 local M = {}
 
 local function find_git_root()
+  if vim.g.__skip_git_root and vim.g.__startup_dir_path then
+    return vim.g.__startup_dir_path
+  end
   local handle = io.popen("git rev-parse --show-toplevel 2>/dev/null")
   local git_root = handle and handle:read("*a"):gsub("\n", "") or ""
   if handle then

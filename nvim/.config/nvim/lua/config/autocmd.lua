@@ -165,75 +165,55 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
--- Auto-open Neo-tree when nvim is opened with a directory argument
--- Result: Alpha dashboard with Neo-tree as floating window on top, focused
-vim.defer_fn(function()
-  if vim.fn.argc() == 0 then
-    return
-  end
+-- If Neovim was opened with a single directory argument, configure working root and dashboard
+if vim.fn.argc() == 1 then
+  local raw_path = vim.fn.argv(0)
+  local expanded = vim.fn.expand(raw_path)
+  if vim.fn.isdirectory(expanded) == 1 then
+    local path = vim.fn.fnamemodify(expanded, ":p"):gsub("/$", "")
+    vim.g.__startup_dir_path = path
+    vim.g.__skip_git_root = true
+    pcall(vim.cmd.cd, vim.fn.fnameescape(path))
 
-  local path = vim.fn.argv(0)
-  if vim.fn.isdirectory(path) ~= 1 then
-    return
-  end
-
-  -- Expand to absolute path
-  path = vim.fn.fnamemodify(vim.fn.expand(path), ":p"):gsub("/$", "")
-  vim.g.__startup_dir_path = path
-
-  -- Delete the auto-created directory buffer
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_valid(buf) then
-      local bufname = vim.api.nvim_buf_get_name(buf):gsub("/$", "")
-      if bufname == path then
-        pcall(vim.api.nvim_buf_delete, buf, { force = true })
-      end
-    end
-  end
-
-  -- Load and show Alpha dashboard
-  pcall(function()
-    require("alpha")
-    vim.cmd("Alpha")
-  end)
-
-  -- Open Neo-tree as a floating window on top
-  vim.defer_fn(function()
-    -- First open Neo-tree normally
-    pcall(vim.cmd, "Neotree show")
-
-    -- Then convert its window to floating and focus it
-    vim.defer_fn(function()
-      -- Find the Neo-tree window
-      for win = 1, vim.fn.winnr("$") do
-        local bufnr = vim.fn.winbufnr(win)
-        local ft = vim.bo[bufnr].filetype
-
-        if ft == "neo-tree" then
-          local winid = vim.fn.win_getid(win)
-          -- Get terminal dimensions
-          local height = vim.o.lines - 2
-          local width = vim.o.columns
-
-          -- Convert to floating window
-          pcall(vim.api.nvim_win_set_config, winid, {
-            relative = "editor",
-            width = width,
-            height = height,
-            row = 0,
-            col = 0,
-            style = "minimal",
-            border = "none",
-          })
-
-          -- Focus the Neo-tree window
-          pcall(vim.api.nvim_set_current_win, winid)
-          break
+    -- Delete the auto-created directory buffer
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_buf_is_valid(buf) then
+        local bufname = vim.api.nvim_buf_get_name(buf):gsub("/$", "")
+        if bufname == path then
+          pcall(vim.api.nvim_buf_delete, buf, { force = true })
         end
       end
-    end, 50)
-  end, 100)
-end, 100)
+    end
+
+    -- Check if Neovim was launched with an explicit command (e.g., -c, +, -S)
+    local has_cli_command = false
+    for _, arg in ipairs(vim.v.argv) do
+      if arg == "-c" or vim.startswith(arg, "+") or arg == "-S" or arg == "--cmd" or arg == "-s" then
+        has_cli_command = true
+        break
+      end
+    end
+
+    -- Only open Alpha if no command was requested from CLI
+    if not has_cli_command then
+      vim.defer_fn(function()
+        if vim.bo.filetype == "TelescopePrompt" or vim.bo.filetype == "neo-tree" then
+          return
+        end
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          local b = vim.api.nvim_win_get_buf(win)
+          if vim.bo[b].filetype == "TelescopePrompt" or vim.bo[b].filetype == "neo-tree" then
+            return
+          end
+        end
+        pcall(function()
+          require("alpha")
+          vim.cmd("Alpha")
+        end)
+      end, 50)
+    end
+  end
+end
 
 -- BufWinEnter/WinEnter guard removed: FileType neo-tree event now handles
 -- window closure automatically, preventing blank window persistence.

@@ -5,7 +5,11 @@ local dashboard = require("alpha.themes.dashboard")
 _G.alpha_open_tree_fullscreen = function()
   local alpha_buf = vim.api.nvim_get_current_buf()
   vim.g.__dashboard_opening_tree = true
-  vim.cmd("Neotree filesystem reveal current")
+  if vim.g.__startup_dir_path then
+    vim.cmd("Neotree filesystem dir=" .. vim.fn.fnameescape(vim.g.__startup_dir_path))
+  else
+    vim.cmd("Neotree filesystem reveal current")
+  end
   vim.schedule(function()
     if vim.api.nvim_buf_is_valid(alpha_buf) and vim.bo[alpha_buf].filetype == "alpha" then
       pcall(vim.api.nvim_buf_delete, alpha_buf, { force = true })
@@ -16,12 +20,38 @@ _G.alpha_open_tree_fullscreen = function()
   end, 500)
 end
 
+_G.alpha_open_files = function()
+  if vim.g.__startup_dir_path then
+    require("utils.git-root-search").open_files({ cwd = vim.g.__startup_dir_path })
+  else
+    require("utils.git-root-search").open_files()
+  end
+end
+
+_G.alpha_open_grep = function()
+  if vim.g.__startup_dir_path then
+    require("utils.git-root-search").open_grep({ cwd = vim.g.__startup_dir_path })
+  else
+    require("utils.git-root-search").open_grep()
+  end
+end
+
 -- Dynamic git repo detection and onefetch command generation
 _G.get_dashboard_command = function()
-  -- Try to find git root from current working directory
-  local handle = io.popen("git rev-parse --show-toplevel 2>/dev/null")
-  local git_root = handle:read("*a"):gsub("\n", "")
-  handle:close()
+  local git_root = ""
+  if vim.g.__skip_git_root and vim.g.__startup_dir_path then
+    local git_dir = vim.g.__startup_dir_path .. "/.git"
+    if vim.fn.isdirectory(git_dir) == 1 or vim.fn.filereadable(git_dir) == 1 then
+      git_root = vim.g.__startup_dir_path
+    end
+  else
+    -- Try to find git root from current working directory
+    local handle = io.popen("git rev-parse --show-toplevel 2>/dev/null")
+    git_root = handle and handle:read("*a"):gsub("\n", "") or ""
+    if handle then
+      handle:close()
+    end
+  end
 
   if git_root ~= "" then
     -- We found a git repo, use onefetch with full path
@@ -59,12 +89,12 @@ dashboard.section.buttons.val = {
   dashboard.button(
     "f",
     "󰱼  Filename Finder",
-    ":lua pcall(require('utils.git-root-search').startup)<CR>"
+    ":lua alpha_open_files()<CR>"
   ),
   dashboard.button(
     "F",
     "󰱼  Grep Finder",
-    ":lua pcall(require('utils.git-root-search').open_grep)<CR>"
+    ":lua alpha_open_grep()<CR>"
   ),
   dashboard.button("g", "󰊢  Git Status", ":Neogit<CR>"),
   dashboard.button("q", "󰅙  Quit", ":q!<CR>"),
