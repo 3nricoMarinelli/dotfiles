@@ -6,7 +6,7 @@ local M = {}
 
 -- Import sub-modules
 local common = require("lsp.common")
-local keymaps = require("lsp.keymaps")
+local keymaps = require("config.mappings.lsp")
 local hints = require("lsp.hints")
 local tokens = require("lsp.tokens")
 

@@ -12,8 +12,8 @@ local function setup_lsp_autocmds()
       end
       require("lsp.c-cpp").start_lsp(args.buf)
 
-      require("build.keymaps").apply(args.buf)
-      require("dap.keymaps").apply(args.buf)
+      require("config.mappings.cpp").apply(args.buf)
+      require("config.mappings.dap").apply(args.buf)
     end,
   })
 

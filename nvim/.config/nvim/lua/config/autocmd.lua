@@ -56,6 +56,25 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Filetype detection for C/C++ headers and stdlib headers (including extensionless)
+vim.filetype.add({
+  extension = {
+    h = "cpp",
+    hpp = "cpp",
+    hxx = "cpp",
+    hh = "cpp",
+    ["h++"] = "cpp",
+    inl = "cpp",
+    tpp = "cpp",
+    ipp = "cpp",
+  },
+  pattern = {
+    [".*/include/c%+%+/.*"] = "cpp",
+    [".*/c%+%+/.*"] = "cpp",
+    [".*/include/std.*"] = "cpp",
+  },
+})
+
 -- Set filetype for C++ standard library headers (no extension)
 vim.api.nvim_create_autocmd("BufReadPre", {
   pattern = { "/usr/include/*", "/opt/homebrew/include/*" },

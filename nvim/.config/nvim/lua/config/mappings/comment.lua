@@ -98,7 +98,6 @@ function M.apply(bufnr)
   -- File text editing
   vim.keymap.set("n", "<leader>R", ":%s/<C-r><C-w>/<C-r><C-w>/g<Left><Left>", vim.tbl_extend("force", opts, { desc = "search and replace word" }))
   vim.keymap.set("n", "<leader>r", "ve\"_dP", vim.tbl_extend("force", opts, { desc = "replace selection" }))
-  vim.keymap.set("n", "<leader>x", "<cmd>BufferClose<CR>", vim.tbl_extend("force", opts, { desc = "close buffer" }))
   vim.keymap.set("n", "<leader>n", function()
     vim.wo.relativenumber = not vim.wo.relativenumber
     vim.wo.number = true

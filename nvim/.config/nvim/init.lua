@@ -32,9 +32,6 @@ require("config.options")
 require("config.autocmd")
 require("config.lint-toggle")
 
--- lazy.nvim specs now own plugin setup; keep runtime-only modules here.
--- bufdelete: smart buffer deletion
-pcall(require, "bufdelete")
 
 -- Centralized LSP configuration hub
 require("lsp").setup()

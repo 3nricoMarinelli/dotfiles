@@ -57,6 +57,7 @@ local specs = {
   },
   {
     "nvim-treesitter/nvim-treesitter",
+    lazy = false,
     build = ":TSUpdate",
     config = function()
       require("plugins.treesitter")
@@ -76,10 +77,6 @@ local specs = {
     config = function()
       require("plugins.render-markdown")
     end,
-  },
-  {
-    "vimpostor/vim-tpipeline",
-    event = { "VimEnter" },
   },
 
   -- Navigation / files / terminal
@@ -101,7 +98,11 @@ local specs = {
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "nvim-treesitter/nvim-treesitter",
+    },
     config = function()
       require("plugins.telescope")
     end,
@@ -113,7 +114,6 @@ local specs = {
       require("plugins.fterm")
     end,
   },
-  { "famiu/bufdelete.nvim" },
 
   -- Editing helpers
   {

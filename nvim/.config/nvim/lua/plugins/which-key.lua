@@ -20,6 +20,8 @@ wk.add({
   { "<leader>t", desc = "select theme" },
   { "<leader>z", desc = "floating terminal" },
   { "<leader>P", desc = "plugins sync" },
+  { "<leader>x", desc = "close buffer" },
+  { "<leader>X", desc = "close window" },
 
   -- Universal motions & buffers
   { "[d", desc = "prev diagnostic" },

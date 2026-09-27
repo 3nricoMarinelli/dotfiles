@@ -13,12 +13,14 @@ km.register("n", "<Tab>", "<cmd>BufferNext<CR>", "next buffer")
 km.register("n", "<S-Tab>", "<cmd>BufferPrevious<CR>", "prev buffer")
 km.register("n", "<S-l>", "<cmd>BufferNext<CR>", "next buffer")
 km.register("n", "<S-h>", "<cmd>BufferPrevious<CR>", "prev buffer")
+km.register("n", "<leader>x", "<cmd>BufferClose<CR>", "close buffer")
 
 -- Windows
 km.register("n", "<C-h>", "<C-w>h", "window left")
 km.register("n", "<C-j>", "<C-w>j", "window down")
 km.register("n", "<C-k>", "<C-w>k", "window up")
 km.register("n", "<C-l>", "<C-w>l", "window right")
+km.register("n", "<leader>X", "<C-w>c", "close window")
 
 -- Search & File creation
 km.register("n", "<leader>f", ":lua require('utils.git-root-search').open_files()<CR>", "files (git root)")

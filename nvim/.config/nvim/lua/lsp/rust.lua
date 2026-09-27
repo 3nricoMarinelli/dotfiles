@@ -42,7 +42,7 @@ local on_attach = function(client, bufnr)
   require("lsp").on_attach(client, bufnr)
 
   -- Apply DAP keybindings (debugging)
-  require("dap.keymaps").apply(bufnr)
+  require("config.mappings.dap").apply(bufnr)
 end
 
 function M.setup()

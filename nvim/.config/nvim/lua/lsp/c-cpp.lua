@@ -58,8 +58,8 @@ end
 
 local function on_attach(client, bufnr)
   require("lsp").on_attach(client, bufnr)
-  require("dap.keymaps").apply(bufnr)
-  require("build.keymaps").apply(bufnr)
+  require("config.mappings.dap").apply(bufnr)
+  require("config.mappings.cpp").apply(bufnr)
 end
 
 function M.switch_source_header(bufnr)
