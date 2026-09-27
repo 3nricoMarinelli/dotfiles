@@ -11,7 +11,7 @@
 # --------------------------------------------
 alias pip3=/usr/bin/pip3
 alias storage='ncdu'
-alias v='nvim'
+alias v='$EDITOR'
 
 # TMUX
 alias tn='tmux new-session -s'
