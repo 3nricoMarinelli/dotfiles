@@ -103,10 +103,6 @@ brew "ncurses"
 brew "python@3.14"
 # GNU debugger
 brew "gdb", link: false
-# Open-source, cross-platform JavaScript runtime environment
-brew "node"
-# Interact with Google Gemini AI models from the command-line
-brew "gemini-cli"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
@@ -137,6 +133,8 @@ brew "lazydocker"
 brew "lazygit"
 # Library providing read access on ZIP-archives
 brew "libzzip"
+# LLM inference in C/C++
+brew "llama.cpp"
 # Next-gen compiler infrastructure
 brew "llvm"
 # Library of C++ classes for flexible logging
@@ -159,6 +157,8 @@ brew "neovim"
 brew "ninja"
 # Port scanning utility for large networks
 brew "nmap"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
 # Package for scientific computing with Python
 brew "numpy"
 # Prompt theme engine for any shell
@@ -248,12 +248,11 @@ cask "docker-desktop"
 cask "drawio"
 # UI toolkit for building applications for mobile, web and desktop
 cask "flutter"
+cask "font-hack-nerd-font"
 # Pre-built GNU bare-metal toolchain for 64-bit Arm processors
 cask "gcc-aarch64-embedded"
 # Pre-built GNU bare-metal toolchain for 32-bit Arm processors
 cask "gcc-arm-embedded"
-# Window manager
-cask "loop"
 # Virtual machines UI using QEMU
 cask "utm"
 # Open-source version of the X.Org X Window System
