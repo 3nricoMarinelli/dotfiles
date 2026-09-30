@@ -57,6 +57,8 @@ endif
 
 " 3. Syntax & Appearance (Dark Zed / OneDark Emulation)
 set background=dark
+colorscheme habamax
+set cursorline
 if has("syntax")
   syntax enable
 endif
