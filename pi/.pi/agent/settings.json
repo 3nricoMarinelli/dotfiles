@@ -1,0 +1,19 @@
+{
+  "enableInstallTelemetry": false,
+  "fullscreenExitOutput": "resume-hint",
+  "hideThinkingBlock": true,
+  "lastChangelogVersion": "0.99.1",
+  "packages": [
+    "npm:@dietrichgebert/ponytail",
+    "npm:pi-sandbox"
+  ],
+  "quietStartup": false,
+  "showCacheMissNotices": true,
+  "showHardwareCursor": false,
+  "steeringMode": "all",
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "theme": "dark",
+  "tuiMode": "fullscreen"
+}

@@ -1,0 +1,33 @@
+{
+  "enabled": true,
+  "sandboxUserShell": true,
+  "permissionPromptTimeoutSeconds": 10,
+  "allowBrowserProcess": false,
+  "network": {
+    "allowLocalBinding": false,
+    "allowAllUnixSockets": false,
+    "allowUnauthenticatedSocksProxy": false,
+    "allowedDomains": [],
+    "deniedDomains": ["*"]
+  },
+  "filesystem": {
+    "denyRead": [
+      "/Users",
+      "/home"
+    ],
+    "allowRead": [
+      "."
+    ],
+    "allowWrite": [
+      ".",
+      "/tmp"
+    ],
+    "denyWrite": [
+      ".env",
+      ".env.*",
+      "*.pem",
+      "*.key",
+      ".pi/sandbox.json"
+    ]
+  }
+}
