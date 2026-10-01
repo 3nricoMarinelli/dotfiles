@@ -32,7 +32,7 @@ km.register("n", "<leader>e", ":Neotree filesystem toggle left<CR>", "toggle tre
 km.register("n", "<C-n>", ":Neotree filesystem toggle left<CR>", "toggle tree")
 
 -- Git
-km.register("n", "<leader>gs", function() require("neogit").open({ kind = "tab" }) end, "status")
+km.register("n", "<leader>gg", function() require("neogit").open({ kind = "tab" }) end, "status")
 
 -- Theme picker
 km.register("n", "<leader>t", "<cmd>Theme<CR>", "select theme")
