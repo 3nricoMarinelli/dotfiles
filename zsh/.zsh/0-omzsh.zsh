@@ -23,7 +23,6 @@ plugins=(
     git-auto-fetch
     git-commit
     gitfast
-    github
     gitignore
     git-lfs
     git-prompt
