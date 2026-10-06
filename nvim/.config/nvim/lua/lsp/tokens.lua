@@ -5,47 +5,48 @@ local M = {}
 
 --- Setup semantic token highlight groups
 local function setup_highlights()
-  -- Define highlight groups for semantic tokens
-  local highlights = {
-    -- Types
-    ["@lsp.type.class"] = "Type",
-    ["@lsp.type.struct"] = "Type",
-    ["@lsp.type.enum"] = "Type",
-    ["@lsp.type.interface"] = "Type",
-    ["@lsp.type.typedef"] = "Type",
-    ["@lsp.type.union"] = "Type",
+    -- Define highlight groups for semantic tokens
+    local highlights = {
+        -- TODO improve
+        -- Types
+        ["@lsp.type.class"] = "@type",
+        ["@lsp.type.struct"] = "@type",
+        ["@lsp.type.enum"] = "@type",
+        ["@lsp.type.interface"] = "@type",
+        ["@lsp.type.typedef"] = "@type",
+        ["@lsp.type.union"] = "@type",
 
-    -- Variables
-    ["@lsp.type.variable"] = "Identifier",
-    ["@lsp.type.parameter"] = "Identifier",
-    ["@lsp.type.property"] = "Identifier",
-    ["@lsp.type.enumMember"] = "Constant",
+        -- Variables
+        ["@lsp.type.variable"] = "@variable",
+        ["@lsp.type.parameter"] = "@parameter",
+        ["@lsp.type.property"] = "@property",
+        ["@lsp.type.enumMember"] = "@constant",
 
-    -- Functions
-    ["@lsp.type.function"] = "Function",
-    ["@lsp.type.method"] = "Function",
+        -- Functions
+        ["@lsp.type.function"] = "@function",
+        ["@lsp.type.method"] = "@function",
 
-    -- Keywords
-    ["@lsp.type.keyword"] = "Keyword",
-    ["@lsp.type.modifier"] = "Keyword",
+        -- Keywords
+        ["@lsp.type.keyword"] = "@keyword",
+        ["@lsp.type.modifier"] = "@keyword",
 
-    -- Comments
-    ["@lsp.type.comment"] = "Comment",
-    ["@lsp.type.string"] = "String",
-    ["@lsp.type.number"] = "Number",
-    ["@lsp.type.regexp"] = "String",
-    ["@lsp.type.operator"] = "Operator",
+        -- Comments
+        ["@lsp.type.comment"] = "@comment",
+        ["@lsp.type.string"] = "@string",
+        ["@lsp.type.number"] = "@number",
+        ["@lsp.type.regexp"] = "@string",
+        ["@lsp.type.operator"] = "@operator",
 
-    -- Namespaces
-    ["@lsp.type.namespace"] = "Identifier",
-    ["@lsp.type.module"] = "Identifier",
-    ["@lsp.type.package"] = "Identifier",
-  }
+        -- Namespaces
+        ["@lsp.type.namespace"] = "@module",
+        ["@lsp.type.module"] = "@module",
+        ["@lsp.type.package"] = "@module",
+    }
 
-  -- Apply highlights
-  for token, hl_group in pairs(highlights) do
-    vim.api.nvim_set_hl(0, token, { link = hl_group, default = true })
-  end
+    -- Apply highlights
+    for token, hl_group in pairs(highlights) do
+        vim.api.nvim_set_hl(0, token, { link = hl_group, default = true })
+    end
 end
 
 --- Setup semantic tokens on_attach handler
@@ -53,19 +54,19 @@ end
 --- @param client any LSP client
 --- @param bufnr number Buffer number
 function M.on_attach(client, bufnr)
-  if client.server_capabilities.semanticTokensProvider then
-    vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
-  end
+    if client.server_capabilities.semanticTokensProvider then
+        vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
+    end
 end
 
 --- Initialize semantic tokens (called from init.lua)
 function M.setup()
-  if not vim.lsp.semantic_tokens then
-    vim.notify("Semantic tokens not available in this Neovim version", vim.log.levels.WARN)
-    return
-  end
+    if not vim.lsp.semantic_tokens then
+        vim.notify("Semantic tokens not available in this Neovim version", vim.log.levels.WARN)
+        return
+    end
 
-  setup_highlights()
+    setup_highlights()
 end
 
 return M
