@@ -52,6 +52,19 @@ local function setup_lsp_autocmds()
       require("lsp.lua").start_lsp(args.buf)
     end,
   })
+
+  -- CMake
+  local cmake_lsp_loaded = false
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "cmake",
+    callback = function(args)
+      if not cmake_lsp_loaded then
+        require("lsp.cmake").setup()
+        cmake_lsp_loaded = true
+      end
+      require("lsp.cmake").start_lsp(args.buf)
+    end,
+  })
 end
 
 M.setup = setup_lsp_autocmds

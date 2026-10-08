@@ -28,19 +28,67 @@ function M.apply(bufnr)
   end
 
   -- C++ Navigation, Code Generation & Refactoring
-  vim.keymap.set("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<CR>", vim.tbl_extend("force", opts, { desc = "Switch header/source" }))
-  vim.keymap.set("n", "<leader>cs", "<cmd>Skel<CR>", vim.tbl_extend("force", opts, { desc = "Insert C++ skeleton" }))
-  vim.keymap.set("n", "<leader>cm", "<cmd>CppTrvCtr<CR>", vim.tbl_extend("force", opts, { desc = "Generate constructor" }))
-  vim.keymap.set("n", "<leader>ce", "<cmd>CppExtractFunctionDefinition<CR>", vim.tbl_extend("force", opts, { desc = "Extract function definition" }))
-  vim.keymap.set("n", "<leader>cE", "<cmd>CppExtractDefinitions<CR>", vim.tbl_extend("force", opts, { desc = "Extract class definitions" }))
+  vim.keymap.set(
+    "n",
+    "<leader>ch",
+    "<cmd>ClangdSwitchSourceHeader<CR>",
+    vim.tbl_extend("force", opts, { desc = "Switch header/source" })
+  )
+  vim.keymap.set(
+    "n",
+    "<leader>cs",
+    "<cmd>Skel<CR>",
+    vim.tbl_extend("force", opts, { desc = "Insert C++ skeleton" })
+  )
+  vim.keymap.set(
+    "n",
+    "<leader>cm",
+    "<cmd>CppTrvCtr<CR>",
+    vim.tbl_extend("force", opts, { desc = "Generate constructor" })
+  )
+  vim.keymap.set(
+    "n",
+    "<leader>ce",
+    "<cmd>CppExtractFunctionDefinition<CR>",
+    vim.tbl_extend("force", opts, { desc = "Extract function definition" })
+  )
+  vim.keymap.set(
+    "n",
+    "<leader>cE",
+    "<cmd>CppExtractDefinitions<CR>",
+    vim.tbl_extend("force", opts, { desc = "Extract class definitions" })
+  )
 
   -- CMake Build & Test Commands
+  M.apply_cmake_build(bufnr)
+end
+
+function M.apply_cmake_build(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  if vim.b[bufnr].cmake_build_keymaps_applied then
+    return
+  end
+  vim.b[bufnr].cmake_build_keymaps_applied = true
+
+  local opts = { buffer = bufnr, noremap = true, silent = true }
+
+  local wk_ok, wk = pcall(require, "which-key")
+  if wk_ok then
+    wk.add({
+      { "<leader>cc", desc = "cmake build", buffer = bufnr },
+      { "<leader>cC", desc = "cmake clean & build", buffer = bufnr },
+      { "<leader>ct", desc = "cmake test (ctest)", buffer = bufnr },
+    })
+  end
+
   vim.keymap.set("n", "<leader>cc", function()
     vim.cmd("!cmake --build build 2>&1 | head -50")
   end, vim.tbl_extend("force", opts, { desc = "CMake build" }))
 
   vim.keymap.set("n", "<leader>cC", function()
-    vim.cmd("!rm -rf build && mkdir -p build && cmake -B build && cmake --build build 2>&1 | head -50")
+    vim.cmd(
+      "!rm -rf build && mkdir -p build && cmake -B build && cmake --build build 2>&1 | head -50"
+    )
   end, vim.tbl_extend("force", opts, { desc = "CMake clean & build" }))
 
   vim.keymap.set("n", "<leader>ct", function()
