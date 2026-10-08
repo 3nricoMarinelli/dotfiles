@@ -17,6 +17,12 @@ if vim.fn.has("mac") == 1 then
     vim.env.PATH = "/opt/homebrew/bin:/opt/homebrew/sbin:" .. vim.env.PATH
   end
 end
+
+-- Ensure Mason binaries are discoverable immediately
+local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+if not vim.env.PATH:find(mason_bin, 1, true) then
+  vim.env.PATH = mason_bin .. ":" .. vim.env.PATH
+end
 -- Compatibility shims for older plugin APIs (must load before plugins)
 require("config.health-compat")
 
@@ -31,7 +37,6 @@ require("config.mappings")
 require("config.options")
 require("config.autocmd")
 require("config.lint-toggle")
-
 
 -- Centralized LSP configuration hub
 require("lsp").setup()
