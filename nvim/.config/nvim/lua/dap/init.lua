@@ -45,13 +45,12 @@ function M.setup()
 
   -- ============================================================================
   -- DAP UI AUTO-OPEN (manual listener registration)
-  -- Skip dapui.setup() - let Lazy handle it. Just register our listeners manually.
   -- ============================================================================
   if dapui_ok then
-    -- Register listeners with graceful error handling
-    -- Defer by 200ms to ensure dap.listeners exists
+    -- Defer setup and listener registration to ensure dap.listeners is ready
     vim.defer_fn(function()
       if dap.listeners and type(dap.listeners) == "table" then
+        pcall(dapui.setup)
         dap.listeners.after.event_initialized["dapui_config"] = function()
           dapui.open()
         end
@@ -142,6 +141,15 @@ function M.setup()
 
   local lldb_dap = vim.fn.exepath("lldb-dap")
   local codelldb = vim.fn.exepath("codelldb")
+
+  -- Fallback to Mason's codelldb path if not in PATH
+  if codelldb == "" then
+    local mason_codelldb = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/adapter/codelldb"
+    if vim.fn.executable(mason_codelldb) == 1 then
+      codelldb = mason_codelldb
+    end
+  end
+
   dap.adapters = dap.adapters or {}
   dap.configurations = dap.configurations or {}
 

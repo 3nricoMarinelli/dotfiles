@@ -51,6 +51,7 @@ if mason_tool_installer_ok then
       "isort", -- Python import sorter
       "black", -- Python formatter (conform)
       "debugpy", -- Python debug adapter (nvim-dap-python)
+      "codelldb", -- C/C++/Rust debug adapter
       "stylua", -- Lua formatter (conform)
       "shfmt", -- shell formatter (conform)
       "clang-format", -- C/C++ formatter (conform)
