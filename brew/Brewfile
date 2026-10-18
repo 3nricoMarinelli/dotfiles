@@ -129,8 +129,6 @@ brew "hub-tool"
 brew "jless"
 # Lazier way to manage everything docker
 brew "lazydocker"
-# Simple terminal UI for git commands
-brew "lazygit"
 # Library providing read access on ZIP-archives
 brew "libzzip"
 # LLM inference in C/C++
@@ -203,8 +201,8 @@ brew "socat"
 brew "spdlog"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
-# Free software distribution for the TeX typesetting system
-brew "texlive"
+# Easiest, most secure way to use WireGuard and 2FA
+brew "tailscale"
 # Terminal multiplexer
 brew "tmux"
 # Command-line translator using Google Translate and more

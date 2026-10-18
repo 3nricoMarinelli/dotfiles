@@ -20,7 +20,7 @@
   "git_panel": {
     "dock": "left"
   },
-  "icon_theme": "Zed (Default)",
+  "icon_theme": "Material Icon Theme",
   "toolbar": {
     "agent_review": false
   },

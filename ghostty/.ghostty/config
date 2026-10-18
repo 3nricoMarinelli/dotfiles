@@ -10,5 +10,5 @@ keybind = super+up=scroll_page_up
 keybind = super+down=scroll_page_down
 keybind = command+k=text:\x0c
 
-font-family = "Hack"
+font-family = "Ubuntu Mono"
 font-size = 17
