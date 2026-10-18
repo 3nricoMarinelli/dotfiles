@@ -38,7 +38,7 @@ local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
 if mason_lspconfig_ok then
   mason_lspconfig.setup({
     ensure_installed = { "ruff", "pyrefly", "lua_ls", "neocmake" },
-    automatic_installation = true,
+    automatic_installation = { exclude = { "rust_analyzer" } },
   })
 end
 

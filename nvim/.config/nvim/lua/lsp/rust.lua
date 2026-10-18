@@ -51,6 +51,20 @@ function M.setup()
   -- Auto-format with rustfmt if config exists
   vim.g.rustfmt_autosave_if_config_present = 1
 
+  -- Configure rustaceanvim to use the active rustup toolchain's rust-analyzer
+  vim.g.rustaceanvim = {
+    server = {
+      on_attach = on_attach,
+      cmd = function()
+        local ra = vim.fn.trim(vim.fn.system({ "rustup", "which", "rust-analyzer" }))
+        if vim.v.shell_error == 0 and #ra > 0 and vim.fn.executable(ra) == 1 then
+          return { ra }
+        end
+        return { "rust-analyzer" }
+      end,
+    },
+  }
+
   -- Hook into LspAttach to apply keybindings for rust-analyzer
   vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("RustLspAttach", { clear = false }),
@@ -61,9 +75,6 @@ function M.setup()
       end
     end,
   })
-
-  -- rustaceanvim handles all LSP setup automatically using vim.lsp.config internally
-  -- It automatically sets up rust-analyzer when opening Rust files
 
   _G.rust_lsp_setup_done = true
 end

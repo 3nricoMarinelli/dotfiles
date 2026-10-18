@@ -284,7 +284,13 @@ local specs = {
 
   -- Shared deps / language extras
   { "nvim-lua/plenary.nvim" },
-  { "mrcjkb/rustaceanvim", ft = { "rust" } },
+  {
+    "mrcjkb/rustaceanvim",
+    ft = { "rust" },
+    init = function()
+      require("lsp.rust").setup()
+    end,
+  },
 }
 
 -- Add Zed editor themes & colorschemes dynamically
